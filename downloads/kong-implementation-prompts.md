@@ -180,7 +180,11 @@ Step 6 — in-match surfaces. Keep the gameplay renderer exactly as it is; only 
 
 - HUD: minimap top-left, compass top-centre, health/shield bottom-left (36px HUD numbers, slim
   saffron health bar, cyan shield bar), ammo + weapon name + five slot indicators bottom-right.
-  Short gradient backplates, no framed cards. Centre stays clear. Optional FPS/network
+  Short gradient backplates, no framed cards. Centre stays clear.
+  Match stats top-right as two rows of slanted translucent chips: squads left + players left,
+  then kills, assists, squad kills (squad modes) and damage. Add a Match stats setting
+  (Auto / Personal / Squad / Hidden). Pop changed numbers briefly; confirm Eliminated / Assist
+  under the crosshair. Optional FPS/network
   diagnostics live in one region, hidden by default and driven by Video settings.
   Practice hints are contextual and fade once completed. HUD scale setting applies here.
 - Inventory: overlay on the lower two-thirds. Five equal slots; each shows index, art, name,
@@ -206,6 +210,9 @@ Step 7 — front-end screens.
   (inline edit with validation), eyebrow "Battle royale", one display headline, mode line, mode
   chooser (Trios / Solo), one full-width saffron Play button whose label reflects the real
   action, quiet live playtest status, Firing range + Learn controls links, input prompts footer.
+- Match results: same shell as the lobby. Outcome eyebrow, display headline, placement,
+  one typographic stats row with new bests marked, optional 1–5 ratings, one Back to lobby action.
+  Short one-shot celebration that respects reduced motion. Enter returns to the lobby.
 - Loading: art carries the screen, compact brand, one heading, honest loading phase text, a
   thin progress line with a real percentage (no fake progress), one rotating tip with keycaps
   from current bindings, optional Learn controls link.

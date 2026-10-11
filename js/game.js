@@ -121,7 +121,8 @@ window.Game = (function () {
         { id: "dynRes", label: "Dynamic resolution", type: "switch", def: false, help: { eb: "Display", t: "Dynamic resolution", p: ["Lowers 3D resolution automatically during heavy scenes to hold the frame rate limit."], viz: "hw" } },
         { id: "fov", label: "Field of view", type: "slider", min: 80, max: 120, step: 1, def: 120, fmt: (v) => Math.round(v) + "°", help: { eb: "Display", t: "Field of view", p: ["How much of the world you see horizontally. Wider shows more at the edges; narrower makes targets larger.", "The firing range uses this value."], viz: "fov" } },
         { id: "showFps", label: "Show FPS", type: "switch", def: false, help: { eb: "Display", t: "Show FPS", p: ["Shows frames per second in the top-right corner of the HUD."], viz: "hw" } },
-        { id: "netStats", label: "Network stats", type: "cycle", options: ["Hidden", "Ping", "Full"], def: "Hidden", help: { eb: "Display", t: "Network stats", p: ["Ping shows latency. Full adds packet loss. Values in this preview are simulated."], viz: "hw" } }
+        { id: "netStats", label: "Network stats", type: "cycle", options: ["Hidden", "Ping", "Full"], def: "Hidden", help: { eb: "Display", t: "Network stats", p: ["Ping shows latency. Full adds packet loss. Values in this preview are simulated."], viz: "hw" } },
+        { id: "matchStats", label: "Match stats", type: "cycle", options: ["Auto", "Personal", "Squad", "Hidden"], def: "Auto", help: { eb: "HUD", t: "Match stats", p: ["Your kills and damage in the top-right corner. Squad adds the kills your whole squad has combined, plus your assists.", "Auto shows Squad in Trios matches and Personal in Solo and the firing range."], viz: "mstats" } }
       ] },
       { name: "Graphics", rows: [
         { id: "gfxPreset", label: "Quality preset", type: "cycle", options: ["Low", "Medium", "High", "Ultra", "Custom"], def: "High", help: { eb: "Graphics", t: "Quality preset", p: ["Sets every option below. Changing one option switches the preset to Custom."], viz: "gfx" } },
@@ -252,17 +253,19 @@ window.Game = (function () {
     S.over = [];
     if (k === "lobby") { S.base = "lobby"; S.lobbyTab = "play"; S.search = null; }
     else if (k === "loading") { startLoading("match", true); return; }
-    else if (k === "hud") { enterHud("range"); return; }
+    else if (k === "hud") { enterHud(arg === "match" ? "match" : "range"); return; }
     else if (k === "menu") { enterHud("range", true); S.over = [{ id: "menu", sel: 0 }]; }
     else if (k === "report") { enterHud("range", true); S.over = [{ id: "menu", sel: 3 }, { id: "report" }]; S.report = { cat: null, text: "", state: "idle", err: "" }; }
     else if (k === "inventory") { enterHud("range", true); S.over = [{ id: "inventory" }]; }
     else if (k === "map") { enterHud("range", true); S.over = [{ id: "map" }]; }
     else if (k === "learn") { S.base = "lobby"; S.over = [{ id: "learn" }]; }
+    else if (k === "results") { S.base = "results"; S.ratings = {}; }
     else if (k === "settings") { enterHud("range", true); S.over = [{ id: "menu", sel: 1 }, { id: "settings", cat: arg || "mk", sec: 0, row: 0 }]; }
     renderAll();
   }
   function enterHud(mode, silent) {
     S.base = "hud"; S.mode = mode; S.matchT0 = Date.now(); S.over = [];
+    S.match = { kills: 0, assists: 0, dmg: 0, squadKills: 0, alive: 50, squads: 17, lastHit: 0, tHp: {} };
     S.hints = { fire: false, reload: false, inv: false, map: false };
     if (!silent) renderAll();
   }
@@ -273,7 +276,8 @@ window.Game = (function () {
   /* Transitions: the outgoing screen is moved into a "ghost" layer that animates out
      while the incoming screen animates in. Same-screen updates morph in place. */
   let shownBase = null, shownOver = null, navDir = 0;
-  const motionOff = () => !!(S && S.set.reducedMotion);
+  const STILL = /[?&]still\b/.test(location.search);
+  const motionOff = () => STILL || !!(S && S.set.reducedMotion);
   function ghost(layer, cls, ms) {
     if (!layer.firstChild) return;
     if (motionOff()) { layer.innerHTML = ""; return; }
@@ -311,6 +315,7 @@ window.Game = (function () {
     if (S.base === "lobby") renderLobby();
     else if (S.base === "loading") renderLoading();
     else if (S.base === "hud") { renderWorld(); renderHud(); }
+    else if (S.base === "results") renderResults();
     if (baseChanged && !motionOff()) { [L.base, L.hud].forEach((l) => l.firstElementChild && l.firstElementChild.classList.add("scr-in", "slow")); }
     shownBase = S.base;
     renderOver();
@@ -342,7 +347,7 @@ window.Game = (function () {
   /* ------------------------------------------------------------------
      Compare overlay
   ------------------------------------------------------------------ */
-  const keyToFile = { "settings:mk": "01-settings-mouse", "settings:ctrl": "02-settings-controller", "settings:audio": "03-settings-audio", "settings:video": "04-settings-video", "settings:a11y": "05-settings-accessibility", learn: "06-learn-controls", menu: "07-pause-menu", report: "08-report-problem", inventory: "09-inventory", hud: "10-gameplay-hud", map: "11-world-map", lobby: "12-lobby", loading: "13-loading" };
+  const keyToFile = { "settings:mk": "01-settings-mouse", "settings:ctrl": "02-settings-controller", "settings:audio": "03-settings-audio", "settings:video": "04-settings-video", "settings:a11y": "05-settings-accessibility", learn: "06-learn-controls", menu: "07-pause-menu", report: "08-report-problem", inventory: "09-inventory", hud: "10-gameplay-hud", map: "11-world-map", lobby: "12-lobby", loading: "13-loading", results: "14-match-results" };
   function setCompare(mode, op) { compare = { mode, op }; updateCompare(); }
   function updateCompare() {
     if (!L.compare) return;
@@ -497,9 +502,10 @@ window.Game = (function () {
     const minimapX = (ME.x - 300) / 880 * 232, minimapY = (ME.y - 120) / 720 * 190;
     L.hud.innerHTML = `<div class="hud">
       <div class="grp tl"><div class="mini"><img src="img/art/minimap.jpg" alt=""><span class="pin" id="h-mpin" hidden></span><span class="me" id="h-me" style="left:${minimapX}px;top:${minimapY}px"></span></div>
-        <div class="mini-lbl"><b id="h-modeb">${S.mode === "range" ? "Practice" : "Warm-up"}</b><span id="h-modes">${S.mode === "range" ? "Infinite ammo" : "50 alive"}</span></div></div>
+        <div class="mini-lbl"><b id="h-modeb">${S.mode === "range" ? "Practice" : "Warm-up"}</b><span id="h-modes">${S.mode === "range" ? "Infinite ammo" : S.squad === "trios" ? "Trios" : "Solo"}</span></div></div>
       <div class="grp tc"><div class="compass-wrap"><div class="compass"><div class="strip" id="h-strip"></div></div><div class="compass-mark"></div></div><div class="hud-status" id="h-status">${S.mode === "range" ? "Firing range · Infinite ammo" : "Warm-up · " + (S.squad === "trios" ? "Trios" : "Solo")}</div></div>
-      <div class="grp tr"><div class="diag" id="h-diag"></div></div>
+      <div class="grp tr"><div class="mstats" id="h-ms"></div><div class="diag" id="h-diag"></div></div>
+      <div class="elim" id="h-elim">Eliminated</div>
       <div class="hud-hints" id="h-hints"></div>
       <div class="xhair" id="h-x"><i class="h1"></i><i class="h2"></i><i class="v1"></i><i class="v2"></i><i class="dot"></i></div>
       <div class="hitm" id="h-hit"></div>
@@ -512,8 +518,10 @@ window.Game = (function () {
         <div><div class="ammo" id="h-ammo"><b>30</b> <span>/ 300</span></div><div class="wname" id="h-wn">Bunchgun</div><div class="reloading" id="h-rl" hidden>Reloading…</div></div>
         <div class="slots" id="h-slots"></div></div></div>
     </div>`;
-    hudEls = { strip: $("#h-strip", L.hud), diag: $("#h-diag", L.hud), hints: $("#h-hints", L.hud), hp: $("#h-hp", L.hud), sh: $("#h-sh", L.hud), heal: $("#h-heal", L.hud), ammo: $("#h-ammo", L.hud), wn: $("#h-wn", L.hud), rl: $("#h-rl", L.hud), slots: $("#h-slots", L.hud), hit: $("#h-hit", L.hud), me: $("#h-me", L.hud), mpin: $("#h-mpin", L.hud), cap: $("#h-cap", L.hud), status: $("#h-status", L.hud), world: $("#world", L.base), hurt: $("#hurt", L.base) };
+    hudEls = { strip: $("#h-strip", L.hud), diag: $("#h-diag", L.hud), hints: $("#h-hints", L.hud), hp: $("#h-hp", L.hud), sh: $("#h-sh", L.hud), heal: $("#h-heal", L.hud), ammo: $("#h-ammo", L.hud), wn: $("#h-wn", L.hud), rl: $("#h-rl", L.hud), slots: $("#h-slots", L.hud), hit: $("#h-hit", L.hud), me: $("#h-me", L.hud), mpin: $("#h-mpin", L.hud), cap: $("#h-cap", L.hud), status: $("#h-status", L.hud), world: $("#world", L.base), hurt: $("#hurt", L.base), ms: $("#h-ms", L.hud), elim: $("#h-elim", L.hud) };
     buildCompass();
+    renderMatchStats();
+    if (S.mode === "match") squadSim();
     later(() => { if (hudEls && hudEls.status) hudEls.status.style.opacity = 0; }, 5000);
     updateHud(true);
     startLoop();
@@ -601,6 +609,9 @@ window.Game = (function () {
     const hit = TARGETS.find((tg) => Math.hypot(tg.x * sx + ox - 960, tg.y * sy + oy - 540) < tg.r * sx);
     if (hit) {
       S.stats.hits++; S.stats.dmg += w.damage; sfx.hit();
+      const ti = TARGETS.indexOf(hit), M = S.match; M.dmg += w.damage; M.lastHit = now();
+      M.tHp[ti] = (M.tHp[ti] || 0) + w.damage; bumpStat("dmg");
+      if (M.tHp[ti] >= 100) { M.tHp[ti] = 0; M.kills++; M.squadKills++; bumpStat("kills"); bumpStat("squadKills"); if (S.mode === "match" && M.alive > 2) { M.alive--; bumpStat("alive"); } later(() => tone(520, 0.12, "triangle", 0.4, "combat", 880), 60); flashLabel("Eliminated"); }
       hudEls.hit.classList.remove("show"); void hudEls.hit.offsetWidth; hudEls.hit.classList.add("show");
       const d = document.createElement("div"); d.className = "dmgnum"; d.textContent = w.damage; d.style.left = 990 + (Math.random() * 30) + "px"; d.style.top = 470 + "px"; L.hud.firstElementChild.appendChild(d); setTimeout(() => d.remove(), 720);
       if (!S.hints.fire) { S.hints.fire = true; renderHints(); }
@@ -651,6 +662,132 @@ window.Game = (function () {
   /* ------------------------------------------------------------------
      MATCH MENU + ANALYTICS
   ------------------------------------------------------------------ */
+  /* ------------------------------------------------------------------
+     MATCH RESULTS
+  ------------------------------------------------------------------ */
+  // Example values from the Oct 10 playtest recording; the game supplies real match data.
+  const RESULT = { place: 1, squads: 17, kills: 12, damage: 1061, secs: 749, headshots: 3, lobby: "Online friends", next: "13 kills", best: ["kills", "damage", "time"] };
+  const RATE_Q = [["smooth", "Smoothness"], ["hit", "Hit registration"], ["fun", "Fun"]];
+  const fmtTime = (v) => Math.floor(v / 60) + ":" + String(Math.round(v) % 60).padStart(2, "0");
+  function statsMode() {
+    const v = S.set.matchStats;
+    if (v !== "Auto") return v;
+    return S.mode === "match" && S.squad === "trios" ? "Squad" : "Personal";
+  }
+  const HI = {
+    skull: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C7 2 3.5 5.6 3.5 10.1c0 2.6 1.2 4.7 3 5.9V19a1 1 0 001 1H9v-2.2h2V20h2v-2.2h2V20h1.5a1 1 0 001-1v-3c1.8-1.2 3-3.3 3-5.9C20.5 5.6 17 2 12 2zM8.6 13.2a2.1 2.1 0 110-4.2 2.1 2.1 0 010 4.2zm6.8 0a2.1 2.1 0 110-4.2 2.1 2.1 0 010 4.2z"/></svg>',
+    assist: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M1 9.5l4.2-3.2 3.3 1.4 2.6-1.5c.8-.5 1.8-.5 2.6 0l2.3 1.3 3-1.2 4 3.2-3.4 3.8-1.2-.9-4.6 4.2c-.7.6-1.7.6-2.4 0l-.5-.4-.6.5c-.7.6-1.7.5-2.3-.1L5.5 13.4zm8.7-.9l-1.6 1.6c-.4.4-.4 1 0 1.4.4.4 1 .4 1.4 0l2.2-2 4.3 3.9.9-.8-4.6-4.3c-.6-.5-1.4-.5-2 0z"/></svg>',
+    squad: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2a3.3 3.3 0 110 6.6 3.3 3.3 0 010-6.6zM5.3 7a2.6 2.6 0 110 5.2 2.6 2.6 0 010-5.2zm13.4 0a2.6 2.6 0 110 5.2 2.6 2.6 0 010-5.2zM12 12.3c3.3 0 6 1.7 6 3.9V19H6v-2.8c0-2.2 2.7-3.9 6-3.9zm-6.7.9c.3 0 .6 0 .9.1-1 .8-1.6 1.8-1.6 2.9V18H0v-2c0-1.6 2.4-2.8 5.3-2.8zm13.4 0c2.9 0 5.3 1.2 5.3 2.8v2h-4.6v-1.8c0-1.1-.6-2.1-1.6-2.9.3-.1.6-.1.9-.1z"/></svg>',
+    person: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a4 4 0 110 8 4 4 0 010-8zm0 10c4.4 0 8 2.2 8 5v3H4v-3c0-2.8 3.6-5 8-5z"/></svg>',
+    damage: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 1l-2 7.2L5 5.2l3.2 6.1L1 13.5l7.2 1.9L5.6 22l6.3-4.1L15.6 23l.8-7.3 6.6.5-5-5.1 5-5.8-7 1.4z"/></svg>'
+  };
+  // Top-right HUD: slanted chips. Row 1 is match state (squads left, players left);
+  // row 2 is your contribution (kills, assists, squad kills, damage).
+  function matchStatsHtml(M, mode, inMatch, squads) {
+    const fmt = (v) => Number(v).toLocaleString("en-US");
+    const chip = (inner, cls) => `<div class="hs-chip ${cls || ""}"><span class="hs-in">${inner}</span></div>`;
+    const stat = (key, v, icon, label) => `<span class="hs-stat" title="${label}"><i class="hs-ic">${HI[icon]}</i><b data-ms="${key}" aria-label="${label}">${fmt(v)}</b></span>`;
+    let html = "";
+    if (inMatch) {
+      html += `<div class="hs-row">${squads ? chip(`<b data-ms="squads">${fmt(M.squads)}</b><span class="hs-lbl">Squads left</span>`) : ""}${chip(stat("alive", M.alive, "person", "Players left"))}</div>`;
+    }
+    if (mode !== "Hidden") {
+      const mine = mode === "Squad"
+        ? stat("kills", M.kills, "skull", "Your kills") + stat("assists", M.assists, "assist", "Assists") + stat("squadKills", M.squadKills, "squad", "Squad kills")
+        : stat("kills", M.kills, "skull", "Kills");
+      html += `<div class="hs-row">${chip(mine, mode === "Squad" ? "squad" : "")}${chip(stat("dmg", M.dmg, "damage", "Damage"))}</div>`;
+    }
+    return html;
+  }
+  function renderMatchStats() {
+    if (!hudEls || !hudEls.ms) return;
+    hudEls.ms.innerHTML = matchStatsHtml(S.match || { kills: 0, assists: 0, dmg: 0, squadKills: 0, alive: 50, squads: 17 }, statsMode(), S.mode === "match", S.squad === "trios");
+  }
+  function bumpStat(key) {
+    if (!hudEls || !hudEls.ms) return;
+    const b = hudEls.ms.querySelector(`[data-ms="${key}"]`); if (!b) return;
+    b.textContent = Number(S.match[key]).toLocaleString("en-US");
+    if (!motionOff()) { b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
+  }
+  function flashLabel(text) {
+    if (!hudEls || !hudEls.elim) return;
+    hudEls.elim.textContent = text; hudEls.elim.classList.remove("show"); void hudEls.elim.offsetWidth; hudEls.elim.classList.add("show");
+  }
+  // Squadmates are simulated in the prototype: they score now and then, and an assist is
+  // credited when a squadmate's kill lands within 6 seconds of your last hit.
+  function squadSim() {
+    later(() => {
+      if (S.base !== "hud" || S.mode !== "match" || !S.match) return;
+      if (!top()) {
+        const M = S.match;
+        if (Math.random() < 0.45) {
+          M.squadKills++; bumpStat("squadKills");
+          if (now() - M.lastHit < 6000) { M.assists++; bumpStat("assists"); flashLabel("Assist"); }
+        }
+        if (M.alive > 3) { M.alive -= 1 + ((Math.random() * 2) | 0); bumpStat("alive"); }
+        if (M.squads > 2 && Math.random() < 0.4) { M.squads--; bumpStat("squads"); }
+      }
+      squadSim();
+    }, 5000 + Math.random() * 6000);
+  }
+  function endMatch() { releaseLock(); fire.down = false; S.over = []; S.base = "results"; S.ratings = {}; renderAll(); }
+  function toLobby() { S.over = []; S.base = "lobby"; S.lobbyTab = "play"; S.search = null; S.stats = { shots: 0, hits: 0, reloads: 0, dmg: 0, t0: Date.now() }; renderAll(); }
+  function rateHtml() {
+    const done = RATE_Q.every(([q]) => S.ratings[q]);
+    return RATE_Q.map(([q, label]) => `<div class="rs-rate"><span class="lbl">${label}</span><div class="k-seg" role="radiogroup" aria-label="${label}">${[1, 2, 3, 4, 5].map((n) => `<button class="${S.ratings[q] === n ? "on" : ""}" data-a="rate" data-q="${q}" data-v="${n}" role="radio" aria-checked="${S.ratings[q] === n}">${n}</button>`).join("")}</div></div>`).join("")
+      + (done ? `<div class="rs-thanks k-status swap">${I.check} Thanks. Ratings saved with this match.</div>` : "");
+  }
+  function renderResults() {
+    S.ratings = S.ratings || {};
+    const R = RESULT, sq = S.squad === "trios" ? "Trios" : "Solo";
+    const stat = (key, v, label, fmt) => `<div><b data-count="${v}" data-fmt="${fmt}">${fmt === "time" ? fmtTime(v) : v.toLocaleString("en-US")}</b><small>${label}${R.best.includes(key) ? '<em>New best</em>' : ""}</small></div>`;
+    L.base.innerHTML = `<div class="scr rs">
+      <div class="lb-art" style="background-image:url(img/art/lobby.jpg)"></div><div class="rs-grad"></div>
+      <canvas class="rs-confetti" id="rs-confetti" width="1920" height="1080" aria-hidden="true"></canvas>
+      <div class="rs-top k-eyebrow">Battle royale · ${sq} · ${esc(R.lobby)}</div>
+      <div class="rs-main">
+        <div class="rs-eb">Victory</div>
+        <h1 class="k-display">Kong<br>Royale.</h1>
+        <div class="rs-place"><b>#${R.place}</b> of ${R.squads} squads</div>
+        <div class="rs-stats">${stat("kills", R.kills, "Kills", "n")}${stat("damage", R.damage, "Damage", "n")}${stat("time", R.secs, "Time in match", "time")}${stat("hs", R.headshots, "Headshots", "n")}</div>
+        <div class="rs-best">
+          <div class="rs-best-h"><span class="rs-badge">New personal best</span><span>Kills, damage, time in match and placement</span></div>
+          <p>Next target: ${R.next}. You already hold #1 for this lobby size.</p>
+          <span class="k-status">${I.check} Personal bests saved on this device</span>
+        </div>
+        <div class="rs-feel"><div class="rs-feel-h"><span class="k-eyebrow" style="color:var(--kong-text)">How did that match feel?</span><span class="k-eyebrow">Optional · 3 taps</span></div>
+          <div class="rs-rates" id="rs-rates">${rateHtml()}</div></div>
+        <div class="rs-acts"><button class="k-btn primary big" data-a="tolobby"><span>Back to lobby</span><span class="arr">→</span></button><span class="k-hint">${lit("Enter", "solid")} Back to lobby</span></div>
+      </div>
+    </div>`;
+    countUp(); confetti();
+  }
+  function countUp() {
+    if (motionOff()) return;
+    const els = [...L.base.querySelectorAll("[data-count]")], t0 = now(), dur = 1100;
+    const step = () => {
+      if (!els[0] || !els[0].isConnected) return;
+      const k = Math.min(1, (now() - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      els.forEach((el) => { const v = +el.dataset.count * e; el.textContent = el.dataset.fmt === "time" ? fmtTime(v) : Math.round(v).toLocaleString("en-US"); });
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  function confetti() {
+    const c = $("#rs-confetti", L.base); if (!c || motionOff()) return;
+    const ctx = c.getContext("2d"), cols = ["#EABC39", "#EEEADF", "#F3C94E", "#A5B1A4"], t0 = now(), life = 3400;
+    const P = Array.from({ length: 170 }, () => ({ x: Math.random() * 1920, y: -Math.random() * 700 - 20, vx: (Math.random() - 0.5) * 1.6, vy: 2.2 + Math.random() * 3, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.2, w: 6 + Math.random() * 8, h: 3 + Math.random() * 4, c: cols[(Math.random() * cols.length) | 0] }));
+    const frame = () => {
+      if (!c.isConnected) return;
+      const t = now() - t0; ctx.clearRect(0, 0, 1920, 1080);
+      if (t > life) return;
+      ctx.globalAlpha = t > life - 700 ? (life - t) / 700 : 1;
+      P.forEach((p) => { p.x += p.vx + Math.sin((t + p.r * 400) / 500) * 0.6; p.y += p.vy; p.r += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2))); ctx.restore(); });
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }
+
   function menuItems() {
     const it = [["resume", "Resume"], ["settings", "Settings"]];
     if (S.mode === "range") it.push(["analytics", "Practice analytics"]);
@@ -854,6 +991,7 @@ window.Game = (function () {
       S.set.gfxPreset = match || "Custom"; refreshRow("gfxPreset");
     }
     if (["textScale", "hudScale", "reducedMotion"].includes(id)) applyGlobals();
+    if (id === "matchStats") renderMatchStats();
     if (!(opts && opts.noRefresh)) refreshRow(id);
     saved();
   }
@@ -906,6 +1044,11 @@ window.Game = (function () {
     if (kind === "a11y") { const hs = S.set.hudScale / 100; return `<div class="viz-prev"><div class="k-eyebrow">Preview</div><div style="height:${176 * hs}px"><div style="transform:scale(${hs});transform-origin:0 0;width:360px"><div class="vital h" style="grid-template-columns:30px 200px auto;display:grid;gap:14px;align-items:center">${I.heart}<div class="bar"><i style="width:${S.health}%;background:#EABC39"></i></div><b>${Math.round(S.health)}</b></div><div class="vital s" style="grid-template-columns:30px 200px auto;display:grid;gap:14px;align-items:center;margin-top:8px">${I.shield}<div class="bar"><i style="width:${S.shield}%"></i></div><b>${Math.round(S.shield)}</b></div><div class="slots" style="margin-top:14px">${S.inv.map((id, i) => `<div class="slot ${id && id === S.equipped ? "on" : ""}" style="width:64px"><div class="ic">${slotIcon(id)}</div>${i + 1}</div>`).join("")}</div></div></div><div class="specimen">The storm closes in 30 seconds. Move to the safe zone.</div></div>`; }
     if (kind === "pad") return padSvg();
     if (kind === "stick" || kind === "dead" || kind === "curve") return stickSvg(kind);
+    if (kind === "mstats") {
+      const ex = { kills: 2, assists: 0, dmg: 249, squadKills: 1, alive: 27, squads: 10 }, mode = statsMode();
+      const box = (m, cap) => `<div style="display:grid;gap:10px;justify-items:start"><div class="mstats" style="align-items:flex-start">${matchStatsHtml(ex, m, true, m === "Squad")}</div><span class="k-eyebrow">${cap}</span></div>`;
+      return mode === "Hidden" ? `<div class="k-muted" style="font-size:16px">Match stats are hidden.</div>` : `<div style="display:grid;gap:22px;justify-items:start">${box("Personal", mode === "Personal" ? "Personal · current" : "Personal")}${box("Squad", mode === "Squad" ? "Squad · current" : "Squad")}</div>`;
+    }
     if (kind === "mic") return `<div class="k-muted" style="font-size:16px">Chat mode: ${esc(S.set.chatMode)}${S.set.chatMode === "Push to talk" ? ` · hold ${keycap(S.bind.pushToTalk)}` : ""}</div>`;
     if (kind === "bind") { const code = r && S.bind[r.action]; return `<div style="display:flex;gap:18px;align-items:center">${code ? keycap(code, "big") : lit("—", "big unbound")}<span class="k-muted" style="font-size:18px">${capture ? "Press a key or mouse button · Esc cancel · Backspace clear" : "Enter or click to rebind"}</span></div>`; }
     if (kind === "gfx") { const lv = { Off: 0, Low: 1, FXAA: 2, Medium: 2, High: 3, TAA: 3, Ultra: 4 }; return `<div style="display:grid;gap:12px;max-width:420px">${["shadows", "textures", "foliage", "effects", "aa"].map((k) => `<div style="display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center;font:600 15px var(--k-label);letter-spacing:.14em;text-transform:uppercase;color:#A5B1A4">${ROWS[k].label}<div style="display:flex;gap:4px">${[1, 2, 3, 4].map((i) => `<i style="flex:1;height:8px;background:${i <= lv[S.set[k]] ? "#EABC39" : "#2A3436"}"></i>`).join("")}</div></div>`).join("")}<div class="k-muted" style="font-size:16px;margin-top:6px">Preset: ${esc(S.set.gfxPreset)}</div></div>`; }
@@ -1169,6 +1312,8 @@ window.Game = (function () {
       case "settings": push({ id: "settings", cat: "mk", sec: 0, row: 0 }); break;
       case "editcs": S.editCs = true; sfx.select(); renderAll(); break;
       case "cscancel": S.editCs = false; sfx.back(); renderAll(); break;
+      case "tolobby": toLobby(); break;
+      case "rate": S.ratings[t.dataset.q] = +v; sfx.tick(); { const r = $("#rs-rates", L.base); if (r) r.innerHTML = rateHtml(); } break;
       case "tipnext": if (S.loading) { S.loading.tip++; const tt = $(".ld-tip", L.base); if (tt) tt.innerHTML = tipHtml(S.loading.tip); sfx.tick(); } break;
       // generic
       case "back": pop(); break;
@@ -1261,6 +1406,10 @@ window.Game = (function () {
         else if (code === "Enter") { handled(); if (S.lobbyTab === "training") startLoading("range"); else if (!S.search) startSearch(); }
         return;
       }
+      if (S.base === "results") {
+        if (code === "Enter" || code === "Escape") { handled(); toLobby(); }
+        return;
+      }
       if (S.base === "loading") { if (code === "Space" || code === "Enter") { handled(); if (S.loading) { S.loading.tip++; const tt = $(".ld-tip", L.base); if (tt) tt.innerHTML = tipHtml(S.loading.tip); } } return; }
       if (S.base === "hud") {
         const B = S.bind;
@@ -1270,6 +1419,7 @@ window.Game = (function () {
         else if (code === B.reload) { handled(); reload(); }
         else if (code === B.heal) { handled(); heal(); }
         else if (code === "KeyK") { handled(); takeDamage(30); }
+        else if (code === "KeyV") { handled(); endMatch(); }
         else if (/^Digit[1-5]$/.test(code)) { handled(); equipSlot(+code.slice(5) - 1); }
         return;
       }

@@ -4,7 +4,7 @@ A static site that collects feedback sessions, ideas and design work for **Kong 
 
 - **Home**: the design system plus a list of feedback sessions with everything attached to each.
 - **Design system**: brand family, colour and type tokens, live components, layout templates, interaction rules and step-by-step implementation prompts. The full system downloads as Markdown and the logos download as SVG, PNG or a zip of both.
-- **Playtest feedback · October 10, 2026**: all 13 redesigned screens as a playable prototype, with before/after comparisons and review notes for each screen.
+- **Playtest feedback · October 10, 2026**: all 14 redesigned screens as a playable prototype, with before/after comparisons, review notes for each screen and a link to RET's gameplay recording.
 
 Live site: https://eoshunter.github.io/kong-royale-feedback/
 
@@ -39,7 +39,7 @@ GitHub Pages serves the `main` branch root; every push to `main` redeploys the s
 
 ## Prototype controls
 
-Mouse to look, click to fire (the first click captures the cursor). Esc opens the menu or goes back one layer, Tab opens the inventory, M the map, R reloads, 1–5 switch weapons, Q heals. K simulates taking damage (prototype only). Keys follow the bindings set in Settings → Mouse & keyboard → Bindings.
+Mouse to look, click to fire (the first click captures the cursor). Esc opens the menu or goes back one layer, Tab opens the inventory, M the map, R reloads, 1–5 switch weapons, Q heals. K simulates taking damage and V ends the match with a win (prototype only). Keys follow the bindings set in Settings → Mouse & keyboard → Bindings.
 
 ## Adding a feedback session
 

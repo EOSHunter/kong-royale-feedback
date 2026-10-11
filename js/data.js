@@ -13,8 +13,11 @@ window.KONG = (function () {
     { n: "10", file: "10-gameplay-hud", name: "Gameplay HUD", short: "HUD", go: "hud" },
     { n: "11", file: "11-world-map", name: "World map", short: "Map", go: "map" },
     { n: "12", file: "12-lobby", name: "Main lobby", short: "Lobby", go: "lobby" },
-    { n: "13", file: "13-loading", name: "Loading", short: "Loading", go: "loading" }
+    { n: "13", file: "13-loading", name: "Loading", short: "Loading", go: "loading" },
+    { n: "14", file: "14-match-results", name: "Match results", short: "Results", go: "results", added: true }
   ];
+
+  const recording = { url: "https://drive.google.com/drive/folders/1LZDH-K8rVLhZFXK-hI5XCqMCnL3icMqc?usp=sharing", label: "Gameplay recording · RET", host: "Google Drive" };
 
   const v2screens = ["01-settings-mouse", "02-settings-controller", "03-settings-audio", "04-settings-video", "05-settings-accessibility", "06-learn-controls", "07-pause-menu", "08-report-problem", "09-inventory", "10-gameplay-hud", "11-world-map"];
 
@@ -115,5 +118,5 @@ window.KONG = (function () {
     ["One brand master", "One KONG wordmark; ROYALE and OF DUTY are descriptors under it, never redrawn."]
   ];
 
-  return { screens, v2screens, downloads, logos, colors, typeRoles, defaultBindings, bindingLabels, lessons, tips, items, themes };
+  return { screens, recording, v2screens, downloads, logos, colors, typeRoles, defaultBindings, bindingLabels, lessons, tips, items, themes };
 })();

@@ -124,6 +124,8 @@ The core change is composition: cinematic lobby, typographic settings, contextua
 
 **Production detail:** Test readability while moving, firing, taking damage and playing on bright terrain. A beautiful static screenshot does not establish combat usability.
 
+**Follow-up:** Match stats now sit top right as two rows of slanted chips. The top row is match state: squads left and players left. The second row is your contribution: kills and damage, plus assists and combined squad kills in squad modes. A Match stats setting (Video › Display) picks Auto, Personal, Squad or Hidden; Auto shows Squad in Trios. Numbers pop briefly in saffron when they change, and Eliminated / Assist confirmations appear under the crosshair.
+
 ## 11. World map
 
 **Before:** Thick decorative frame, bright storm texture, large labels, and unrelated practice/inventory/network panels remain visible.
@@ -178,3 +180,15 @@ Composition replaces decoration. There are fewer containers, clearer typographic
 
 A premium retail experience also requires responsive input, complete focus/hover/error states, stable performance, authored sound/motion and actual playtesting. This package establishes an art direction and implementation plan; it does not claim those qualities have already been achieved.
 
+
+## 14. Match results
+
+**Before:** A centred bordered card stacked over the scene: an oversized extruded KONG ROYALE title, four boxed stat tiles, a boxed personal-best panel and a boxed rating panel. Confetti covers the whole screen and raw FPS / ping / jitter telemetry stays visible at the top right.
+
+**After:** The results screen uses the lobby shell. The artwork and the winning gorilla lead on the right; an unboxed type column sits on the left. A saffron Victory eyebrow, one display headline, placement with the #1 in saffron, the stats as a single typographic row with new bests marked, a quiet personal-best line, three optional 1–5 ratings and one saffron Back to lobby action.
+
+**Suggestions:** Count the stats up once and keep confetti to a short burst that stops on its own and respects Reduced camera motion. Mark which stats are new bests next to the numbers instead of listing them in a sentence. Keep the ratings optional and confirm quietly once all three are set. Hide diagnostics unless Show FPS or Network stats are switched on. Enter returns to the lobby.
+
+**Why it is better:** The eye lands on the outcome first, then the numbers, then the one next step. Dropping four nested boxes and the telemetry makes the moment feel like a celebration instead of a dashboard, and it now reads as the same game as the lobby and loading screens.
+
+**Production detail:** "Kong Royale." here is display type, not the logo; keep the KONG master for brand placements. Stats, placement and personal bests must come from real match data (the values shown are the playtest recording's). Use the real end-of-match camera or approved key art behind the column.

@@ -595,3 +595,64 @@
 .comp-demo .k-toast, .comp-demo .k-dialog { animation: none; }
 .mp-pin { animation: k-pin 320ms cubic-bezier(.3,1.5,.5,1) backwards; }
 @keyframes k-pin { from { opacity: 0; transform: translateY(-24px); } }
+
+/* ---------- match results ---------- */
+.rs-grad { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(16,23,25,.98) 0%, rgba(16,23,25,.95) 36%, rgba(16,23,25,.55) 48%, rgba(16,23,25,0) 62%), linear-gradient(180deg, rgba(16,23,25,.5), transparent 18%, transparent 80%, rgba(16,23,25,.55)); }
+.rs-confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.rs-top { position: absolute; left: 84px; top: 56px; }
+.rs-main { position: absolute; left: 84px; top: 116px; width: 800px; }
+.rs-eb { display: flex; gap: 18px; align-items: center; font-family: var(--k-label); font-weight: 700; letter-spacing: .3em; text-transform: uppercase; font-size: 20px; color: var(--kong-accent); }
+.rs-eb::before { content: ""; width: 44px; height: 2px; background: currentColor; }
+.rs-main h1 { margin: 14px 0 0; font-size: 124px; line-height: .88; }
+.rs-place { margin-top: 16px; font-family: var(--k-label); font-weight: 600; letter-spacing: .22em; text-transform: uppercase; font-size: 20px; color: var(--kong-text-muted); }
+.rs-place b { font-family: var(--k-display); font-weight: 400; font-size: 36px; letter-spacing: 0; color: var(--kong-accent); margin-right: 10px; }
+.rs-stats { margin-top: 38px; display: flex; border-block: 1px solid rgba(238,234,223,.2); }
+.rs-stats > div { padding: 18px 36px 18px 0; }
+.rs-stats > div + div { padding-left: 36px; border-left: 1px solid rgba(238,234,223,.2); }
+.rs-stats b { display: block; font-family: var(--k-display); font-weight: 400; font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+.rs-stats small { display: block; white-space: nowrap; margin-top: 10px; font-family: var(--k-label); font-weight: 600; letter-spacing: .2em; text-transform: uppercase; font-size: 14px; color: var(--kong-text-muted); }
+.rs-stats em { display: block; margin-top: 6px; font-style: normal; letter-spacing: .14em; color: var(--kong-accent); }
+.rs-stats em::before { content: "▲ "; font-size: 10px; }
+.rs-best { margin-top: 28px; display: grid; gap: 8px; justify-items: start; }
+.rs-best-h { display: flex; gap: 16px; align-items: center; font-size: calc(20px * var(--ts)); font-weight: 600; }
+.rs-badge { font-family: var(--k-label); font-weight: 700; letter-spacing: .16em; text-transform: uppercase; font-size: 14px; padding: 5px 10px; background: rgba(234,188,57,.16); color: var(--kong-accent); border-radius: 2px; }
+.rs-best p { margin: 0; font-size: var(--fs-body); color: #D9D5CA; }
+.rs-feel { margin-top: 30px; width: 780px; }
+.rs-feel-h { display: flex; justify-content: space-between; }
+.rs-rates { display: flex; flex-wrap: wrap; gap: 14px 30px; margin-top: 14px; }
+.rs-rate .lbl { display: block; margin-bottom: 8px; font-family: var(--k-label); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; font-size: 14px; color: var(--kong-text-muted); }
+.rs-rate .k-seg { gap: 4px; }
+.rs-rate .k-seg button { width: 40px; padding: 9px 0; text-align: center; font-family: var(--k-label); font-weight: 700; background: rgba(37,48,51,.75); border-radius: 2px; }
+.rs-rate .k-seg button:hover { background: #2E3A3D; }
+.rs-rate .k-seg button.on { background: var(--kong-surface-raised); color: var(--kong-text); }
+.rs-thanks { flex-basis: 100%; }
+.rs-acts { margin-top: 34px; display: flex; gap: 32px; align-items: center; }
+.rs-acts .k-btn { width: 440px; }
+
+/* ---------- HUD match stats (top right) ---------- */
+.mstats { display: flex; justify-content: flex-end; padding: 10px 0 12px 70px; background: linear-gradient(270deg, rgba(16,23,25,.55), rgba(16,23,25,.3) 60%, transparent); }
+.mstats:empty { display: none; }
+.ms-cell { text-align: right; padding-left: 22px; margin-left: 22px; border-left: 1px solid rgba(238,234,223,.28); }
+.ms-cell:first-child { border-left: 0; margin-left: 0; padding-left: 0; }
+.ms-cell b { display: block; font-family: var(--k-display); font-weight: 400; font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; text-shadow: 0 2px 8px rgba(0,0,0,.6); }
+.ms-cell small { display: block; margin-top: 6px; font-family: var(--k-label); font-weight: 600; letter-spacing: .2em; text-transform: uppercase; font-size: 13px; color: rgba(238,234,223,.85); text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+.ms-cell.squad b { color: var(--kong-accent); }
+.ms-cell b.pop { animation: ms-pop 520ms var(--kong-ease); }
+@keyframes ms-pop { 0% { transform: scale(1.35); color: var(--kong-accent); } 100% { transform: scale(1); } }
+.hud .tr .diag { margin-top: 10px; }
+.elim { position: absolute; left: 50%; top: calc(50% + 46px); transform: translateX(-50%); font-family: var(--k-label); font-weight: 700; letter-spacing: .3em; text-transform: uppercase; font-size: 18px; color: var(--kong-accent); text-shadow: 0 1px 6px rgba(0,0,0,.85); opacity: 0; pointer-events: none; }
+.elim.show { animation: elim-show 1300ms ease forwards; }
+@keyframes elim-show { 0% { opacity: 0; transform: translate(-50%, 8px); } 12% { opacity: 1; transform: translate(-50%, 0); } 75% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---------- HUD match chips (replaces the cell layout) ---------- */
+.mstats { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; padding: 0; background: none; }
+.hs-row { display: flex; gap: 8px; align-items: center; }
+.hs-chip { display: inline-flex; align-items: center; height: 40px; padding: 0 18px; background: rgba(16,23,25,.62); transform: skewX(-14deg); border-left: 2px solid rgba(238,234,223,.22); }
+.hs-chip.squad { border-left-color: var(--kong-accent); }
+.hs-in { display: inline-flex; align-items: center; gap: 18px; transform: skewX(14deg); }
+.hs-stat { display: inline-flex; align-items: center; gap: 8px; }
+.hs-ic { display: inline-grid; width: 22px; height: 22px; color: rgba(238,234,223,.9); }
+.hs-ic svg { width: 22px; height: 22px; }
+.hs-chip b { font-family: var(--k-display); font-weight: 400; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; display: inline-block; }
+.hs-lbl { font-family: var(--k-label); font-weight: 700; letter-spacing: .16em; text-transform: uppercase; font-size: 15px; margin-left: 10px; }
+.hs-chip b.pop { animation: ms-pop 520ms var(--kong-ease); }

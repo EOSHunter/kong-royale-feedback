@@ -337,6 +337,8 @@ details.spec > summary { cursor: pointer; padding: 18px 0; font-weight: 600; }
 .review-notes .after h4 { color: var(--accent); }
 .review-notes .prod { padding: 12px 14px; background: var(--panel); border-left: 2px solid var(--warning); }
 .review-notes .prod h4 { color: var(--warning); }
+.review-notes .follow { padding: 12px 14px; background: var(--panel); border-left: 2px solid var(--accent); }
+.review-notes .follow h4 { color: var(--accent); }
 @media (max-width: 900px) { .review { grid-template-columns: 1fr; gap: 20px; } }
 
 .compare { position: relative; aspect-ratio: 16/9; overflow: hidden; background: #000; user-select: none; touch-action: pan-y; border: 1px solid var(--rule); }

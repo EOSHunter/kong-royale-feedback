@@ -117,7 +117,9 @@ Keep controls inside safe areas. Content can scroll at enlarged text sizes. Back
 
 ### Gameplay shell
 
-Minimap top left, compass top center, health/shield bottom left, ammo and equipment bottom right. Prefer typography and short gradient backplates to a collection of framed HUD cards. Use the same safe-area settings. Keep the center clear. Optional diagnostics occupy one dedicated region, hidden by default.
+Minimap top left, compass top center, match stats top right, health/shield bottom left, ammo and equipment bottom right.
+
+Match stats are two rows of slanted translucent chips. Row one is match state: squads left (squad modes) and players left. Row two is the player's contribution: kills and damage, plus assists and combined squad kills in squad modes. A Match stats setting offers Auto, Personal, Squad and Hidden; Auto shows Squad in squad modes. Changed numbers pop briefly in saffron, and Eliminated / Assist confirmations appear briefly under the crosshair. Prefer typography and short gradient backplates to a collection of framed HUD cards. Use the same safe-area settings. Keep the center clear. Optional diagnostics occupy one dedicated region, hidden by default.
 
 ### Map shell
 
@@ -126,6 +128,8 @@ Map dominates the screen. Header shows match state and Close. Legend is a bounde
 ### Lobby/loading shell
 
 Artwork leads. Cinematic menu camera, confident editorial display typography, moderate-scale brand lockup, one clear action or progress state, and unboxed functional groups. Contextual hints change with the current screen.
+
+Match results uses the same shell: outcome eyebrow and display headline, placement, one typographic stats row with new bests marked, a quiet personal-best line, optional 1–5 ratings and a single Back to lobby action. Celebration effects are a short one-shot burst and respect reduced motion.
 
 ## Component contracts
 

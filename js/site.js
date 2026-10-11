@@ -69,7 +69,7 @@
       const title = p.split("\n")[0].trim();
       const m = title.match(/^(\d\d)\.\s*(.+)$/);
       const field = (name) => { const r = p.match(new RegExp("\\*\\*" + name + ":\\*\\*\\s*([^\\n]+)")); return r ? r[1].trim() : ""; };
-      const rec = { title, before: field("Before"), after: field("After"), suggestions: field("Suggestions"), why: field("Why it is better"), prod: field("Production detail"), body: p.split("\n").slice(1).join("\n").trim() };
+      const rec = { title, before: field("Before"), after: field("After"), suggestions: field("Suggestions"), why: field("Why it is better"), prod: field("Production detail"), follow: field("Follow-up"), body: p.split("\n").slice(1).join("\n").trim() };
       if (m) out[m[1]] = rec; else out[title] = rec;
     });
     return out;
@@ -99,7 +99,7 @@
   function buildScreenSelect() {
     const sel = $("#pb-screen");
     sel.innerHTML = [...K.screens].sort((a, b) => order(a) - order(b)).map((s) => `<option value="${s.go}">${s.n} · ${esc(s.short)}</option>`).join("");
-    function order(s) { const o = ["lobby", "loading", "hud", "menu", "settings", "report", "learn", "inventory", "map"]; const k = s.go.split(":")[0]; return o.indexOf(k) * 10 + +s.n / 100; }
+    function order(s) { const o = ["lobby", "loading", "hud", "menu", "settings", "report", "learn", "inventory", "map", "results"]; const k = s.go.split(":")[0]; return o.indexOf(k) * 10 + +s.n / 100; }
     sel.addEventListener("change", () => { location.hash = "play-" + sel.value.replace(":", "."); stageEl.focus(); });
     Game.onScreen((key) => {
       const opt = [...sel.options].find((o) => o.value === key);
@@ -173,18 +173,19 @@
           <article class="session">
             <div class="session-date"><span class="m">Oct 2026</span><span class="d">10</span><span class="m">Saturday</span></div>
             <div class="session-body">
-              <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="tag live">Interactive</span><span class="tag">13 screens</span><span class="tag">Brand family</span></div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="tag live">Interactive</span><span class="tag">14 screens</span><span class="tag">Recording</span><span class="tag">Brand family</span></div>
               <h3 class="display"><a href="#playtest-2026-10-10">Playtest feedback · October 10, 2026</a></h3>
-              <p>A full redesign pass over the 13 screens captured in the playtest: settings, match menu, report, learn controls, inventory, HUD, map, lobby and loading. Each screen has the original screenshot, the premium concept, the review notes and a playable version.</p>
-              <div class="thumbstrip">${thumbs.map((f) => `<a href="#screen-${f.slice(0, 2)}" aria-label="${f}"><img src="img/after/${f}.jpg" alt="" loading="lazy"></a>`).join("")}<a class="more" href="#playtest-2026-10-10">+8 more</a></div>
-              <div class="btnrow"><a class="btn primary" href="#playtest-2026-10-10">Open session <span class="arrow">→</span></a><a class="btn" href="#play-lobby">Play the prototype</a></div>
+              <p>A full redesign pass over the 14 screens captured in the playtest: settings, match menu, report, learn controls, inventory, HUD, map, lobby, loading and match results. Each screen has the original screenshot, the premium concept, the review notes and a playable version.</p>
+              <div class="thumbstrip">${thumbs.map((f) => `<a href="#screen-${f.slice(0, 2)}" aria-label="${f}"><img src="img/after/${f}.jpg" alt="" loading="lazy"></a>`).join("")}<a class="more" href="#playtest-2026-10-10">+9 more</a></div>
+              <div class="btnrow"><a class="btn primary" href="#playtest-2026-10-10">Open session <span class="arrow">→</span></a><a class="btn" href="#play-lobby">Play the prototype</a><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">Watch RET's recording ↗</a></div>
               <div>
                 <div class="eyebrow plain" style="margin:8px 0 4px">Attached</div>
                 <ul class="attach">
-                  <li><span class="k">13</span>Original playtest screenshots</li>
-                  <li><span class="k">13</span>Premium v3 screen concepts</li>
+                  <li><span class="k">▶</span><a href="${K.recording.url}" target="_blank" rel="noopener">Gameplay recording (RET) · Google Drive</a></li>
+                  <li><span class="k">14</span>Original playtest screenshots</li>
+                  <li><span class="k">14</span>Redesigned screen concepts</li>
                   <li><span class="k">24</span>Earlier concept explorations (v1, v2)</li>
-                  <li><span class="k">1</span>Interactive prototype of all 13 screens</li>
+                  <li><span class="k">1</span>Interactive prototype of all 14 screens</li>
                   <li><span class="k">1</span>KONG / ROYALE / OF DUTY brand sheet</li>
                   <li><span class="k">.md</span>Screen-by-screen review</li>
                   <li><span class="k">.md</span>Implementation brief</li>
@@ -278,9 +279,9 @@
         <div class="templates">
           ${[["Settings shell", "Typographic full-screen page. Compact brand top-left, Back top-right, large title, one category bar in fixed order, one local section bar, continuous table (~64%) and contextual help (~27%). No sidebar, no card per row.", "settings.mk", "01-settings-mouse"],
             ["Overlay & guide", "Match menu is left-aligned typographic navigation over a full-height scrim. Report replaces the menu. Guide is a full-screen lesson layout. One overlay owns focus; Back restores it.", "menu", "07-pause-menu"],
-            ["Gameplay", "Minimap top-left, compass top-centre, health and shield bottom-left, ammo and slots bottom-right. Short gradient backplates instead of framed cards. Centre stays clear.", "hud", "10-gameplay-hud"],
+            ["Gameplay", "Minimap top-left, compass top-centre, match stats top-right (squads and players left, then kills, assists, squad kills and damage), health and shield bottom-left, ammo and slots bottom-right. Centre stays clear.", "hud.match", "10-gameplay-hud"],
             ["Map", "Map dominates. Header shows match state and Close. Legend is a bounded side panel; marker actions live in a bottom keycap strip. Unrelated HUD hides.", "map", "11-world-map"],
-            ["Lobby & loading", "Artwork leads. Moderate brand lockup, editorial display type, one clear action or progress state, unboxed groups, contextual hints.", "lobby", "12-lobby"]]
+            ["Lobby, loading & results", "Artwork leads. Moderate brand lockup, editorial display type, one clear action or progress state, unboxed groups, contextual hints. Match results uses the same shell.", "results", "14-match-results"]]
             .map(([t, d, go, img]) => `<article><img src="img/after/${img}.jpg" alt="" loading="lazy" style="aspect-ratio:16/9;object-fit:cover;width:100%;margin-bottom:8px"><h3>${t}</h3><p>${d}</p><a href="#play-${go}">Open in prototype →</a></article>`).join("")}
         </div>
       </section>
@@ -429,15 +430,16 @@
         <div class="crumbs"><a href="#home">Sessions</a> / Playtest · October 10, 2026</div>
         <div class="eyebrow">Session 01 · Saturday, October 10, 2026</div>
         <h1 class="display">Playtest feedback</h1>
-        <p>Thirteen screens from the playtest build, redesigned in the premium v3 direction. Play them as one connected flow, then compare each against the original screenshot and its review notes.</p>
+        <p>Fourteen screens from the playtest build, redesigned in the premium v3 direction. Play them as one connected flow, then compare each against the original screenshot and its review notes.</p>
+        <div class="btnrow"><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">▶ Watch RET's gameplay recording ↗</a></div>
       </section>
 
       <section class="launch" aria-label="Interactive prototype">
         <div class="launch-copy">
           <div class="eyebrow plain">Interactive prototype</div>
           <h2 class="display">Play the screens</h2>
-          <p>All 13 screens built as a working UI on the 1920×1080 canvas. Settings change the firing range: sensitivity, FOV, HUD and text scale, hit-marker sound and key bindings all take effect.</p>
-          <ol class="flowlist"><li>Lobby</li><li>Loading</li><li>Firing range</li><li>Menu</li><li>Settings</li><li>Report</li><li>Inventory</li><li>Map</li><li>Learn controls</li></ol>
+          <p>All 14 screens built as a working UI on the 1920×1080 canvas. Settings change the firing range: sensitivity, FOV, HUD and text scale, hit-marker sound and key bindings all take effect.</p>
+          <ol class="flowlist"><li>Lobby</li><li>Loading</li><li>Firing range</li><li>Menu</li><li>Settings</li><li>Report</li><li>Inventory</li><li>Map</li><li>Learn controls</li><li>Results</li></ol>
           <div class="btnrow"><a class="btn primary" href="#play-lobby">Start at the lobby <span class="arrow">→</span></a><a class="btn" href="#play-hud">Jump into the range</a></div>
           <p class="muted" style="font-size:13px">Best on desktop with a mouse and keyboard. Use Compare in the player to overlay the concept image or the original screenshot.</p>
         </div>
@@ -451,7 +453,7 @@
 
       <section class="section" id="pt-files">
         <div class="section-head"><div class="eyebrow">Attached to this session</div><h2 class="display">Files</h2></div>
-        <div class="dlbar">${[D.review, D.brief, D.genPrompts, D.genPromptsV1, D.dsV2, D.designMd, D.logosZip].map((d) => dlBtn(d)).join("")}</div>
+        <div class="dlbar"><a class="dl" href="${K.recording.url}" target="_blank" rel="noopener" style="text-decoration:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span><b>${esc(K.recording.label)}</b><small>${K.recording.host} · opens in a new tab</small></span></a>${[D.review, D.brief, D.genPrompts, D.genPromptsV1, D.dsV2, D.designMd, D.logosZip].map((d) => dlBtn(d)).join("")}</div>
       </section>
 
       <section class="section" id="pt-screens">
@@ -469,7 +471,7 @@
       <section class="section" id="pt-history">
         <div class="section-head"><div class="eyebrow">How we got here</div><h2 class="display">Exploration history</h2><p>Earlier passes, kept for reference. The premium v3 direction above supersedes both.</p></div>
         <h3 class="eyebrow plain" style="margin:0 0 12px;color:var(--text)">v1 · First concepts (blue panels)</h3>
-        <div class="gallery">${K.screens.map((s) => `<button data-lb="img/v1/${s.file}.jpg" data-cap="v1 · ${esc(s.name)}"><img src="img/v1/${s.file}.jpg" alt="" loading="lazy"><span>${s.n} · ${esc(s.short)}</span></button>`).join("")}</div>
+        <div class="gallery">${K.screens.filter((s) => !s.added).map((s) => `<button data-lb="img/v1/${s.file}.jpg" data-cap="v1 · ${esc(s.name)}"><img src="img/v1/${s.file}.jpg" alt="" loading="lazy"><span>${s.n} · ${esc(s.short)}</span></button>`).join("")}</div>
         <h3 class="eyebrow plain" style="margin:36px 0 12px;color:var(--text)">v2 · Intermediate exploration (stopped before lobby and loading)</h3>
         <div class="gallery">${K.v2screens.map((f) => { const s = K.screens.find((x) => x.file === f); return `<button data-lb="img/v2/${f}.jpg" data-cap="v2 · ${esc(s.name)}"><img src="img/v2/${f}.jpg" alt="" loading="lazy"><span>${s.n} · ${esc(s.short)}</span></button>`; }).join("")}</div>
       </section>
@@ -494,7 +496,7 @@
   }
   function notesHtml(r) {
     const blk = (cls, h, t) => t ? `<div class="${cls}"><h4>${h}</h4><p>${esc(t)}</p></div>` : "";
-    return blk("", "Before", r.before) + blk("after", "After", r.after) + blk("", "Suggestions", r.suggestions) + blk("", "Why it's better", r.why) + blk("prod", "Production detail", r.prod);
+    return blk("", "Before", r.before) + blk("after", "After", r.after) + blk("", "Suggestions", r.suggestions) + blk("", "Why it's better", r.why) + blk("prod", "Production detail", r.prod) + blk("follow", "Follow-up · added after review", r.follow);
   }
   function wireCompare(root) {
     root.addEventListener("input", (e) => { if (e.target.matches(".compare input[type=range]")) e.target.closest(".compare").style.setProperty("--pos", e.target.value + "%"); });
