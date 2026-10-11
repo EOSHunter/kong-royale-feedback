@@ -12,11 +12,20 @@ def run(args):
     if r.returncode: raise SystemExit("ffmpeg failed: " + " ".join(args[-1:]))
 
 def still(name, dur, zoom=0.04):
-    out = os.path.join(S, name + ".mp4"); n = int(dur * FPS)
-    vf = (f"scale=3840:2160,zoompan=z='1+{zoom}*on/{n}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={n}:s=1920x1080:fps={FPS},"
-          "format=yuv420p")
-    run(["-loop", "1", "-i", os.path.join(F, name + ".png"), "-t", str(dur), "-vf", vf, "-r", str(FPS),
-         "-c:v", "libx264", "-preset", "medium", "-crf", "18", out])
+    """Slow push-in rendered with sub-pixel affine resampling (ffmpeg zoompan steps in whole pixels and jitters)."""
+    from PIL import Image
+    out = os.path.join(S, name + ".mp4"); n = int(round(dur * FPS))
+    src = Image.open(os.path.join(F, name + ".png")).convert("RGB")
+    if src.size != (1920, 1080): src = src.resize((1920, 1080), Image.LANCZOS)
+    p = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", "1920x1080", "-r", str(FPS),
+                          "-i", "-", "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
+    for f in range(n):
+        t = f / max(1, n - 1); e = t * t * (3 - 2 * t) * 0.35 + t * 0.65  # gentle ease
+        z = 1 + zoom * e
+        sc = 1 / z
+        frame = src.transform((1920, 1080), Image.AFFINE, (sc, 0, 960 - 960 * sc, 0, sc, 540 - 540 * sc), resample=Image.BICUBIC)
+        p.stdin.write(frame.tobytes())
+    p.stdin.close(); p.wait()
     return out
 
 def clip(name, start, dur, overlay):
