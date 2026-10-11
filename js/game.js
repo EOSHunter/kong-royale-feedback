@@ -1203,7 +1203,7 @@ window.Game = (function () {
       const cls = [i === sel ? "sel" : "", S.moving != null && i !== S.moving ? "target" : "", S.moving === i ? "moving" : ""].join(" ");
       if (!id) return `<div class="k-card empty ${cls}" data-a="islot" data-i="${i}" data-drop="${i}"><div class="idx">${i + 1}</div><div class="plus">+</div><div class="name">Empty</div></div>`;
       const it = K.items[id];
-      return `<div class="k-card ${cls}" data-a="islot" data-i="${i}" data-drop="${i}" draggable="true" data-drag="${i}"><div class="idx">${i + 1}</div><div class="rar ${it.rarity.toLowerCase()}">${it.rarity}</div><div class="art"><img src="${it.img}" alt=""></div><div class="name">${it.name}</div><div class="stat"><div><small>Damage</small><b>${it.damage}</b></div>${id === S.equipped ? '<span class="eq">Equipped</span>' : ""}</div></div>`;
+      return `<div class="k-card r-${it.rarity.toLowerCase()} ${cls}" data-a="islot" data-i="${i}" data-drop="${i}" draggable="true" data-drag="${i}"><div class="idx">${i + 1}</div><div class="rar ${it.rarity.toLowerCase()}">${it.rarity}</div><div class="art"><img src="${it.img}" alt=""></div><div class="name">${it.name}</div><div class="stat"><div><small>Damage</small><b>${it.damage}</b></div>${id === S.equipped ? '<span class="eq">Equipped</span>' : ""}</div></div>`;
     };
     const acts = invActsHtml();
     const ammoC = { light: "#EEEADF", heavy: "#F28F45", shells: "#E5534B", rockets: "#58BCEB" }, max = { light: 300, heavy: 40, shells: 48, rockets: 8 };

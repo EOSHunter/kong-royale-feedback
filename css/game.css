@@ -186,8 +186,19 @@
 .k-card:hover { background: #1F292B; }
 .k-card .idx { font-family: var(--k-label); font-weight: 700; font-size: 24px; color: var(--kong-text-muted); }
 .k-card .rar { position: absolute; top: 22px; right: 24px; font-family: var(--k-label); font-weight: 700; letter-spacing: .16em; font-size: 17px; text-transform: uppercase; }
-.k-card .rar.common { color: #9FB79A; } .k-card .rar.rare { color: var(--kong-shield); }
-.k-card .art { display: grid; place-items: center; min-height: 0; }
+/* Rarity: a tinted plane behind the item art, green for common and blue for rare. */
+.k-card { --r: 120,130,125; }
+.k-card.r-common { --r: 92,184,104; }
+.k-card.r-rare { --r: 74,140,232; }
+.k-card .rar { z-index: 1; }
+.k-card .rar.common { color: rgb(126,206,134); } .k-card .rar.rare { color: rgb(118,170,245); }
+.k-card .art { grid-row: 1 / 3; grid-column: 1; display: grid; place-items: center; min-height: 0; margin: -20px -24px 14px; padding-top: 44px; position: relative;
+  background: radial-gradient(ellipse 75% 85% at 50% 60%, rgba(var(--r),.55), rgba(var(--r),.18) 60%, rgba(var(--r),.06) 100%);
+  border-bottom: 2px solid rgba(var(--r),.9); }
+.k-card.sel .art { margin: -19px -23px 14px; padding-top: 43px; }
+.k-card .idx { position: relative; z-index: 1; grid-row: 1; grid-column: 1; align-self: start; }
+.k-card.empty .idx { grid-row: auto; }
+.k-card .art img { filter: drop-shadow(0 8px 12px rgba(0,0,0,.45)); max-height: 140px; }
 .k-card .art img { max-width: 92%; max-height: 170px; object-fit: contain; pointer-events: none; }
 .k-card .name { font-family: var(--k-display); font-stretch: 78%; font-weight: 850; font-size: 34px; text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px solid rgba(70,80,82,.9); }
 .k-card .stat { display: flex; justify-content: space-between; align-items: end; padding-top: 12px; }
@@ -682,3 +693,5 @@
 .dmgnum.break .dn-ic { width: 46px; height: 46px; animation: dn-crack 420ms cubic-bezier(.3,1.6,.5,1); }
 .dmgnum.break { animation-duration: 1100ms; }
 @keyframes dn-crack { 0% { transform: scale(.4) rotate(-12deg); } 60% { transform: scale(1.25) rotate(6deg); } 100% { transform: scale(1); } }
+.k-card:not(.empty) { grid-template-rows: auto minmax(0, 1fr) auto auto; }
+.k-card .art { overflow: hidden; }

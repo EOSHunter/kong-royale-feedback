@@ -165,7 +165,7 @@ Two consistent binding slots where supported. Capture state says Press a key or 
 
 ### Inventory card
 
-Slot index, item art, name, rarity label, relevant stat. Selection uses ivory outline; equipped uses a separate badge. Empty slots remain quiet. Equip, Move and Drop are explicit alternatives to drag. Treat selected, equipped and rare as separate states.
+Slot index, item art, name, rarity label, relevant stat. Rarity tints the flat plane behind the item art with a soft radial gradient and a 2px rule underneath: common green (rgb 92,184,104), rare blue (rgb 74,140,232). The rarity label uses the same hue. Keep the card itself charcoal so rarity never competes with the selected outline. Selection uses ivory outline; equipped uses a separate badge. Empty slots remain quiet. Equip, Move and Drop are explicit alternatives to drag. Treat selected, equipped and rare as separate states.
 
 ### Keycaps and icons
 
