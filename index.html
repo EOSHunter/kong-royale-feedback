@@ -1,0 +1,70 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RET's Kong Royale Feedback</title>
+<meta name="description" content="Feedback sessions, design system and interactive screen prototypes for Kong Royale.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/game.css">
+
+<div id="app">
+  <header class="topbar" id="topbar">
+    <a class="topbar-brand" href="#home" aria-label="Feedback home">
+      <img src="img/brand/kong-wordmark-saffron.png" alt="KONG" width="92" height="28">
+      <span class="topbar-name">RET's Kong Royale Feedback</span>
+    </a>
+    <nav class="topbar-nav" aria-label="Sections">
+      <a href="#home" data-nav="home">Sessions</a>
+      <a href="#design-system" data-nav="design-system">Design system</a>
+      <a href="#playtest-2026-10-10" data-nav="playtest">Playtest · Oct 10</a>
+    </nav>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <footer class="sitefoot">
+    <span>RET's Kong Royale Feedback</span>
+    <span class="muted">Concept art and prototypes are art direction, not shipped game UI.</span>
+  </footer>
+</div>
+
+<!-- Interactive prototype (full-viewport player) -->
+<section id="player" class="player" hidden aria-label="Interactive prototype">
+  <div class="player-bar">
+    <a class="pb-back" href="#playtest-2026-10-10">← Session</a>
+    <label class="pb-field">Screen
+      <select id="pb-screen"></select>
+    </label>
+    <label class="pb-field">Compare
+      <select id="pb-overlay">
+        <option value="off">Off</option>
+        <option value="after">Concept image</option>
+        <option value="before">Original screenshot</option>
+      </select>
+    </label>
+    <input id="pb-opacity" type="range" min="10" max="100" value="55" aria-label="Comparison opacity" hidden>
+    <span class="pb-spacer"></span>
+    <button class="pb-btn" id="pb-keys" aria-expanded="false">Keys</button>
+    <button class="pb-btn" id="pb-full">Fullscreen</button>
+  </div>
+  <div class="player-keys" id="pb-keys-panel" hidden>
+    <div><b>Mouse</b> look around · <b>Click</b> fire (click once to capture the cursor)</div>
+    <div><b>Esc</b> menu / back · <b>Tab</b> inventory · <b>M</b> map · <b>R</b> reload · <b>1–5</b> weapon slots · <b>Q</b> heal</div>
+    <div class="muted">Prototype only: <b>K</b> simulates taking 30 damage. Keys follow your bindings in Settings → Mouse &amp; keyboard → Bindings.</div>
+    <label class="pb-check"><input type="checkbox" id="pb-failsend"> Make the next report send fail (to see the error state)</label>
+    <button class="pb-btn" id="pb-reset">Reset prototype state</button>
+  </div>
+  <div class="player-stagewrap" id="stagewrap">
+    <div class="stage" id="stage" tabindex="0" aria-label="Kong Royale prototype screen"></div>
+  </div>
+</section>
+
+<div class="toast-site" id="site-toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/game.js"></script>
+<script src="js/site.js"></script>

@@ -1,0 +1,47 @@
+/* Kong premium v3 — proposed semantic tokens. Framework-neutral handoff;
+   not installed in a game. Sizes use a 1920x1080 logical reference canvas. */
+:root {
+  --kong-bg: #101719;
+  --kong-surface: #172022;
+  --kong-surface-raised: #253033;
+  --kong-border: #465052;
+  --kong-text: #EEEADF;
+  --kong-text-muted: #A5B1A4;
+  --kong-accent: #EABC39;
+  --kong-on-accent: #101719;
+  --kong-shield: #58BCEB;
+  --kong-success: #7AD7A5;
+  --kong-warning: #FFC16E;
+  --kong-danger: #FF8C88;
+  --kong-focus: #EEEADF;
+  --kong-space-1: 4px;
+  --kong-space-2: 8px;
+  --kong-space-3: 12px;
+  --kong-space-4: 16px;
+  --kong-space-6: 24px;
+  --kong-space-8: 32px;
+  --kong-space-12: 48px;
+  --kong-space-16: 64px;
+  --kong-control-height: 48px;
+  --kong-primary-height: 56px;
+  --kong-setting-row-min: 80px;
+  --kong-control-radius: 2px;
+  --kong-panel-radius: 4px;
+  --kong-border-width: 1px;
+  --kong-focus-width: 2px;
+  --kong-focus-offset: 2px;
+  --kong-motion-fast: 120ms;
+  --kong-motion-standard: 180ms;
+  --kong-motion-slow: 240ms;
+  --kong-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Resolve actual licensed font assets before implementation.
+   Do not use generated screenshot fonts as production source files. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --kong-motion-fast: 0ms;
+    --kong-motion-standard: 0ms;
+    --kong-motion-slow: 0ms;
+  }
+}
+
