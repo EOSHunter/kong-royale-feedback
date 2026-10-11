@@ -32,7 +32,7 @@ Recording: https://drive.google.com/drive/folders/1LZDH-K8rVLhZFXK-hI5XCqMCnL3ic
 
 **What we saw:** Nothing on screen says which way the shots come from. At 7:20–7:21 shield drops from 93 to 69 with no cue, and at 11:01–11:05 Ret turns several times before finding the shooter. The only feedback is the bars shrinking in the corner.
 
-**Suggestion:** Add a red arc around the crosshair pointing at the shooter, plus a red glow on that screen edge, both scaled by damage. Use cyan while only shield is hit and red once health is hit, so players know when they are really in danger. Add a slow red vignette under 30 health. Pair it with a directional hit sound.
+**Suggestion:** Add a red arc around the crosshair pointing at the shooter, plus a red glow on that screen edge, both scaled by damage. Keep all damage feedback red, whether the hit lands on shield or health. Reserve blue for a glow around the screen edges while the player is healing. Add a slow red vignette under 30 health. Pair it with a directional hit sound.
 
 ### Iron sights cover the target
 

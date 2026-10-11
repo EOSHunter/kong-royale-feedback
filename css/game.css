@@ -661,11 +661,13 @@
 
 /* ---------- damage direction (gameplay review) ---------- */
 .dmg-edge { position: absolute; inset: 0; pointer-events: none; --dmg-c: rgba(255,50,40,.75); mix-blend-mode: screen; animation: dmg-fade 1200ms ease-out forwards; z-index: 1; }
-.dmg-edge.shield { --dmg-c: rgba(88,188,235,.6); }
 .dmg-arc { position: absolute; left: 50%; top: 50%; width: 220px; height: 220px; margin: -110px 0 0 -110px; pointer-events: none; animation: dmg-fade 1400ms ease-out forwards; }
 .dmg-arc::before { content: ""; position: absolute; left: 50%; top: 0; width: 120px; height: 120px; margin-left: -60px; border-radius: 50%; border-top: 9px solid #FF5A4E; filter: drop-shadow(0 0 6px rgba(255,60,50,.8)); }
-.dmg-arc.shield::before { border-top-color: var(--kong-shield); filter: drop-shadow(0 0 6px rgba(88,188,235,.8)); }
 @keyframes dmg-fade { 0% { opacity: 1; } 60% { opacity: .85; } 100% { opacity: 0; } }
 .hud-hints .hint-new { color: var(--kong-accent); }
 .hud-hints .hint-new .k-key { border-color: var(--kong-accent); color: var(--kong-accent); }
 .hud-hints .hint-new.done { color: var(--kong-text); }
+/* healing: blue glow around all screen edges while a heal is in progress */
+.heal-glow { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 160px 20px rgba(88,188,235,.55); opacity: 0; transition: opacity 300ms ease; }
+.heal-glow.on { opacity: 1; animation: heal-pulse 1.2s ease-in-out infinite; }
+@keyframes heal-pulse { 50% { opacity: .6; } }

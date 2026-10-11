@@ -186,8 +186,9 @@ Step 6 — in-match surfaces. Keep the gameplay renderer exactly as it is; only 
   (Auto / Personal / Squad / Hidden). Pop changed numbers briefly; confirm Eliminated / Assist
   under the crosshair.
   Damage feedback: a directional arc around the crosshair and a glow on the screen edge facing
-  the shooter (cyan while only shield is hit, red once health is hit), aim flinch scaled by
-  damage and halved while aiming, and a slow red vignette under 30 health. Optional FPS/network
+  the shooter, always red (shield or health), aim flinch scaled by damage and halved while
+  aiming, and a slow red vignette under 30 health. Blue is used only for a glow around the
+  screen edges while the player is healing. Optional FPS/network
   diagnostics live in one region, hidden by default and driven by Video settings.
   Practice hints are contextual and fade once completed. HUD scale setting applies here.
 - Inventory: overlay on the lower two-thirds. Five equal slots; each shows index, art, name,

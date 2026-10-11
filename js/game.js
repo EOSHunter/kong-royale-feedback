@@ -496,7 +496,7 @@ window.Game = (function () {
   const ME = { x: 545, y: 438 }; // player position on the 1672×941 map art (Peel Strip)
   function fovZoom() { return 1.18 + (120 - S.set.fov) / 40 * 0.32 + (S.aiming ? 0.22 : 0); }
   function renderWorld() {
-    L.base.innerHTML = `<div class="hud-world" id="world" style="background-image:url(img/art/range.jpg)"></div><div class="hurt" id="hurt"></div>`;
+    L.base.innerHTML = `<div class="hud-world" id="world" style="background-image:url(img/art/range.jpg)"></div><div class="hurt" id="hurt"></div><div class="heal-glow" id="heal-glow"></div>`;
   }
   function slotIcon(id) { return id === "bunchgun" ? I.rifle : id === "nub" ? I.pistol : "<i></i>"; }
   function renderHud() {
@@ -541,7 +541,7 @@ window.Game = (function () {
     const hp = S.health, sh = S.shield;
     hudEls.hp.querySelector("i").style.width = hp + "%"; hudEls.hp.querySelector("b").textContent = Math.round(hp); hudEls.hp.classList.toggle("low", hp <= 30); if (hudEls.hurt) hudEls.hurt.classList.toggle("low", hp <= 30);
     hudEls.sh.querySelector("i").style.width = sh + "%"; hudEls.sh.querySelector("b").textContent = Math.round(sh);
-    hudEls.heal.hidden = !(S.healUntil > now());
+    hudEls.heal.hidden = !(S.healUntil > now()); { const hg = document.getElementById("heal-glow"); if (hg) hg.classList.toggle("on", S.healUntil > now()); }
     if (w) {
       const m = S.mag[w.id], res = S.reserve[w.ammo];
       hudEls.ammo.innerHTML = `<b>${m}</b> <span>/ ${res}</span>`; hudEls.ammo.classList.toggle("empty", m === 0);
@@ -641,12 +641,13 @@ window.Game = (function () {
   }
   function finishHeal() { S.healUntil = 0; S.health = Math.min(100, S.health + 50); updateHud(); }
   // Damage feedback (from the Oct 10 gameplay review): a directional arc around the crosshair,
-  // a red glow on the screen edge facing the shooter (cyan while only shield is hit), and flinch.
+  // a red glow on the screen edge facing the shooter, and flinch. Damage feedback is always red;
+  // blue is reserved for the healing glow around the screen edges.
   function takeDamage(n, angle) {
     let left = n; const s = Math.min(S.shield, left); S.shield -= s; left -= s; S.health -= left; S.healUntil = 0;
     sfx.hurt();
     if (angle == null) angle = [-150, -90, -30, 30, 90, 150, 180][(Math.random() * 7) | 0];
-    showDamageDir(angle, left > 0 ? "health" : "shield", n);
+    showDamageDir(angle, "health", n);
     if (!S.hints.hurt) { S.hints.hurt = true; renderHints(); }
     const f = Math.min(1, n / 30) * (S.aiming ? 0.5 : 1);
     S.look.tx = clamp(S.look.tx + (Math.random() - 0.5) * 0.09 * f, -1, 1);
