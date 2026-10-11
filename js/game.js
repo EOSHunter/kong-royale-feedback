@@ -267,7 +267,7 @@ window.Game = (function () {
     S.base = "hud"; S.mode = mode; S.matchT0 = Date.now(); S.over = [];
     S.match = { kills: 0, assists: 0, dmg: 0, squadKills: 0, alive: 50, squads: 17, lastHit: 0, tHp: {} };
     if (mode === "match") { S.health = 100; S.shield = 100; S.underFireTold = false; }
-    S.hints = { fire: false, reload: false, inv: false, map: false, hurt: false };
+    S.hints = { fire: false, reload: false, inv: false, map: false, hurt: false, heal: false };
     if (!silent) renderAll();
   }
 
@@ -556,14 +556,15 @@ window.Game = (function () {
   }
   function renderHints() {
     if (!hudEls) return;
-    const H = S.hints, all = H.fire && H.reload && H.inv && H.map && H.hurt;
+    const H = S.hints, all = H.fire && H.reload && H.inv && H.map && H.hurt && H.heal;
     const row = (done, keys, t) => `<div class="k-hint ${done ? "done" : ""}">${keys} ${t}</div>`;
     hudEls.hints.innerHTML = S.mode !== "range" ? "" :
       row(H.fire, `<span class="k-key">${I.mouse("left")}</span>`, "Fire at a target") +
       row(H.reload, keycap(S.bind.reload), "Reload") +
       row(H.inv, keycap(S.bind.inventory), "Open inventory") +
       row(H.map, keycap(S.bind.map), "Open map") +
-      `<div class="k-hint hint-new ${H.hurt ? "done" : ""}">${lit("K")} Take a hit to see damage feedback</div>`;
+      `<div class="k-hint hint-new ${H.hurt ? "done" : ""}">${lit("K")} Take a hit to see damage feedback</div>` +
+      `<div class="k-hint hint-new heal ${H.heal ? "done" : ""}">${keycap(S.bind.heal)} Heal to see the healing glow</div>`;
     hudEls.hints.style.opacity = all ? 0 : 1;
   }
   function startLoop() {
@@ -588,6 +589,7 @@ window.Game = (function () {
       if (S.set.netStats === "Full") parts.push("Loss 0%");
       const dtext = parts.join("<br>"); if (hudEls.diag._t !== dtext) { hudEls.diag.innerHTML = dtext; hudEls.diag._t = dtext; }
       if (S.reloadUntil && t > S.reloadUntil) finishReload();
+      healTick(t);
       if (S.healUntil && t > S.healUntil) finishHeal();
       hudEls.cap.hidden = locked || top() || !lockTried || lockFailed;
       if (fire.down && S.equipped === "bunchgun" && t - fire.last > 110) shoot();
@@ -634,17 +636,26 @@ window.Game = (function () {
     S.stats.reloads++; if (!S.hints.reload) { S.hints.reload = true; renderHints(); }
     updateHud();
   }
+  // Healing restores health gradually over 1.5 s while a blue glow pulses around the screen edges.
+  // Taking damage interrupts it and keeps whatever was restored so far.
   function heal() {
-    if (S.health >= 100) { toast("Health is already full", { ms: 1200 }); return; }
+    if (S.health >= 100) { toast(`Health is full · press ${lit("K")} to take a hit first`, { ms: 1800 }); return; }
     if (S.healUntil > now()) return;
-    S.healUntil = now() + 1500; updateHud(); later(() => { if (S.healUntil && now() >= S.healUntil - 5) finishHeal(); }, 1500);
+    S.healFrom = S.health; S.healTo = Math.min(100, S.health + 50); S.healT0 = now();
+    S.healUntil = now() + 1500; S.hints.heal = true; renderHints(); updateHud();
+    later(() => { if (S.healUntil && now() >= S.healUntil - 5) finishHeal(); }, 1500);
   }
-  function finishHeal() { S.healUntil = 0; S.health = Math.min(100, S.health + 50); updateHud(); }
+  function healTick(t) {
+    if (!(S.healUntil > t)) return;
+    const k = Math.min(1, (t - S.healT0) / 1500), v = Math.round(S.healFrom + (S.healTo - S.healFrom) * k);
+    if (v !== S.health) { S.health = v; updateHud(); }
+  }
+  function finishHeal() { if (S.healTo != null) S.health = S.healTo; S.healTo = null; S.healUntil = 0; updateHud(); }
   // Damage feedback (from the Oct 10 gameplay review): a directional arc around the crosshair,
   // a red glow on the screen edge facing the shooter, and flinch. Damage feedback is always red;
   // blue is reserved for the healing glow around the screen edges.
   function takeDamage(n, angle) {
-    let left = n; const s = Math.min(S.shield, left); S.shield -= s; left -= s; S.health -= left; S.healUntil = 0;
+    let left = n; const s = Math.min(S.shield, left); S.shield -= s; left -= s; S.health -= left; S.healUntil = 0; S.healTo = null;
     sfx.hurt();
     if (angle == null) angle = [-150, -90, -30, 30, 90, 150, 180][(Math.random() * 7) | 0];
     showDamageDir(angle, "health", n);

@@ -671,3 +671,6 @@
 .heal-glow { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 160px 20px rgba(88,188,235,.55); opacity: 0; transition: opacity 300ms ease; }
 .heal-glow.on { opacity: 1; animation: heal-pulse 1.2s ease-in-out infinite; }
 @keyframes heal-pulse { 50% { opacity: .6; } }
+.hud-hints .hint-new.heal { color: var(--kong-shield); }
+.hud-hints .hint-new.heal .k-key { border-color: var(--kong-shield); color: var(--kong-shield); }
+.hud-hints .hint-new.heal.done { color: var(--kong-text); }

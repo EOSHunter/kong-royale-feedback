@@ -385,12 +385,24 @@
           <div class="k-field-error"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>Couldn't send. Check your connection and try again. Your description is kept.</div>
           <div class="k-toast" style="position:static;transform:none">Dropped Nub <button class="k-action">Undo</button></div>
         </div>`),
+      comp("Damage and healing feedback", "Damage is always red: an arc around the crosshair pointing at the shooter, a glow on that screen edge, and flinch. Blue is only for healing: a glow around every screen edge while health refills. Select a state to replay it.",
+        `<div class="fx-demos">
+          <div class="fx-demo"><div class="fx-screen dmg" id="fx-dmg"><div class="fx-x"></div><div class="fx-arc"></div><div class="fx-bars"><i class="h" style="width:72%"></i><i class="loss"></i></div><span class="fx-num">72</span></div><button class="k-btn secondary" data-fx="dmg">Take a hit</button><div class="statelabel" style="zoom:1.28">damage · always red</div></div>
+          <div class="fx-demo"><div class="fx-screen heal" id="fx-heal"><div class="fx-x"></div><div class="fx-bars"><i class="h" style="width:72%"></i></div><span class="fx-num">72</span></div><button class="k-btn secondary" data-fx="heal">Heal</button><div class="statelabel" style="zoom:1.28">healing · blue edges</div></div>
+        </div>`,
+        "<div><b>Rules.</b> Never tint damage blue, even on shield hits. Blue edges appear only while a heal is running and stop when it finishes or is interrupted by damage. Below 30 health a slow red vignette stays on. Reduced camera motion softens the shake, not the colour cues.</div>"),
       comp("Compact dialog", "Routine confirmations only. Focus moves inside, the safe option is focused first, and closing returns focus to the trigger.",
         `<div class="k-dialog" style="box-shadow:none"><h2>Leave match?</h2><p>You'll return to the lobby and can't rejoin this match. Your squad continues without you.</p><div class="acts"><button class="k-btn secondary is-focus">Cancel</button><button class="k-btn danger">Leave match</button></div></div>`)
     ].join("");
   }
 
   function wireComponents() {
+    $$("[data-fx]").forEach((b) => b.addEventListener("click", () => {
+      const k = b.dataset.fx, scr = document.getElementById("fx-" + k), bar = scr.querySelector(".h"), num = scr.querySelector(".fx-num");
+      scr.classList.remove("play"); void scr.offsetWidth; scr.classList.add("play");
+      if (k === "dmg") { bar.style.transition = "none"; bar.style.width = "100%"; num.textContent = "100"; requestAnimationFrame(() => { bar.style.transition = ""; bar.style.width = "72%"; num.textContent = "72"; }); }
+      else { bar.style.transition = "none"; bar.style.width = "72%"; num.textContent = "72"; const t0 = performance.now(); requestAnimationFrame(function f(t) { const p = Math.min(1, (t - t0) / 1500); const v = Math.round(72 + 28 * p); bar.style.width = v + "%"; num.textContent = v; if (p < 1) requestAnimationFrame(f); }); }
+    }));
     $$(".ds-tabs, .ds-sub").forEach((g) => g.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; $$("button", g).forEach((x) => x.classList.toggle("on", x === b)); }));
     $$("#ds-rows .k-row").forEach((row) => row.addEventListener("pointerenter", () => $$("#ds-rows .k-row").forEach((r) => r.classList.toggle("sel", r === row))));
     $$("[data-ds-slider]").forEach((tr) => {

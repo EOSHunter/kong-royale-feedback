@@ -108,9 +108,9 @@ window.GAMEPLAY = {
         },
         {
           pri: "Low", who: "Opus 5.5", title: "The players-left count goes up",
-          what: "Early on the alive count rises (41 at 1:00, 45 at 1:04, 46 at 1:20) because of Resurgence respawns. Without context it looks like a bug. Later the HUD correctly says Resurgence is off and kills are final.",
+          what: "Early on the alive count rises (42 at 1:00, 44 at 1:04, 45 at 1:20) because of Resurgence respawns. Without context it looks like a bug. Later the HUD correctly says Resurgence is off and kills are final.",
           fix: "Show a short +1 respawned note next to the count while Resurgence is on, and announce clearly when Resurgence ends.",
-          time: "1:00–1:20", img: null
+          time: "1:00–1:20", img: "alive-count"
         },
         {
           pri: "Low", who: "Opus 5.5", title: "What worked well",

@@ -436,3 +436,25 @@ body.playing #app { display: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
 }
+
+/* design system: damage / healing feedback demo */
+.fx-demos { display: flex; flex-wrap: wrap; gap: 28px; }
+.fx-demo { display: grid; gap: 14px; justify-items: start; }
+.fx-screen { position: relative; width: 440px; max-width: 100%; aspect-ratio: 16/9; overflow: hidden; background: linear-gradient(180deg, #6fa6c9 0%, #9cc3d6 45%, #4f7a3a 46%, #3d6430 100%); border: 1px solid var(--rule); }
+.fx-x { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px; background: linear-gradient(#fff,#fff) center/2px 100% no-repeat, linear-gradient(#fff,#fff) center/100% 2px no-repeat; opacity: .9; }
+.fx-arc { position: absolute; left: 50%; top: 50%; width: 110px; height: 110px; margin: -55px; transform: rotate(-70deg); opacity: 0; }
+.fx-arc::before { content: ""; position: absolute; left: 50%; top: 0; width: 64px; height: 64px; margin-left: -32px; border-radius: 50%; border-top: 6px solid #FF5A4E; filter: drop-shadow(0 0 5px rgba(255,60,50,.8)); }
+.fx-screen.dmg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 45% 70% at 0% 45%, rgba(255,44,36,.75), transparent 70%); opacity: 0; }
+.fx-screen.dmg.play::after, .fx-screen.dmg.play .fx-arc { animation: fx-fade 1.4s ease-out; }
+.fx-screen.dmg:not(.play)::after, .fx-screen.dmg:not(.play) .fx-arc { opacity: 1; }
+.fx-screen.heal::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 60px 10px rgba(88,188,235,.6); }
+.fx-screen.heal.play::after { animation: fx-heal 1.5s ease-in-out; }
+@keyframes fx-fade { 0% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes fx-heal { 0%,100% { opacity: 1; } 50% { opacity: .6; } }
+.fx-bars { position: absolute; left: 16px; bottom: 18px; width: 140px; height: 8px; background: rgba(16,23,25,.7); }
+.fx-bars i { position: absolute; top: 0; bottom: 0; left: 0; }
+.fx-bars .h { background: var(--accent); transition: width 600ms var(--ease); }
+.fx-bars .loss { left: 72%; width: 10%; background: #FF5A4E; }
+.fx-screen.heal .fx-bars .h { transition: none; }
+.fx-num { position: absolute; left: 166px; bottom: 10px; font-family: var(--f-display); font-size: 22px; color: var(--text); text-shadow: 0 1px 4px rgba(0,0,0,.7); }
+.fx-screen.dmg .fx-num { color: #ff8c80; }
