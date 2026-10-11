@@ -391,12 +391,21 @@
           <div class="fx-demo"><div class="fx-screen heal" id="fx-heal"><div class="fx-x"></div><div class="fx-bars"><i class="h" style="width:72%"></i></div><span class="fx-num">72</span></div><button class="k-btn secondary" data-fx="heal">Heal</button><div class="statelabel" style="zoom:1.28">healing · blue edges</div></div>
         </div>`,
         "<div><b>Rules.</b> Never tint damage blue, even on shield hits. Blue edges appear only while a heal is running and stop when it finishes or is interrupted by damage. Below 30 health a slow red vignette stays on. Reduced camera motion softens the shake, not the colour cues.</div>"),
+      comp("Enemy hit numbers", "Show what each hit did to the enemy. Shield hits get a small shield icon in shield blue, the hit that empties the shield gets a larger cracked shield with a crack sound and a Shield broken confirmation, and health hits are plain white numbers.",
+        `<div class="hn-row" id="hn-row">
+          <div class="hn-cell"><div class="dmgnum shield hn"><i class="dn-ic"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l8 3v6c0 5.2-3.4 9.4-8 11-4.6-1.6-8-5.8-8-11V5l8-3z"/></svg></i><b>24</b></div><div class="statelabel" style="zoom:1.28">shield hit</div></div>
+          <div class="hn-cell"><div class="dmgnum break hn"><i class="dn-ic"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l8 3v6c0 5.2-3.4 9.4-8 11-4.6-1.6-8-5.8-8-11V5l8-3z"/><path d="M12.5 3.5l-2 5 3 2.5-3.5 4 2 2.5-1.5 3.5" fill="none" stroke="#101719" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg></i><b>24</b></div><div class="hn-conf">Shield broken</div><div class="statelabel" style="zoom:1.28">shield break · crack sound</div></div>
+          <div class="hn-cell"><div class="dmgnum health hn"><b>24</b></div><div class="statelabel" style="zoom:1.28">health hit</div></div>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:24px;flex-wrap:wrap"><button class="k-btn secondary" data-hn-replay>Replay</button></div>`,
+        `<div><b>Rules.</b> Icon size 28 px on shield hits and 46 px on the break, shield blue #58BCEB with a dark crack line. Health numbers stay white. These are for damage you deal; damage you take is always red.</div><div class="dlbar" style="margin-top:10px">${dlBtn({ path: "downloads/icons/kong-shield-hit.svg", name: "kong-shield-hit.svg", label: "Shield hit icon", size: "1 KB" }, "SVG")}${dlBtn({ path: "downloads/icons/kong-shield-break.svg", name: "kong-shield-break.svg", label: "Cracked shield icon", size: "1 KB" }, "SVG")}</div>`),
       comp("Compact dialog", "Routine confirmations only. Focus moves inside, the safe option is focused first, and closing returns focus to the trigger.",
         `<div class="k-dialog" style="box-shadow:none"><h2>Leave match?</h2><p>You'll return to the lobby and can't rejoin this match. Your squad continues without you.</p><div class="acts"><button class="k-btn secondary is-focus">Cancel</button><button class="k-btn danger">Leave match</button></div></div>`)
     ].join("");
   }
 
   function wireComponents() {
+    $$("[data-hn-replay]").forEach((b) => b.addEventListener("click", () => { $$("#hn-row .hn, #hn-row .hn-conf").forEach((el, i) => { el.classList.remove("play"); void el.offsetWidth; setTimeout(() => el.classList.add("play"), [0, 260, 260, 640][i] || 0); }); }));
     $$("[data-fx]").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.fx, scr = document.getElementById("fx-" + k), bar = scr.querySelector(".h"), num = scr.querySelector(".fx-num");
       scr.classList.remove("play"); void scr.offsetWidth; scr.classList.add("play");
