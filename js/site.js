@@ -125,7 +125,7 @@
     closePlayer();
     let page = "home", anchor = null;
     if (h === "design-system" || h.startsWith("ds-")) { page = "ds"; anchor = h.startsWith("ds-") ? h : null; }
-    else if (h.startsWith("playtest") || h.startsWith("screen-") || h.startsWith("pt-")) { page = "pt"; anchor = h.startsWith("playtest") ? null : h; }
+    else if (h.startsWith("playtest") || h.startsWith("screen-") || h.startsWith("pt-") || h.startsWith("gp-")) { page = "pt"; anchor = h.startsWith("playtest") ? null : h; }
     if (view.dataset.page !== page) {
       view.dataset.page = page;
       ({ home: renderHome, ds: renderDS, pt: renderPlaytest })[page]();
@@ -173,7 +173,7 @@
           <article class="session">
             <div class="session-date"><span class="m">Oct 2026</span><span class="d">10</span><span class="m">Saturday</span></div>
             <div class="session-body">
-              <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="tag live">Interactive</span><span class="tag">14 screens</span><span class="tag">Recording</span><span class="tag">Brand family</span></div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="tag live">Interactive</span><span class="tag">14 screens</span><span class="tag">Recording</span><span class="tag">Gameplay feedback</span><span class="tag">Brand family</span></div>
               <h3 class="display"><a href="#playtest-2026-10-10">Playtest feedback · October 10, 2026</a></h3>
               <p>A full redesign pass over the 14 screens captured in the playtest: settings, match menu, report, learn controls, inventory, HUD, map, lobby, loading and match results. Each screen has the original screenshot, the premium concept, the review notes and a playable version.</p>
               <div class="thumbstrip">${thumbs.map((f) => `<a href="#screen-${f.slice(0, 2)}" aria-label="${f}"><img src="img/after/${f}.jpg" alt="" loading="lazy"></a>`).join("")}<a class="more" href="#playtest-2026-10-10">+9 more</a></div>
@@ -181,6 +181,7 @@
               <div>
                 <div class="eyebrow plain" style="margin:8px 0 4px">Attached</div>
                 <ul class="attach">
+                  <li><span class="k">★</span><a href="#pt-gameplay">Gameplay feedback (Ret + Opus 5.5)</a></li>
                   <li><span class="k">▶</span><a href="${K.recording.url}" target="_blank" rel="noopener">Gameplay recording (RET) · Google Drive</a></li>
                   <li><span class="k">14</span>Original playtest screenshots</li>
                   <li><span class="k">14</span>Redesigned screen concepts</li>
@@ -451,6 +452,8 @@
         <ul class="themes">${K.themes.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join("")}</ul>
       </section>
 
+      ${gameplaySection()}
+
       <section class="section" id="pt-files">
         <div class="section-head"><div class="eyebrow">Attached to this session</div><h2 class="display">Files</h2></div>
         <div class="dlbar"><a class="dl" href="${K.recording.url}" target="_blank" rel="noopener" style="text-decoration:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span><b>${esc(K.recording.label)}</b><small>${K.recording.host} · opens in a new tab</small></span></a>${[D.review, D.brief, D.genPrompts, D.genPromptsV1, D.dsV2, D.designMd, D.logosZip].map((d) => dlBtn(d)).join("")}</div>
@@ -483,6 +486,35 @@
       K.screens.forEach((s) => { const el = document.getElementById("notes-" + s.n); if (el && R[s.n]) el.innerHTML = notesHtml(R[s.n]); });
       const b = Object.keys(R).find((k) => k.startsWith("KONG /")); if (b) $("#brand-review").textContent = R[b].after + " " + R[b].suggestions;
     });
+  }
+  function gameplaySection() {
+    const G = window.GAMEPLAY; if (!G) return "";
+    const items = G.groups.map((g) => `
+      <div class="gp-group" id="gp-${g.id}"><h3 class="gp-gh">${esc(g.title)}</h3>
+        ${g.items.map((it) => `
+        <article class="gp-item">
+          ${it.img ? `<button class="gp-shot" data-lb="img/gameplay/${it.img}.jpg" data-cap="${esc(it.title)} · ${esc(it.time)}"><img src="img/gameplay/${it.img}.jpg" alt="Frame from the gameplay recording at ${esc(it.time)}" loading="lazy"><span>${esc(it.time)}</span></button>` : `<div class="gp-shot gp-noshot"><span>${esc(it.time)}</span></div>`}
+          <div class="gp-body">
+            <div class="gp-meta"><span class="pri pri-${it.pri.toLowerCase()}">${it.pri}</span><span class="who">${esc(it.who)}</span></div>
+            <h4>${esc(it.title)}</h4>
+            <p><b>What we saw.</b> ${esc(it.what)}</p>
+            <p><b>Suggestion.</b> ${esc(it.fix)}</p>
+            ${it.demo ? `<a class="btn small" href="#play-hud">Try it in the firing range: press K <span class="arrow">→</span></a>` : ""}
+          </div>
+        </article>`).join("")}
+      </div>`).join("");
+    const count = G.groups.reduce((n, g) => n + g.items.length, 0), high = G.groups.reduce((n, g) => n + g.items.filter((i) => i.pri === "High").length, 0);
+    return `<section class="section" id="pt-gameplay">
+        <div class="section-head"><div class="eyebrow">Gameplay feedback · from ${esc(G.meta.by)}</div><h2 class="display">How it plays</h2>
+          <p>${esc(G.meta.byNote)}</p></div>
+        <div class="gp-summary">
+          <div><b>${count}</b><span>Findings</span></div><div><b>${high}</b><span>High priority</span></div><div><b>12:36</b><span>Recording reviewed</span></div>
+          <p class="gp-match">${esc(G.meta.match)}</p>
+        </div>
+        <div class="btnrow" style="margin:18px 0 8px">${dlBtn(K.downloads.gameplay, "All findings as Markdown")}<a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">▶ Watch the recording ↗</a></div>
+        <nav class="screen-index" aria-label="Gameplay feedback groups" style="margin-top:20px">${G.groups.map((g) => `<a href="#gp-${g.id}">${esc(g.title)}</a>`).join("")}</nav>
+        ${items}
+      </section>`;
   }
   function reviewBlock(s) {
     return `<article class="review" id="screen-${s.n}">

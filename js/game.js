@@ -538,7 +538,7 @@ window.Game = (function () {
     if (!hudEls) return;
     const w = S.equipped ? K.items[S.equipped] : null;
     const hp = S.health, sh = S.shield;
-    hudEls.hp.querySelector("i").style.width = hp + "%"; hudEls.hp.querySelector("b").textContent = Math.round(hp); hudEls.hp.classList.toggle("low", hp <= 30);
+    hudEls.hp.querySelector("i").style.width = hp + "%"; hudEls.hp.querySelector("b").textContent = Math.round(hp); hudEls.hp.classList.toggle("low", hp <= 30); if (hudEls.hurt) hudEls.hurt.classList.toggle("low", hp <= 30);
     hudEls.sh.querySelector("i").style.width = sh + "%"; hudEls.sh.querySelector("b").textContent = Math.round(sh);
     hudEls.heal.hidden = !(S.healUntil > now());
     if (w) {
@@ -638,12 +638,28 @@ window.Game = (function () {
     S.healUntil = now() + 1500; updateHud(); later(() => { if (S.healUntil && now() >= S.healUntil - 5) finishHeal(); }, 1500);
   }
   function finishHeal() { S.healUntil = 0; S.health = Math.min(100, S.health + 50); updateHud(); }
-  function takeDamage(n) {
+  // Damage feedback (from the Oct 10 gameplay review): a directional arc around the crosshair,
+  // a red glow on the screen edge facing the shooter (cyan while only shield is hit), and flinch.
+  function takeDamage(n, angle) {
     let left = n; const s = Math.min(S.shield, left); S.shield -= s; left -= s; S.health -= left; S.healUntil = 0;
     sfx.hurt();
-    if (hudEls && hudEls.hurt) { hudEls.hurt.classList.add("show"); setTimeout(() => hudEls && hudEls.hurt && hudEls.hurt.classList.remove("show"), 120); }
+    if (angle == null) angle = [-150, -90, -30, 30, 90, 150, 180][(Math.random() * 7) | 0];
+    showDamageDir(angle, left > 0 ? "health" : "shield", n);
+    const f = Math.min(1, n / 30) * (S.aiming ? 0.5 : 1);
+    S.look.tx = clamp(S.look.tx + (Math.random() - 0.5) * 0.09 * f, -1, 1);
+    S.look.ty = clamp(S.look.ty - 0.07 * f, -0.6, 0.6);
     if (S.health <= 0) { S.health = 100; S.shield = 0; toast("Eliminated in practice · respawned", { ms: 2200 }); }
     updateHud();
+  }
+  function showDamageDir(angle, kind, n) {
+    const hud = L.hud.firstElementChild; if (!hud) return;
+    const arc = document.createElement("div"); arc.className = "dmg-arc " + kind;
+    arc.style.transform = `rotate(${angle}deg)`; hud.appendChild(arc); setTimeout(() => arc.remove(), 1400);
+    const rad = angle * Math.PI / 180, x = Math.sin(rad), y = -Math.cos(rad);
+    const glow = document.createElement("div"); glow.className = "dmg-edge " + kind;
+    glow.style.background = `radial-gradient(ellipse 60% 70% at ${50 + x * 58}% ${50 + y * 62}%, var(--dmg-c) 0%, transparent 70%)`;
+    glow.style.opacity = Math.min(1, 0.45 + n / 60); L.base.appendChild(glow); setTimeout(() => glow.remove(), 1200);
+    const low = hudEls && hudEls.hurt; if (low) low.classList.toggle("low", S.health <= 30);
   }
   function equipSlot(i) { const id = S.inv[i]; if (!id) return; if (S.equipped !== id) { S.equipped = id; S.reloadUntil = 0; sfx.select(); } updateHud(true); }
 

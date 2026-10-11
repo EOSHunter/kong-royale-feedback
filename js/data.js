@@ -30,6 +30,7 @@ window.KONG = (function () {
     brief: { path: "downloads/source/implementation-brief.md", name: "kong-implementation-brief.md", label: "Implementation brief", size: "3 KB" },
     genPrompts: { path: "downloads/source/prompts.md", name: "kong-generation-prompts-v3.md", label: "Image generation prompts (v3)", size: "27 KB" },
     genPromptsV1: { path: "downloads/source/earlier-concept-prompts.md", name: "kong-generation-prompts-v1.md", label: "Image generation prompts (v1)", size: "" },
+    gameplay: { path: "downloads/kong-gameplay-feedback-2026-10-10.md", name: "kong-gameplay-feedback-2026-10-10.md", label: "Gameplay feedback", size: "9 KB" },
     dsV2: { path: "downloads/source/v2-design-system-superseded.md", name: "kong-design-system-v2-superseded.md", label: "Design system v2 (superseded)", size: "" }
   };
 
