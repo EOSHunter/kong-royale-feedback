@@ -2,7 +2,7 @@
 
 > Source: RET's Kong Royale feedback, design system v3 (10 Oct 2026).
 > Files that go with it: `kong-logos.zip` (transparent PNG logo exports) and `kong-implementation-prompts.md`.
-> Logo exports are raster crops of the concept sheet, recoloured to the production saffron. They still need a vector redraw before shipping.
+> Logos come as SVG (vector, in `svg/`) and transparent PNG, recoloured to the production saffron. The SVGs are auto-traced from the concept sheet; give them a designer pass for optical kerning and small-size variants before treating them as final masters.
 
 
 Status: proposed design system accompanying premium v3 concepts. Earlier blue-panel v2 layouts are superseded. This is not an implemented game UI. The written rules below take precedence when a generated image varies from them.
@@ -290,6 +290,8 @@ Images are art direction, not pixel-exact component specifications. Any generate
 ```
 
 ## Logo files
+
+Each file below comes as `.png` (transparent) and as `svg/<name>.svg` (vector).
 
 | File | Use |
 |---|---|

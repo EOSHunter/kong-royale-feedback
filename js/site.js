@@ -34,7 +34,7 @@
   async function buildLogoZip() {
     siteToast("Packing logos…");
     const zip = new JSZip(), dir = zip.folder("kong-logos");
-    const names = K.logos.map((l) => l.file + ".png").concat(["kong-brand-family-concept-sheet.png"]);
+    const names = K.logos.map((l) => l.file + ".png").concat(K.logos.map((l) => "svg/" + l.file + ".svg"), ["kong-brand-family-concept-sheet.png"]);
     await Promise.all(names.map(async (n) => { const r = await fetch("downloads/logos/" + n); if (!r.ok) throw new Error(n); dir.file(n, await r.blob()); }));
     const md = await fetch(K.downloads.designMd.path).then((r) => r.text()).catch(() => "");
     if (md) zip.file("kong-design-system.md", md);
@@ -216,7 +216,7 @@
         <div class="crumbs"><a href="#home">Sessions</a> / Design system</div>
         <h1 class="display">Kong Royale<br>design system</h1>
         <p>Premium v3. Calm, readable, predictable interface; the gorillas, banana weapons and island art carry the personality. These rules and tokens are the source of truth wherever a concept image disagrees.</p>
-        <div class="dlbar">${dlBtn(D.designMd, "Full system as Markdown")}${dlBtn(D.logosZip, "9 PNG files")}${dlBtn(D.prompts, "8 staged prompts")}${dlBtn(D.tokens, "CSS custom properties")}</div>
+        <div class="dlbar">${dlBtn(D.designMd, "Full system as Markdown")}${dlBtn(D.logosZip, "SVG + PNG")}${dlBtn(D.prompts, "8 staged prompts")}${dlBtn(D.tokens, "CSS custom properties")}</div>
       </section>
     </div>
     <nav class="subnav" aria-label="Design system sections"><div class="wrap">
@@ -230,11 +230,11 @@
           <div class="brand-cell ${l.bg === "light" ? "light" : ""}">
             <div class="art"><img class="${l.icon ? "icon" : ""}" src="img/brand/${l.file}.png" alt="${esc(l.title)}" loading="lazy"></div>
             <div class="meta"><div><b>${esc(l.title)}</b><div class="muted" style="font-size:14px">${esc(l.use)}</div></div>
-            <button class="dl" data-dl="downloads/logos/${l.file}.png" data-name="${l.file}.png">${DL_ICON}<span><b>PNG</b><small>transparent</small></span></button></div>
+            <span class="btnrow" style="gap:8px"><button class="dl" data-dl="downloads/logos/svg/${l.file}.svg" data-name="${l.file}.svg" aria-label="Download ${esc(l.title)} as SVG">${DL_ICON}<span><b>SVG</b><small>vector</small></span></button><button class="dl" data-dl="downloads/logos/${l.file}.png" data-name="${l.file}.png" aria-label="Download ${esc(l.title)} as PNG">${DL_ICON}<span><b>PNG</b><small>transparent</small></span></button></span></div>
           </div>`).join("")}
         </div>
-        <div class="btnrow" style="margin-top:16px">${dlBtn(D.logosZip, "All 8 exports + concept sheet")}<button class="dl" data-dl="downloads/logos/kong-brand-family-concept-sheet.png" data-name="kong-brand-family-concept-sheet.png">${DL_ICON}<span><b>Concept sheet</b><small>original raster · 1.3 MB</small></span></button></div>
-        <p class="muted" style="font-size:14px;max-width:72ch;margin-top:14px">Exports are cut from the raster concept sheet and recoloured to production saffron #EABC39 (the sheet uses a brighter exploration yellow). A vector redraw with optical kerning and small-size variants is still needed before these are final.</p>
+        <div class="btnrow" style="margin-top:16px">${dlBtn(D.logosZip, "8 logos as SVG and PNG + concept sheet")}<button class="dl" data-dl="downloads/logos/kong-brand-family-concept-sheet.png" data-name="kong-brand-family-concept-sheet.png">${DL_ICON}<span><b>Concept sheet</b><small>original raster · 1.3 MB</small></span></button></div>
+        <p class="muted" style="font-size:14px;max-width:72ch;margin-top:14px">Every logo comes as an SVG (scales to any size) and a transparent PNG, recoloured to production saffron #EABC39 (the concept sheet uses a brighter exploration yellow). The SVGs were auto-traced from the concept sheet, so give them a designer pass for optical kerning and small-size variants before treating them as final masters.</p>
         <ul class="rules">
           <li><b>Stacked lockup.</b> Descriptor cap height ≈ 16% of KONG cap height; gap ≈ 14%.</li>
           <li><b>Clear space.</b> At least 25% of the KONG cap height on every side.</li>

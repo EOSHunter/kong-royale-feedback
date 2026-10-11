@@ -22,7 +22,7 @@ window.KONG = (function () {
     designMd: { path: "downloads/kong-design-system.md", name: "kong-design-system.md", label: "Design system", size: "19 KB" },
     prompts: { path: "downloads/kong-implementation-prompts.md", name: "kong-implementation-prompts.md", label: "Implementation prompts", size: "13 KB" },
     tokens: { path: "downloads/source/tokens.css", name: "kong-tokens.css", label: "Tokens", size: "1 KB", ext: "css" },
-    logosZip: { path: "zip:logos", name: "kong-logos.zip", label: "All logos", size: "1.9 MB" },
+    logosZip: { path: "zip:logos", name: "kong-logos.zip", label: "All logos", size: "2.3 MB" },
     review: { path: "downloads/source/screen-review.md", name: "kong-screen-review.md", label: "Screen-by-screen review", size: "15 KB" },
     brief: { path: "downloads/source/implementation-brief.md", name: "kong-implementation-brief.md", label: "Implementation brief", size: "3 KB" },
     genPrompts: { path: "downloads/source/prompts.md", name: "kong-generation-prompts-v3.md", label: "Image generation prompts (v3)", size: "27 KB" },

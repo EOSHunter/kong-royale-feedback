@@ -3,7 +3,7 @@
 A static site that collects feedback sessions, ideas and design work for **Kong Royale**.
 
 - **Home**: the design system plus a list of feedback sessions with everything attached to each.
-- **Design system**: brand family, colour and type tokens, live components, layout templates, interaction rules and step-by-step implementation prompts. The full system downloads as Markdown and the logos download as PNGs or a zip.
+- **Design system**: brand family, colour and type tokens, live components, layout templates, interaction rules and step-by-step implementation prompts. The full system downloads as Markdown and the logos download as SVG, PNG or a zip of both.
 - **Playtest feedback · October 10, 2026**: all 13 redesigned screens as a playable prototype, with before/after comparisons and review notes for each screen.
 
 Live site: https://eoshunter.github.io/kong-royale-feedback/
@@ -49,5 +49,5 @@ Mouse to look, click to fire (the first click captures the cursor). Esc opens th
 ## Notes
 
 - Concept art and prototype backgrounds are AI-generated art direction, not shipped game assets.
-- Logo PNGs are cut from a raster concept sheet and recoloured to production saffron `#EABC39`. They need a vector redraw before final use.
+- Logos are in `downloads/logos/` as transparent PNGs and in `downloads/logos/svg/` as SVGs, recoloured to production saffron `#EABC39`. The SVGs are auto-traced from the concept sheet and still deserve a designer pass for optical kerning before final use.
 - Fonts: Changa One (headings) and Barlow / Barlow Semi Condensed (UI), all from Google Fonts under the SIL Open Font License.
