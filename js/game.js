@@ -266,7 +266,7 @@ window.Game = (function () {
   function enterHud(mode, silent) {
     S.base = "hud"; S.mode = mode; S.matchT0 = Date.now(); S.over = [];
     S.match = { kills: 0, assists: 0, dmg: 0, squadKills: 0, alive: 50, squads: 17, lastHit: 0, tHp: {} };
-    S.hints = { fire: false, reload: false, inv: false, map: false };
+    S.hints = { fire: false, reload: false, inv: false, map: false, hurt: false };
     if (!silent) renderAll();
   }
 
@@ -555,13 +555,14 @@ window.Game = (function () {
   }
   function renderHints() {
     if (!hudEls) return;
-    const H = S.hints, all = H.fire && H.reload && H.inv && H.map;
+    const H = S.hints, all = H.fire && H.reload && H.inv && H.map && H.hurt;
     const row = (done, keys, t) => `<div class="k-hint ${done ? "done" : ""}">${keys} ${t}</div>`;
     hudEls.hints.innerHTML = S.mode !== "range" ? "" :
       row(H.fire, `<span class="k-key">${I.mouse("left")}</span>`, "Fire at a target") +
       row(H.reload, keycap(S.bind.reload), "Reload") +
       row(H.inv, keycap(S.bind.inventory), "Open inventory") +
-      row(H.map, keycap(S.bind.map), "Open map");
+      row(H.map, keycap(S.bind.map), "Open map") +
+      `<div class="k-hint hint-new ${H.hurt ? "done" : ""}">${lit("K")} Take a hit to see damage feedback</div>`;
     hudEls.hints.style.opacity = all ? 0 : 1;
   }
   function startLoop() {
@@ -645,6 +646,7 @@ window.Game = (function () {
     sfx.hurt();
     if (angle == null) angle = [-150, -90, -30, 30, 90, 150, 180][(Math.random() * 7) | 0];
     showDamageDir(angle, left > 0 ? "health" : "shield", n);
+    if (!S.hints.hurt) { S.hints.hurt = true; renderHints(); }
     const f = Math.min(1, n / 30) * (S.aiming ? 0.5 : 1);
     S.look.tx = clamp(S.look.tx + (Math.random() - 0.5) * 0.09 * f, -1, 1);
     S.look.ty = clamp(S.look.ty - 0.07 * f, -0.6, 0.6);

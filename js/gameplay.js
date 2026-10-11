@@ -122,3 +122,40 @@ window.GAMEPLAY = {
     }
   ]
 };
+
+/* Opus 5.5's own write-up: how the review was done, the verdict, and what to do next. */
+window.GAMEPLAY.opus = {
+  method: [
+    ["189", "frames sampled, one every 4 seconds across the 12:36 recording"],
+    ["3", "fights stepped through at 2 frames a second (1:36, 7:16, 10:48)"],
+    ["16", "findings, each tied to a timestamp and a frame"],
+    ["13", "findings raised by Opus 5.5; 3 by Ret, one of them jointly"]
+  ],
+  verdict: "Kong Royale already has the hard parts of a battle royale working: a readable island, fast rotations, clear storm pacing and kills that feel rewarding. What holds it back is how fights resolve. Players die before they can tell where they are being shot from, and nothing slows the player who is losing a fight. Fixing time to kill, flinch and damage direction together will change the game more than any other single pass.",
+  strengths: [
+    "The island reads well from the plane, and Banana Temple, The Plantation and Lookout Point each feel distinct.",
+    "Kill banners, damage numbers and medals (Wrecked, Double kill) are clear and satisfying.",
+    "Storm phase banners and the Resurgence off notice are easy to follow.",
+    "The tuk-tuk makes rotating with a squad fun and fast.",
+    "The final circle at Lookout Point was tense and well paced."
+  ],
+  risks: [
+    "Time to kill around one second makes fights feel random to newer players.",
+    "No damage direction or flinch means the player being shot has no way to react.",
+    "Foliage and fruit bags at The Plantation give one-sided concealment.",
+    "A locked 30 FPS makes aiming feel heavy, which amplifies the time-to-kill problem."
+  ],
+  order: [
+    ["Damage feedback", "Add the directional arc, edge glow and flinch. They are cheap and make every other combat change easier to judge. A working demo is in the firing range (press K)."],
+    ["Time to kill", "Cut body damage 20–30% and add range falloff, then replay the same squads and compare."],
+    ["Frame rate", "Find what holds the game at 30 FPS and aim for 60 before tuning aim feel."],
+    ["Collision pass", "Plantation plants and bags, the rock cliffs near Banana Split, boulders and the tuk-tuk camera."],
+    ["Readability", "Crosshair outline, sight pictures, temple lighting and the helicopter material."]
+  ],
+  next: [
+    "Record two matches before and two after the damage change, with the same squads.",
+    "Track average time to kill, kills per match and how often the player who shot first wins the fight.",
+    "Ask each player the same three questions: did you know where shots came from, did fights feel fair, and did you ever lose sight of the action.",
+    "Add the in-game ratings from the new results screen so smoothness, hit registration and fun are logged per match."
+  ]
+};

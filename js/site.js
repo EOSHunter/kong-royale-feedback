@@ -125,13 +125,14 @@
     closePlayer();
     let page = "home", anchor = null;
     if (h === "design-system" || h.startsWith("ds-")) { page = "ds"; anchor = h.startsWith("ds-") ? h : null; }
+    else if (h === "opus-feedback" || h.startsWith("op-")) { page = "op"; anchor = h.startsWith("op-") ? h : null; }
     else if (h.startsWith("playtest") || h.startsWith("screen-") || h.startsWith("pt-") || h.startsWith("gp-")) { page = "pt"; anchor = h.startsWith("playtest") ? null : h; }
     if (view.dataset.page !== page) {
       view.dataset.page = page;
-      ({ home: renderHome, ds: renderDS, pt: renderPlaytest })[page]();
+      ({ home: renderHome, ds: renderDS, pt: renderPlaytest, op: renderOpus })[page]();
       if (!anchor) window.scrollTo(0, 0);
     }
-    setNav(page === "ds" ? "design-system" : page === "pt" ? "playtest" : "home");
+    setNav(page === "ds" ? "design-system" : page === "pt" ? "playtest" : page === "op" ? "opus" : "home");
     if (anchor) requestAnimationFrame(() => { const el = document.getElementById(anchor); if (el) el.scrollIntoView({ block: "start" }); });
   }
   function setNav(k) { $$(".topbar-nav a").forEach((a) => { if (a.dataset.nav === k) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); }); }
@@ -166,6 +167,8 @@
           </div>
         </article>
       </section>
+
+      ${opusHomeCard()}
 
       <section class="section">
         <div class="section-head"><div class="eyebrow">Feedback sessions</div><h2 class="display">Sessions</h2></div>
@@ -486,6 +489,84 @@
       K.screens.forEach((s) => { const el = document.getElementById("notes-" + s.n); if (el && R[s.n]) el.innerHTML = notesHtml(R[s.n]); });
       const b = Object.keys(R).find((k) => k.startsWith("KONG /")); if (b) $("#brand-review").textContent = R[b].after + " " + R[b].suggestions;
     });
+  }
+  function opusHomeCard() {
+    const G = window.GAMEPLAY; if (!G || !G.opus) return "";
+    const O = G.opus, top = G.groups.flatMap((g) => g.items).filter((i) => i.pri === "High");
+    return `<section class="section" id="home-opus">
+        <div class="section-head"><div class="eyebrow">Playtester review</div><h2 class="display">Opus 5.5 feedback</h2>
+          <p>Opus 5.5 watched RET's October 10 match as a playtester and reviewed it frame by frame. Here is the short version; the full write-up has every finding with a frame from the video.</p></div>
+        <article class="op-card">
+          <blockquote class="op-quote">${esc(O.verdict)}<cite>Opus 5.5, playtester review of the Oct 10 recording</cite></blockquote>
+          <div class="op-side">
+            <div class="eyebrow plain">Fix first</div>
+            <ol class="op-top">${top.map((i) => `<li><b>${esc(i.title)}</b><span>${esc(i.time)}</span></li>`).join("")}</ol>
+            <div class="btnrow"><a class="btn primary" href="#opus-feedback">Read Opus 5.5's feedback <span class="arrow">→</span></a><a class="btn" href="#play-hud">Try the damage feedback</a></div>
+          </div>
+        </article>
+      </section>`;
+  }
+  function findingCard(it) {
+    return `<article class="gp-item">
+          ${it.img ? `<button class="gp-shot" data-lb="img/gameplay/${it.img}.jpg" data-cap="${esc(it.title)} · ${esc(it.time)}"><img src="img/gameplay/${it.img}.jpg" alt="Frame from the gameplay recording at ${esc(it.time)}" loading="lazy"><span>${esc(it.time)}</span></button>` : `<div class="gp-shot gp-noshot"><span>${esc(it.time)}</span></div>`}
+          <div class="gp-body">
+            <div class="gp-meta"><span class="pri pri-${it.pri.toLowerCase()}">${it.pri}</span><span class="who">${esc(it.who)}</span></div>
+            <h4>${esc(it.title)}</h4>
+            <p><b>What we saw.</b> ${esc(it.what)}</p>
+            <p><b>Suggestion.</b> ${esc(it.fix)}</p>
+            ${it.demo ? `<a class="btn small" href="#play-hud">Try it in the firing range: press K <span class="arrow">→</span></a>` : ""}
+          </div>
+        </article>`;
+  }
+  function renderOpus() {
+    const G = window.GAMEPLAY, O = G.opus;
+    const all = G.groups.flatMap((g) => g.items.map((i) => ({ ...i, group: g.title })));
+    const mine = all.filter((i) => i.who.includes("Opus"));
+    const grouped = G.groups.map((g) => ({ ...g, items: g.items.filter((i) => i.who.includes("Opus")) })).filter((g) => g.items.length);
+    view.innerHTML = `
+    <div class="wrap">
+      <section class="page-hero">
+        <div class="crumbs"><a href="#home">Sessions</a> / Opus 5.5 feedback</div>
+        <div class="eyebrow">Playtester review · Oct 10, 2026 match</div>
+        <h1 class="display">Opus 5.5<br>feedback</h1>
+        <p>Opus 5.5 acted as a playtester and reviewed RET's gameplay recording from the October 10 playtest. The menu and HUD redesign is covered on the session page, so this review is only about how the game plays: combat, time to kill, crosshairs, damage, collision and performance.</p>
+        <div class="btnrow"><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">▶ Watch the recording ↗</a>${dlBtn(K.downloads.gameplay, "All findings as Markdown")}</div>
+      </section>
+    </div>
+    <nav class="subnav" aria-label="Opus 5.5 feedback sections"><div class="wrap">
+      ${[["op-method", "How I reviewed"], ["op-verdict", "My verdict"], ["op-found", "What I found"], ["op-next", "What to do next"]].map(([id, t]) => `<a href="#${id}" data-sec="${id}">${t}</a>`).join("")}
+    </div></nav>
+    <div class="wrap">
+      <section class="section" id="op-method">
+        <div class="section-head"><div class="eyebrow">Method</div><h2 class="display">How I reviewed it</h2></div>
+        <div class="gp-summary">${O.method.map(([n, t]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join("")}</div>
+        <p class="muted" style="font-size:14px;max-width:72ch;margin-top:14px">I could only judge what shows on screen. Hit boxes, weapon stats and server-side numbers were read off damage markers and the health and shield bars, so treat the exact figures as estimates to confirm in the game's data.</p>
+      </section>
+
+      <section class="section" id="op-verdict">
+        <div class="section-head"><div class="eyebrow">Overall</div><h2 class="display">My verdict</h2></div>
+        <blockquote class="op-quote big">${esc(O.verdict)}</blockquote>
+        <div class="twocol" style="margin-top:32px">
+          <div><h3 class="gp-gh">What works</h3><ul class="op-list good">${O.strengths.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></div>
+          <div><h3 class="gp-gh">Biggest risks</h3><ul class="op-list risk">${O.risks.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></div>
+        </div>
+      </section>
+
+      <section class="section" id="op-found">
+        <div class="section-head"><div class="eyebrow">${mine.length} findings with frames from the video</div><h2 class="display">What I found</h2>
+          <p>Findings I raised myself, plus the ones Ret and I raised together. Ret's own calls (flinch and damage direction) are on the <a href="#pt-gameplay">session page</a> with everything else.</p></div>
+        ${grouped.map((g) => `<div class="gp-group"><h3 class="gp-gh">${esc(g.title)}</h3>${g.items.map(findingCard).join("")}</div>`).join("")}
+      </section>
+
+      <section class="section" id="op-next">
+        <div class="section-head"><div class="eyebrow">Recommendations</div><h2 class="display">What to do next</h2></div>
+        <ol class="op-order">${O.order.map(([t, d], i) => `<li><span class="n">${i + 1}</span><div><b>${esc(t)}</b><p>${esc(d)}</p></div></li>`).join("")}</ol>
+        <h3 class="gp-gh" style="margin-top:40px">For the next playtest</h3>
+        <ul class="op-list">${O.next.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+      </section>
+    </div>
+    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Image viewer"><div class="lb-bar"><span id="lb-cap"></span><button class="btn small" id="lb-close">Close · Esc</button></div><img id="lb-img" alt=""></div>`;
+    subnavSpy();
   }
   function gameplaySection() {
     const G = window.GAMEPLAY; if (!G) return "";
