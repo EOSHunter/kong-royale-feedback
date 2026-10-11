@@ -105,7 +105,7 @@
       const opt = [...sel.options].find((o) => o.value === key);
       if (opt) sel.value = key;
       const h = "#play-" + key.replace(":", ".");
-      if (location.hash !== h && (location.hash === "#play" || location.hash.startsWith("#play-"))) history.replaceState(null, "", h);
+      if (location.hash !== h && !location.hash.startsWith(h + ".") && (location.hash === "#play" || location.hash.startsWith("#play-"))) history.replaceState(null, "", h);
     });
   }
   $("#pb-overlay").addEventListener("change", (e) => { const v = e.target.value; $("#pb-opacity").hidden = v === "off"; Game.setCompare(v, $("#pb-opacity").value / 100); stageEl.focus(); });

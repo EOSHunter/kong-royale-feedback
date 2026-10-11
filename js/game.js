@@ -266,6 +266,7 @@ window.Game = (function () {
   function enterHud(mode, silent) {
     S.base = "hud"; S.mode = mode; S.matchT0 = Date.now(); S.over = [];
     S.match = { kills: 0, assists: 0, dmg: 0, squadKills: 0, alive: 50, squads: 17, lastHit: 0, tHp: {} };
+    if (mode === "match") { S.health = 100; S.shield = 100; S.underFireTold = false; }
     S.hints = { fire: false, reload: false, inv: false, map: false, hurt: false };
     if (!silent) renderAll();
   }
@@ -521,7 +522,7 @@ window.Game = (function () {
     hudEls = { strip: $("#h-strip", L.hud), diag: $("#h-diag", L.hud), hints: $("#h-hints", L.hud), hp: $("#h-hp", L.hud), sh: $("#h-sh", L.hud), heal: $("#h-heal", L.hud), ammo: $("#h-ammo", L.hud), wn: $("#h-wn", L.hud), rl: $("#h-rl", L.hud), slots: $("#h-slots", L.hud), hit: $("#h-hit", L.hud), me: $("#h-me", L.hud), mpin: $("#h-mpin", L.hud), cap: $("#h-cap", L.hud), status: $("#h-status", L.hud), world: $("#world", L.base), hurt: $("#hurt", L.base), ms: $("#h-ms", L.hud), elim: $("#h-elim", L.hud) };
     buildCompass();
     renderMatchStats();
-    if (S.mode === "match") squadSim();
+    if (S.mode === "match") { squadSim(); fireToken++; incomingFire(4000, fireToken); }
     later(() => { if (hudEls && hudEls.status) hudEls.status.style.opacity = 0; }, 5000);
     updateHud(true);
     startLoop();
@@ -650,7 +651,7 @@ window.Game = (function () {
     const f = Math.min(1, n / 30) * (S.aiming ? 0.5 : 1);
     S.look.tx = clamp(S.look.tx + (Math.random() - 0.5) * 0.09 * f, -1, 1);
     S.look.ty = clamp(S.look.ty - 0.07 * f, -0.6, 0.6);
-    if (S.health <= 0) { S.health = 100; S.shield = 0; toast("Eliminated in practice · respawned", { ms: 2200 }); }
+    if (S.health <= 0) { S.health = 100; S.shield = S.mode === "match" ? 100 : 0; toast(S.mode === "match" ? "Downed · revived by your squad" : "Eliminated in practice · respawned", { ms: 2200 }); }
     updateHud();
   }
   function showDamageDir(angle, kind, n) {
@@ -733,6 +734,23 @@ window.Game = (function () {
   }
   // Squadmates are simulated in the prototype: they score now and then, and an assist is
   // credited when a squadmate's kill lands within 6 seconds of your last hit.
+  // Real match: enemies take shots at you now and then from a random direction, so the
+  // damage feedback (arc, edge glow, flinch, low-health vignette) shows up in normal play.
+  let fireToken = 0;
+  function incomingFire(delay, token) {
+    later(() => {
+      if (token !== fireToken || S.base !== "hud" || S.mode !== "match") return;
+      if (!top() && S.health > 25) {
+        const angle = Math.round(Math.random() * 360 - 180), shots = 2 + ((Math.random() * 3) | 0);
+        for (let i = 0; i < shots; i++) later(() => {
+          if (token !== fireToken || S.base !== "hud" || S.mode !== "match" || top() || S.health <= 20) return;
+          takeDamage(10 + ((Math.random() * 9) | 0), angle + (Math.random() * 10 - 5));
+        }, i * 160);
+        if (!S.underFireTold) { S.underFireTold = true; later(() => toast("Under fire · the red arc points to the shooter", { ms: 2600 }), 400); }
+      }
+      incomingFire(9000 + Math.random() * 9000, token);
+    }, delay);
+  }
   function squadSim() {
     later(() => {
       if (S.base !== "hud" || S.mode !== "match" || !S.match) return;
