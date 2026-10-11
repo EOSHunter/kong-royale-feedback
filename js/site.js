@@ -177,7 +177,7 @@
               <h3 class="display"><a href="#playtest-2026-10-10">Playtest feedback · October 10, 2026</a></h3>
               <p>A full redesign pass over the 14 screens captured in the playtest: settings, match menu, report, learn controls, inventory, HUD, map, lobby, loading and match results. Each screen has the original screenshot, the premium concept, the review notes and a playable version.</p>
               <div class="thumbstrip">${thumbs.map((f) => `<a href="#screen-${f.slice(0, 2)}" aria-label="${f}"><img src="img/after/${f}.jpg" alt="" loading="lazy"></a>`).join("")}<a class="more" href="#playtest-2026-10-10">+9 more</a></div>
-              <div class="btnrow"><a class="btn primary" href="#playtest-2026-10-10">Open session <span class="arrow">→</span></a><a class="btn" href="#play-lobby">Play the prototype</a><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">Watch RET's recording ↗</a></div>
+              <div class="btnrow"><a class="btn primary" href="#playtest-2026-10-10">View suggestions <span class="arrow">→</span></a><a class="btn" href="#pt-screens">See the screens</a><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">Watch RET's recording ↗</a></div>
               <div>
                 <div class="eyebrow plain" style="margin:8px 0 4px">Attached</div>
                 <ul class="attach">
