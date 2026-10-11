@@ -601,8 +601,8 @@
     return `<article class="review" id="screen-${s.n}">
       <div class="review-head"><h3 class="display"><span class="num">${s.n}</span>${esc(s.name)}</h3><div class="btnrow"><a class="btn primary small" href="#play-${s.go.replace(":", ".")}">Try it interactively <span class="arrow">→</span></a></div></div>
       <div>
-        <div class="compare" style="--pos:50%"><img src="img/after/${s.file}.jpg" alt="Premium concept: ${esc(s.name)}" loading="lazy"><div class="before-wrap"><img src="img/before/${s.file}.jpg" alt="Original screenshot: ${esc(s.name)}" loading="lazy"></div><div class="handle"></div><span class="lbl b">Before</span><span class="lbl a">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after for ${esc(s.name)}"></div>
-        <div class="compare-tools"><button class="btn small" data-lb="img/before/${s.file}.jpg" data-cap="Original · ${esc(s.name)}">View original</button><button class="btn small" data-lb="img/after/${s.file}.jpg" data-cap="Concept · ${esc(s.name)}">View concept</button></div>
+        <div class="compare" style="--pos:50%"><img class="cmp-after" src="img/after/${s.file}.jpg" alt="Premium concept: ${esc(s.name)}" loading="lazy"><div class="before-wrap"><img src="img/before/${s.file}.jpg" alt="Original screenshot: ${esc(s.name)}" loading="lazy"></div><div class="handle"></div><span class="lbl b">Before</span><span class="lbl a">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after for ${esc(s.name)}"></div>
+        <div class="compare-tools">${s.states ? `<span class="state-seg" role="radiogroup" aria-label="HUD state">${s.states.map(([l, f], i) => `<button class="btn small ${i ? "" : "on"}" role="radio" aria-checked="${!i}" data-state="${f}">${l}</button>`).join("")}</span>` : ""}<button class="btn small" data-lb="img/before/${s.file}.jpg" data-cap="Original · ${esc(s.name)}">View original</button><button class="btn small" data-lb="img/after/${s.file}.jpg" data-cap="Concept · ${esc(s.name)}">View concept</button></div>
       </div>
       <div class="review-notes" id="notes-${s.n}"><p class="muted">Loading notes…</p></div>
     </article>`;
@@ -615,6 +615,13 @@
     root.addEventListener("input", (e) => { if (e.target.matches(".compare input[type=range]")) e.target.closest(".compare").style.setProperty("--pos", e.target.value + "%"); });
   }
 
+  /* HUD state toggle on a screen review (e.g. Taking damage / Healing) */
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-state]"); if (!b) return;
+    const art = b.closest(".review"); art.querySelector(".cmp-after").src = `img/after/${b.dataset.state}.jpg`;
+    const v = art.querySelector('[data-cap^="Concept"]'); if (v) v.dataset.lb = `img/after/${b.dataset.state}.jpg`;
+    b.parentElement.querySelectorAll("[data-state]").forEach((x) => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b); });
+  });
   /* lightbox + launch buttons */
   document.addEventListener("click", (e) => {
     const g = e.target.closest("[data-go]"); if (g) { location.hash = "play-" + g.dataset.go; return; }

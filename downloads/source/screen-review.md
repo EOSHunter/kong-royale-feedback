@@ -124,7 +124,7 @@ The core change is composition: cinematic lobby, typographic settings, contextua
 
 **Production detail:** Test readability while moving, firing, taking damage and playing on bright terrain. A beautiful static screenshot does not establish combat usability.
 
-**Follow-up:** Match stats now sit top right as two rows of slanted chips. The top row is match state: squads left and players left. The second row is your contribution: kills and damage, plus assists and combined squad kills in squad modes. A Match stats setting (Video › Display) picks Auto, Personal, Squad or Hidden; Auto shows Squad in Trios. Numbers pop briefly in saffron when they change, and Eliminated / Assist confirmations appear under the crosshair.
+**Follow-up:** Match stats now sit top right as two rows of slanted chips. The top row is match state: squads left and players left. The second row is your contribution: kills and damage, plus assists and combined squad kills in squad modes. A Match stats setting (Video › Display) picks Auto, Personal, Squad or Hidden; Auto shows Squad in Trios. Numbers pop briefly in saffron when they change, and Eliminated / Assist confirmations appear under the crosshair. The concept also shows damage feedback (a red arc around the crosshair, a red glow on the edge facing the shooter, and the hit on the health bar) and a separate healing state with a blue glow around all screen edges. Damage feedback is always red; blue only means healing.
 
 ## 11. World map
 

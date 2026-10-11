@@ -10,7 +10,7 @@ window.KONG = (function () {
     { n: "07", file: "07-pause-menu", name: "Match menu", short: "Match menu", go: "menu" },
     { n: "08", file: "08-report-problem", name: "Report a problem", short: "Report", go: "report" },
     { n: "09", file: "09-inventory", name: "Inventory", short: "Inventory", go: "inventory" },
-    { n: "10", file: "10-gameplay-hud", name: "Gameplay HUD", short: "HUD", go: "hud" },
+    { n: "10", file: "10-gameplay-hud", name: "Gameplay HUD", short: "HUD", go: "hud", states: [["Taking damage", "10-gameplay-hud"], ["Healing", "10-gameplay-hud-healing"]] },
     { n: "11", file: "11-world-map", name: "World map", short: "Map", go: "map" },
     { n: "12", file: "12-lobby", name: "Main lobby", short: "Lobby", go: "lobby" },
     { n: "13", file: "13-loading", name: "Loading", short: "Loading", go: "loading" },
