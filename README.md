@@ -6,7 +6,9 @@ A static site that collects feedback sessions, ideas and design work for **Kong 
 - **Design system**: brand family, colour and type tokens, live components, layout templates, interaction rules and step-by-step implementation prompts. The full system downloads as Markdown and the logos download as PNGs or a zip.
 - **Playtest feedback · October 10, 2026**: all 13 redesigned screens as a playable prototype, with before/after comparisons and review notes for each screen.
 
-Live version: https://claude.ai/artifact/CnWrdJz7F4m1TmUMVdPv5e
+Live site: https://eoshunter.github.io/kong-royale-feedback/
+
+Also published as a Claude artifact: https://claude.ai/artifact/CnWrdJz7F4m1TmUMVdPv5e
 
 ## Run it locally
 
@@ -18,7 +20,7 @@ python -m http.server 8765
 
 Then open http://localhost:8765.
 
-It also works on GitHub Pages: Settings → Pages → deploy from the `main` branch, root folder.
+GitHub Pages serves the `main` branch root; every push to `main` redeploys the site.
 
 ## Layout
 
