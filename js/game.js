@@ -219,7 +219,7 @@ window.Game = (function () {
     new ResizeObserver(fit).observe(hostWrap); fit();
     applyGlobals();
     renderAll();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { placeInk($(".st-cats", L.over), 0, true); placeInk($(".st-sub", L.over), 40, true); placeInk($(".lb-nav", L.base), 0, true); const o = top(); if (o && o.id === "menu") placeVInk($(".mn", L.over), `.mn-item[data-i="${o.sel}"]`, 14, true); placeVInk($(".lc-list", L.over), "button.on", 8, true); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { placeInk($(".st-cats", L.over), 0, true); placeInk($(".st-sub", L.over), 40, true); placeInk($(".lb-nav", L.base), 0, true); const o = top(); if (o && o.id === "menu") placeVInk($(".mn", L.over), `.mn-item[data-i="${o.sel}"]`, 14, true); placeVInk($(".lc-list", L.over), "button.on", 8, true); placeLessonKeys(); });
   }
   let scale = 1;
   function fit() {
@@ -1157,7 +1157,7 @@ window.Game = (function () {
   }
   function lessonMainHtml(i, ruleFrom) {
     const ls = K.lessons[i], n = K.lessons.length;
-    return `<div class="prog">${i + 1} / ${n}</div><h1 class="k-display" style="${ls.t.length > 12 ? "font-size:92px" : ""}">${esc(ls.t)}</h1><div class="rule"><i style="width:${(ruleFrom == null ? i + 1 : ruleFrom) / n * 100}%"></i></div><p>${esc(ls.body)}</p>`;
+    return `<div class="prog">${i + 1} / ${n}</div><h1 class="k-display" style="font-size:${ls.t.length <= 6 ? 150 : ls.t.length <= 14 ? 112 : 92}px">${esc(ls.t)}</h1><div class="rule"><i style="width:${(ruleFrom == null ? i + 1 : ruleFrom) / n * 100}%"></i></div><p>${esc(ls.body)}</p>`;
   }
   function lessonActsHtml(i) { const n = K.lessons.length; return `${i > 0 ? `<button class="k-btn secondary" data-a="lprev" style="height:92px;min-width:0;width:92px;justify-content:center"><span class="arr">←</span></button>` : ""}<button class="k-btn primary" data-a="lnext">${i === n - 1 ? "Finish" : "Next"}<span class="arr">→</span></button>`; }
   function renderLearn(o, same) {
@@ -1170,7 +1170,7 @@ window.Game = (function () {
       const main = $(".lc-main", L.over), keys = $(".lc-keys", L.over);
       main.innerHTML = lessonMainHtml(i, prev + 1); keys.innerHTML = lessonKeys(ls);
       $(".lc-acts > div", L.over).innerHTML = lessonActsHtml(i);
-      swap(main); swap(keys);
+      placeLessonKeys(); swap(main); swap(keys);
       const bar = $(".rule i", main); requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = (i + 1) / n * 100 + "%"; }));
       return;
     }
@@ -1186,6 +1186,12 @@ window.Game = (function () {
         <div class="links"><button data-a="lskip">Skip guide</button><span class="sep"></span><button data-a="range">Practice in firing range</button></div>
       </div></div>`;
     placeVInk($(".lc-list", L.over), "button.on", 8, true);
+    placeLessonKeys();
+  }
+  // Keys sit below the lesson text, however many lines the title and body take.
+  function placeLessonKeys() {
+    const m = $(".lc-main", L.over), k = $(".lc-keys", L.over); if (!m || !k) return;
+    k.style.top = Math.max(640, m.offsetTop + m.offsetHeight + 48) + "px";
   }
   function lessonGo(j) { j = clamp(j, 0, K.lessons.length - 1); if (j === S.lesson) return; S.lesson = j; sfx.tick(); renderOver(); }
   function lessonNext() {

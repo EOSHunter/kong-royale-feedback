@@ -478,13 +478,13 @@
 .lc-list button.on span { color: var(--kong-accent); }
 .lc-list button { transition: color var(--kong-motion-standard); }
 .lc-list button.done::after { content: "✓"; position: absolute; right: 0; top: 16px; color: var(--kong-success); font-size: 18px; }
-.lc-main { position: absolute; left: 520px; top: 250px; width: 560px; }
+.lc-main { position: absolute; left: 520px; top: 220px; width: 620px; }
 .lc-main .prog { font-family: var(--k-label); font-weight: 600; font-size: 26px; }
 .lc-main h1 { margin: 8px 0 0; font-size: 150px; line-height: .86; }
 .lc-main .rule { position: relative; height: 1px; background: rgba(238,234,223,.35); margin: 34px 0 30px; width: 460px; }
 .lc-main .rule i { position: absolute; left: 0; top: -2px; height: 5px; background: var(--kong-accent); transition: width var(--kong-motion-standard) var(--kong-ease); }
 .lc-main p { margin: 0; font-size: calc(25px * var(--ts)); line-height: 1.45; max-width: 520px; text-shadow: 0 1px 8px rgba(0,0,0,.6); }
-.lc-keys { position: absolute; left: 560px; top: 700px; display: flex; gap: 60px; align-items: end; }
+.lc-keys { position: absolute; left: 520px; top: 700px; display: flex; gap: 60px; align-items: end; }
 .lc-keys .grp { display: grid; justify-items: center; gap: 22px; }
 .lc-keys .grp + .grp { padding-left: 60px; border-left: 1px solid rgba(238,234,223,.25); }
 .lc-keys .caps { display: grid; gap: 10px; justify-items: center; }
