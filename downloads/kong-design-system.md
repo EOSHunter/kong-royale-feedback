@@ -121,6 +121,8 @@ Minimap top left, compass top center, match stats top right, health/shield botto
 
 Damage and healing feedback: damage is always red, whether it hits shield or health. Show a red arc around the crosshair pointing at the shooter, a red glow on that screen edge, and a short flinch; below 30 health keep a slow red vignette. Blue is reserved for healing: a glow around every screen edge while a heal runs, with health refilling gradually. Taking damage interrupts the heal and ends the blue glow.
 
+Enemy hit numbers: hits on shield show a small shield icon in shield blue beside the number; the hit that empties the shield shows a larger cracked shield icon, a "Shield broken" confirmation and a distinct crack sound. Health hits are plain white numbers.
+
 Match stats are two rows of slanted translucent chips. Row one is match state: squads left (squad modes) and players left. Row two is the player's contribution: kills and damage, plus assists and combined squad kills in squad modes. A Match stats setting offers Auto, Personal, Squad and Hidden; Auto shows Squad in squad modes. Changed numbers pop briefly in saffron, and Eliminated / Assist confirmations appear briefly under the crosshair. Prefer typography and short gradient backplates to a collection of framed HUD cards. Use the same safe-area settings. Keep the center clear. Optional diagnostics occupy one dedicated region, hidden by default.
 
 ### Map shell

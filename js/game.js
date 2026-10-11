@@ -204,7 +204,8 @@ window.Game = (function () {
     empty() { tone(2400, 0.02, "square", 0.2, "combat"); },
     hit() { const m = S.set.hitMarker; if (m === "Off") return; if (m === "Classic") tone(900, 0.07, "square", 0.35, "combat"); else { tone(1500, 0.05, "sine", 0.6, "combat"); later(() => tone(2100, 0.04, "sine", 0.35, "combat"), 30); } },
     reload() { noise(0.05, 0.6, "combat", 4000); later(() => noise(0.06, 0.7, "combat", 3000), 700); },
-    hurt() { tone(220, 0.2, "sawtooth", 0.25, "combat", 110); }
+    hurt() { tone(220, 0.2, "sawtooth", 0.25, "combat", 110); },
+    crack() { noise(0.09, 1.1, "combat", 6000); tone(1800, 0.05, "square", 0.25, "combat", 700); later(() => { noise(0.06, 0.7, "combat", 3500); tone(900, 0.12, "triangle", 0.3, "combat", 300); }, 50); }
   };
 
   /* ------------------------------------------------------------------
@@ -597,6 +598,15 @@ window.Game = (function () {
     raf = requestAnimationFrame(loop);
   }
   const fire = { down: false, last: 0 };
+  const TSHIELD = 50;
+  const SHIELD_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l8 3v6c0 5.2-3.4 9.4-8 11-4.6-1.6-8-5.8-8-11V5l8-3z"/></svg>';
+  const CRACK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l8 3v6c0 5.2-3.4 9.4-8 11-4.6-1.6-8-5.8-8-11V5l8-3z"/><path d="M12.5 3.5l-2 5 3 2.5-3.5 4 2 2.5-1.5 3.5" fill="none" stroke="#101719" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+  function hitNumber(n, kind) {
+    const hud = L.hud.firstElementChild; if (!hud) return;
+    const d = document.createElement("div"); d.className = "dmgnum " + kind;
+    d.innerHTML = (kind === "shield" ? `<i class="dn-ic">${SHIELD_SVG}</i>` : kind === "break" ? `<i class="dn-ic">${CRACK_SVG}</i>` : "") + `<b>${n}</b>`;
+    d.style.left = 990 + Math.random() * 30 + "px"; d.style.top = 470 + "px"; hud.appendChild(d); setTimeout(() => d.remove(), kind === "break" ? 1100 : 720);
+  }
   function shoot() {
     fire.last = now();
     const w = S.equipped ? K.items[S.equipped] : null; if (!w) return;
@@ -614,10 +624,14 @@ window.Game = (function () {
     if (hit) {
       S.stats.hits++; S.stats.dmg += w.damage; sfx.hit();
       const ti = TARGETS.indexOf(hit), M = S.match; M.dmg += w.damage; M.lastHit = now();
-      M.tHp[ti] = (M.tHp[ti] || 0) + w.damage; bumpStat("dmg");
-      if (M.tHp[ti] >= 100) { M.tHp[ti] = 0; M.kills++; M.squadKills++; bumpStat("kills"); bumpStat("squadKills"); if (S.mode === "match" && M.alive > 2) { M.alive--; bumpStat("alive"); } later(() => tone(520, 0.12, "triangle", 0.4, "combat", 880), 60); flashLabel("Eliminated"); }
+      // Targets have 50 shield then 100 health. Shield hits show a shield icon; the hit that
+      // empties the shield shows a cracked shield icon with its own crack sound.
+      const prev = M.tHp[ti] || 0, onShield = prev < TSHIELD, breaks = onShield && prev + w.damage >= TSHIELD;
+      M.tHp[ti] = prev + w.damage; bumpStat("dmg");
+      hitNumber(w.damage, breaks ? "break" : onShield ? "shield" : "health");
+      if (breaks) { sfx.crack(); flashLabel("Shield broken"); }
+      if (M.tHp[ti] >= TSHIELD + 100) { M.tHp[ti] = 0; M.kills++; M.squadKills++; bumpStat("kills"); bumpStat("squadKills"); if (S.mode === "match" && M.alive > 2) { M.alive--; bumpStat("alive"); } later(() => tone(520, 0.12, "triangle", 0.4, "combat", 880), 60); flashLabel("Eliminated"); }
       hudEls.hit.classList.remove("show"); void hudEls.hit.offsetWidth; hudEls.hit.classList.add("show");
-      const d = document.createElement("div"); d.className = "dmgnum"; d.textContent = w.damage; d.style.left = 990 + (Math.random() * 30) + "px"; d.style.top = 470 + "px"; L.hud.firstElementChild.appendChild(d); setTimeout(() => d.remove(), 720);
       if (!S.hints.fire) { S.hints.fire = true; renderHints(); }
     }
     updateHud();
