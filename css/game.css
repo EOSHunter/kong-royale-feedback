@@ -695,3 +695,6 @@
 @keyframes dn-crack { 0% { transform: scale(.4) rotate(-12deg); } 60% { transform: scale(1.25) rotate(6deg); } 100% { transform: scale(1); } }
 .k-card:not(.empty) { grid-template-rows: auto minmax(0, 1fr) auto auto; }
 .k-card .art { overflow: hidden; }
+/* Empty layers must not swallow clicks: only their content is interactive. */
+#k-hud, #k-over { pointer-events: none; }
+#k-over > * { pointer-events: auto; }
