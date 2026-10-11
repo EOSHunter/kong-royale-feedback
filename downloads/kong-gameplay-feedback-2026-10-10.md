@@ -8,6 +8,8 @@ Ret played the match and called out damage, flinch and damage direction. Opus 5.
 
 Recording: https://drive.google.com/drive/folders/1LZDH-K8rVLhZFXK-hI5XCqMCnL3icMqc?usp=sharing
 
+Note: the recording was capped at 30 FPS by the player, so frame rate is not listed as a finding.
+
 ## Combat and time to kill
 
 ### Guns kill too fast
@@ -50,13 +52,13 @@ Recording: https://drive.google.com/drive/folders/1LZDH-K8rVLhZFXK-hI5XCqMCnL3ic
 
 **Suggestion:** Shorten heal animations, lower the held item so the centre stays clear, allow slow walking, and let fire or jump cancel the heal and refund the item.
 
-### Hit feedback is good; split shield and health hits
+### Make shield hits and shield breaks obvious
 
-**Priority:** Low · **From:** Opus 5.5 · **When:** 9:20
+**Priority:** Medium · **From:** Ret + Opus 5.5 · **When:** 9:20
 
-**What we saw:** Damage numbers, the kill banner and the medals (Wrecked, Double kill at 9:20) read well and feel rewarding. Shield and health hits on enemies look the same, though.
+**What we saw:** Damage numbers, the kill banner and the medals (Wrecked, Double kill at 9:20) read well and feel rewarding. The game already separates shield and health hits on enemies, but the difference is too subtle to notice mid-fight, so players can't tell when an enemy's shield is gone and it's time to push.
 
-**Suggestion:** Show a short shield-break icon and sound when an enemy's shield is gone, and colour damage numbers cyan for shield and white for health.
+**Suggestion:** Show a small shield icon next to the damage number while hits land on shield, and a cracked shield icon with a distinct crack sound at the moment the shield breaks. After the break, damage numbers return to plain white for health.
 
 ## Crosshair and visibility
 
@@ -118,15 +120,7 @@ Recording: https://drive.google.com/drive/folders/1LZDH-K8rVLhZFXK-hI5XCqMCnL3ic
 
 **Suggestion:** Raise the passenger camera, hide or fade the canopy and dashboard in first person, and snap seated characters to their seats.
 
-## Match flow and performance
-
-### The game runs at 30 FPS
-
-**Priority:** Medium · **From:** Opus 5.5 · **When:** Whole match
-
-**What we saw:** The performance overlay reads 30 FPS for the whole match. For a shooter, 30 FPS makes aim and tracking feel heavy and adds input delay.
-
-**Suggestion:** Check whether this is a frame cap or a real limit. Target 60 FPS on the recording machine and offer a frame rate limit setting.
+## Match flow
 
 ### The players-left count goes up
 

@@ -459,7 +459,7 @@
           <div class="btnrow"><a class="btn primary" href="#play-lobby">Start at the lobby <span class="arrow">→</span></a><a class="btn" href="#play-hud">Jump into the range</a></div>
           <p class="muted" style="font-size:13px">Best on desktop with a mouse and keyboard. Use Compare in the player to overlay the concept image or the original screenshot.</p>
         </div>
-        <button class="launch-art" data-go="lobby" aria-label="Open the prototype at the lobby"><img src="img/after/12-lobby.jpg" alt=""><span class="btn primary play">Play <span class="arrow">→</span></span></button>
+        <button class="launch-art" data-go="hud" aria-label="Open the prototype in the firing range"><img src="img/after/10-gameplay-hud.jpg" alt=""><span class="btn primary play">Play <span class="arrow">→</span></span></button>
       </section>
 
       <section class="section" id="pt-themes" style="margin-top:48px">
@@ -541,7 +541,7 @@
         <div class="crumbs"><a href="#home">Sessions</a> / Opus 5.5 feedback</div>
         <div class="eyebrow">Playtester review · Oct 10, 2026 match</div>
         <h1 class="display">Opus 5.5<br>feedback</h1>
-        <p>Opus 5.5 acted as a playtester and reviewed RET's gameplay recording from the October 10 playtest. The menu and HUD redesign is covered on the session page, so this review is only about how the game plays: combat, time to kill, crosshairs, damage, collision and performance.</p>
+        <p>Opus 5.5 acted as a playtester and reviewed RET's gameplay recording from the October 10 playtest. The menu and HUD redesign is covered on the session page, so this review is only about how the game plays: combat, time to kill, crosshairs, damage, collision and match flow.</p>
         <div class="btnrow"><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">▶ Watch the recording ↗</a>${dlBtn(K.downloads.gameplay, "All findings as Markdown")}</div>
       </section>
     </div>
@@ -552,7 +552,7 @@
       <section class="section" id="op-method">
         <div class="section-head"><div class="eyebrow">Method</div><h2 class="display">How I reviewed it</h2></div>
         <div class="gp-summary">${O.method.map(([n, t]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join("")}</div>
-        <p class="muted" style="font-size:14px;max-width:72ch;margin-top:14px">I could only judge what shows on screen. Hit boxes, weapon stats and server-side numbers were read off damage markers and the health and shield bars, so treat the exact figures as estimates to confirm in the game's data.</p>
+        <p class="muted" style="font-size:14px;max-width:72ch;margin-top:14px">The recording was capped at 30 FPS by Ret, so frame rate is not a finding. I could only judge what shows on screen. Hit boxes, weapon stats and server-side numbers were read off damage markers and the health and shield bars, so treat the exact figures as estimates to confirm in the game's data.</p>
       </section>
 
       <section class="section" id="op-verdict">

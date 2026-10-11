@@ -41,9 +41,9 @@ window.GAMEPLAY = {
           time: "7:24–7:28 · 11:10–11:20", img: "shot-while-healing"
         },
         {
-          pri: "Low", who: "Opus 5.5", title: "Hit feedback is good; split shield and health hits",
-          what: "Damage numbers, the kill banner and the medals (Wrecked, Double kill at 9:20) read well and feel rewarding. Shield and health hits on enemies look the same, though.",
-          fix: "Show a short shield-break icon and sound when an enemy's shield is gone, and colour damage numbers cyan for shield and white for health.",
+          pri: "Medium", who: "Ret + Opus 5.5", title: "Make shield hits and shield breaks obvious",
+          what: "Damage numbers, the kill banner and the medals (Wrecked, Double kill at 9:20) read well and feel rewarding. The game already separates shield and health hits on enemies, but the difference is too subtle to notice mid-fight, so players can't tell when an enemy's shield is gone and it's time to push.",
+          fix: "Show a small shield icon next to the damage number while hits land on shield, and a cracked shield icon with a distinct crack sound at the moment the shield breaks. After the break, damage numbers return to plain white for health.",
           time: "9:20", img: "medals"
         }
       ]
@@ -99,13 +99,7 @@ window.GAMEPLAY = {
       ]
     },
     {
-      id: "flow", title: "Match flow and performance", items: [
-        {
-          pri: "Medium", who: "Opus 5.5", title: "The game runs at 30 FPS",
-          what: "The performance overlay reads 30 FPS for the whole match. For a shooter, 30 FPS makes aim and tracking feel heavy and adds input delay.",
-          fix: "Check whether this is a frame cap or a real limit. Target 60 FPS on the recording machine and offer a frame rate limit setting.",
-          time: "Whole match", img: "black-helicopter"
-        },
+      id: "flow", title: "Match flow", items: [
         {
           pri: "Low", who: "Opus 5.5", title: "The players-left count goes up",
           what: "Early on the alive count rises (42 at 1:00, 44 at 1:04, 45 at 1:20) because of Resurgence respawns. Without context it looks like a bug. Later the HUD correctly says Resurgence is off and kills are final.",
@@ -128,8 +122,8 @@ window.GAMEPLAY.opus = {
   method: [
     ["189", "frames sampled, one every 4 seconds across the 12:36 recording"],
     ["3", "fights stepped through at 2 frames a second (1:36, 7:16, 10:48)"],
-    ["16", "findings, each tied to a timestamp and a frame"],
-    ["13", "findings raised by Opus 5.5; 3 by Ret, one of them jointly"]
+    ["15", "findings, each tied to a timestamp and a frame"],
+    ["11", "raised by Opus 5.5 alone; 2 by Ret and 2 together"]
   ],
   verdict: "Kong Royale already has the hard parts of a battle royale working: a readable island, fast rotations, clear storm pacing and kills that feel rewarding. What holds it back is how fights resolve. Players die before they can tell where they are being shot from, and nothing slows the player who is losing a fight. Fixing time to kill, flinch and damage direction together will change the game more than any other single pass.",
   strengths: [
@@ -142,13 +136,11 @@ window.GAMEPLAY.opus = {
   risks: [
     "Time to kill around one second makes fights feel random to newer players.",
     "No damage direction or flinch means the player being shot has no way to react.",
-    "Foliage and fruit bags at The Plantation give one-sided concealment.",
-    "A locked 30 FPS makes aiming feel heavy, which amplifies the time-to-kill problem."
+    "Foliage and fruit bags at The Plantation give one-sided concealment."
   ],
   order: [
     ["Damage feedback", "Add the directional arc, edge glow and flinch. They are cheap and make every other combat change easier to judge. A working demo is in the firing range (press K)."],
     ["Time to kill", "Cut body damage 20–30% and add range falloff, then replay the same squads and compare."],
-    ["Frame rate", "Find what holds the game at 30 FPS and aim for 60 before tuning aim feel."],
     ["Collision pass", "Plantation plants and bags, the rock cliffs near Banana Split, boulders and the tuk-tuk camera."],
     ["Readability", "Crosshair outline, sight pictures, temple lighting and the helicopter material."]
   ],
