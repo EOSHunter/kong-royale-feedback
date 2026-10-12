@@ -119,5 +119,42 @@ window.KONG = (function () {
     ["One brand master", "One KONG wordmark; ROYALE and OF DUTY are descriptors under it, never redrawn."]
   ];
 
-  return { screens, recording, v2screens, downloads, logos, colors, typeRoles, defaultBindings, bindingLabels, lessons, tips, items, themes };
+  // Toon design system: clean but cartoonish, built on the original Kong Royale colours.
+  const toon = {
+    colors: [
+      ["background", "--kong-bg", "#071422", "Deep navy foundation, from the original menus"],
+      ["surface", "--kong-surface", "#0E2A3D", "Panels, tiles and dialogs"],
+      ["surface-raised", "--kong-surface-raised", "#17405A", "Hover, selected tiles, secondary buttons"],
+      ["outline", "--kong-outline", "#04101A", "Thick outlines and hard drop shadows"],
+      ["text-primary", "--kong-text", "#FFF8E7", "Labels, headings, values"],
+      ["text-secondary", "--kong-text-muted", "#A9C6DA", "Descriptions, inactive tabs"],
+      ["banana", "--kong-accent", "#FFD21A", "Primary action, selection, health"],
+      ["banana-shade", "--kong-accent-shade", "#F2B800", "Bottom of the yellow gradient"],
+      ["sky", "--kong-sky", "#4FB6EA", "Lobby sky and friendly highlights"],
+      ["shield", "--kong-shield", "#3EC4FF", "Shield bar and shield hit icons"],
+      ["success", "--kong-success", "#5BE37D", "Saved, connected, switch on"],
+      ["warning", "--kong-warning", "#FF9F1C", "Match continues, caution"],
+      ["danger", "--kong-danger", "#FF4D5E", "Errors, Leave match, damage"],
+      ["common", "--kong-rarity-common", "#4CC35A", "Common item cards"],
+      ["rare", "--kong-rarity-rare", "#2F8BFF", "Rare item cards"]
+    ],
+    typeRoles: [
+      ["Lobby display", "110 / 100", "Lilita One + 6px outline", "display", 110, "Rule the island!"],
+      ["Page title", "88 / 92", "Lilita One + 5px outline", "title", 88, "Settings"],
+      ["Context heading", "32 / 36", "Lilita One", "ctx", 32, "Mouse sensitivity"],
+      ["Control label", "21 / 28", "Nunito ExtraBold", "label", 21, "Aim sensitivity"],
+      ["Body / help", "19 / 28", "Nunito SemiBold", "body", 19, "Higher values feel faster, lower values give more precise control."],
+      ["Tabs & pills", "17 / 22", "Nunito Black", "nav", 17, "Mouse & keyboard   Controller   Audio"],
+      ["Supporting text", "16 / 22", "Nunito Bold", "support", 16, "Saved on this device"],
+      ["Keycap", "17 / 20", "Nunito Black", "key", 17, "ESC"],
+      ["HUD number", "40 / 44", "Lilita One + 4px outline", "hud", 40, "100   30 / 300"]
+    ],
+    downloads: {
+      designMd: { path: "downloads/kong-design-system-toon.md", name: "kong-design-system-toon.md", label: "Toon design system", size: "12 KB" },
+      prompts: { path: "downloads/kong-implementation-prompts-toon.md", name: "kong-implementation-prompts-toon.md", label: "Toon implementation prompts", size: "12 KB" },
+      tokens: { path: "downloads/kong-toon-tokens.css", name: "kong-toon-tokens.css", label: "Toon tokens", size: "2 KB" }
+    }
+  };
+
+  return { toon, screens, recording, v2screens, downloads, logos, colors, typeRoles, defaultBindings, bindingLabels, lessons, tips, items, themes };
 })();

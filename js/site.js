@@ -5,6 +5,23 @@
   const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const view = $("#view");
+  /* Design system switch: Premium (v3) or Toon (original colours, cartoon feel). */
+  const TOON = () => document.documentElement.dataset.ds === "toon";
+  const T = (premium, toon) => (TOON() ? toon : premium);
+  const AFTER = (f) => `img/${TOON() ? "toon" : "after"}/${f}.jpg`;
+  const DSD = () => (TOON() ? Object.assign({}, K.downloads, K.toon.downloads) : K.downloads);
+  const dsSel = document.getElementById("ds-switch");
+  if (dsSel) {
+    dsSel.value = TOON() ? "toon" : "premium";
+    dsSel.addEventListener("change", () => {
+      const v = dsSel.value === "toon" ? "toon" : "premium";
+      document.documentElement.dataset.ds = v;
+      try { localStorage.setItem("kong-ds", v); } catch (e) { }
+      const y = window.scrollY; view.dataset.page = ""; route(); window.scrollTo(0, y);
+      if (!document.getElementById("player").hidden && window.Game) Game.go(Game.currentKey());
+      siteToast(v === "toon" ? "Toon design system" : "Premium design system");
+    });
+  }
   const DL_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg>';
 
   /* ---------------- toast ---------------- */
@@ -156,14 +173,15 @@
         <article class="ds-feature">
           <a class="ds-feature-art" href="#design-system" aria-label="Open the Kong Royale design system">
             <img class="lockup" src="img/brand/kong-royale-lockup.png" alt="Kong Royale">
-            <div class="ds-swatches">${["#101719", "#172022", "#253033", "#465052", "#EEEADF", "#A5B1A4", "#EABC39", "#58BCEB", "#7AD7A5", "#FF8C88"].map((c) => `<span style="background:${c}"></span>`).join("")}</div>
+            <div class="ds-swatches">${(TOON() ? ["#071422", "#0E2A3D", "#17405A", "#04101A", "#FFF8E7", "#A9C6DA", "#FFD21A", "#4FB6EA", "#3EC4FF", "#4CC35A", "#2F8BFF", "#FF4D5E"] : ["#101719", "#172022", "#253033", "#465052", "#EEEADF", "#A5B1A4", "#EABC39", "#58BCEB", "#7AD7A5", "#FF8C88"]).map((c) => `<span style="background:${c}"></span>`).join("")}</div>
           </a>
           <div class="ds-feature-body">
-            <div class="eyebrow plain">Premium v3 · proposed</div>
-            <h3 class="display">Kong Royale design system</h3>
-            <p>Brand family, colour and type tokens, live components, layout templates, interaction rules and step-by-step prompts for implementing it in the game.</p>
+            <div class="eyebrow plain">${T("Premium v3 · proposed", "Toon · original colours")}</div>
+            <h3 class="display">${T("Kong Royale design system", "Kong Royale Toon design system")}</h3>
+            <p>${T("Brand family, colour and type tokens, live components, layout templates, interaction rules and step-by-step prompts for implementing it in the game.", "The original Kong Royale colours made clean and chunky: banana yellow, deep navy, thick outlines and bouncy buttons. Same components and layouts as Premium, with its own tokens, prompts and prototype skin.")}</p>
+            <p class="muted" style="font-size:13px">Switch between Premium and Toon with the Design system menu at the top. The whole site and the prototype follow it.</p>
             <div class="btnrow"><a class="btn primary" href="#design-system">Open design system <span class="arrow">→</span></a></div>
-            <div class="dlbar">${dlBtn(K.downloads.designMd)}${dlBtn(K.downloads.logosZip)}</div>
+            <div class="dlbar">${dlBtn(DSD().designMd)}${dlBtn(K.downloads.logosZip)}</div>
           </div>
         </article>
       </section>
@@ -186,7 +204,7 @@
               <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="tag live">Interactive</span><span class="tag">14 screens</span><span class="tag">Recording</span><span class="tag">Gameplay feedback</span><span class="tag">Brand family</span></div>
               <h3 class="display"><a href="#playtest-2026-10-10">Playtest feedback · October 10, 2026</a></h3>
               <p>A full redesign pass over the 14 screens captured in the playtest: settings, match menu, report, learn controls, inventory, HUD, map, lobby, loading and match results. Each screen has the original screenshot, the premium concept, the review notes and a playable version.</p>
-              <div class="thumbstrip">${thumbs.map((f) => `<a href="#screen-${f.slice(0, 2)}" aria-label="${f}"><img src="img/after/${f}.jpg" alt="" loading="lazy"></a>`).join("")}<a class="more" href="#playtest-2026-10-10">+9 more</a></div>
+              <div class="thumbstrip">${thumbs.map((f) => `<a href="#screen-${f.slice(0, 2)}" aria-label="${f}"><img src="${AFTER(f)}" alt="" loading="lazy"></a>`).join("")}<a class="more" href="#playtest-2026-10-10">+9 more</a></div>
               <div class="btnrow"><a class="btn primary" href="#playtest-2026-10-10">View suggestions <span class="arrow">→</span></a><a class="btn" href="#pt-screens">See the screens</a><a class="btn" href="#play-lobby">Play the prototype</a><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">Watch RET's recording ↗</a></div>
               <div>
                 <div class="eyebrow plain" style="margin:8px 0 4px">Attached</div>
@@ -215,19 +233,20 @@
      DESIGN SYSTEM
   ===================================================================== */
   function renderDS() {
-    const D = K.downloads;
+    const D = DSD(), DS = TOON() ? K.toon : K;
     const typeSample = (r) => {
       const [name, size, weight, kind, px, text] = r;
-      const st = { display: `font-family:var(--f-display);font-stretch:72%;font-weight:850;text-transform:uppercase;font-size:${px * 0.75}px;line-height:1`, title: `font-family:var(--f-display);font-stretch:78%;font-weight:850;font-size:${px * 0.75}px;line-height:1.1`, ctx: `font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:${px}px`, label: `font-size:${px}px;font-weight:500`, body: `font-size:${px}px;line-height:1.5;color:var(--muted)`, nav: `font-family:var(--f-label);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:${px}px;white-space:pre`, support: `font-size:${px}px;color:var(--muted)`, key: "", hud: `font-family:var(--f-display);font-stretch:85%;font-weight:800;font-size:${px}px` }[kind];
+      const outline = TOON() ? "font-weight:400;font-stretch:normal;-webkit-text-stroke:5px #04101A;paint-order:stroke fill;text-shadow:0 4px 0 #04101A;" : "";
+      const st = TOON() ? { display: `font-family:var(--f-display);${outline}text-transform:uppercase;font-size:${px * 0.7}px;line-height:1`, title: `font-family:var(--f-display);${outline}font-size:${px * 0.7}px;line-height:1.1`, ctx: `font-family:var(--f-display);font-size:${px}px`, label: `font-size:${px}px;font-weight:800`, body: `font-size:${px}px;font-weight:600;line-height:1.5;color:var(--muted)`, nav: `font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:${px}px;white-space:pre`, support: `font-size:${px}px;font-weight:700;color:var(--muted)`, key: "", hud: `font-family:var(--f-display);${outline.replace("5px", "4px")}font-size:${px}px` }[kind] : { display: `font-family:var(--f-display);font-stretch:72%;font-weight:850;text-transform:uppercase;font-size:${px * 0.75}px;line-height:1`, title: `font-family:var(--f-display);font-stretch:78%;font-weight:850;font-size:${px * 0.75}px;line-height:1.1`, ctx: `font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:${px}px`, label: `font-size:${px}px;font-weight:500`, body: `font-size:${px}px;line-height:1.5;color:var(--muted)`, nav: `font-family:var(--f-label);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:${px}px;white-space:pre`, support: `font-size:${px}px;color:var(--muted)`, key: "", hud: `font-family:var(--f-display);font-stretch:85%;font-weight:800;font-size:${px}px` }[kind];
       const sample = kind === "key" ? `<span class="k-scope"><span class="k-key">Esc</span> <span class="k-key">Shift</span> <span class="k-key">R</span></span>` : `<span style="${st}">${esc(text)}</span>`;
-      return `<div class="typerow"><div class="spec"><b>${name}</b>${size} · ${weight}${kind === "display" || kind === "title" ? " · shown at 75%" : ""}</div><div class="sample">${sample}</div></div>`;
+      return `<div class="typerow"><div class="spec"><b>${name}</b>${size} · ${weight}${kind === "display" || kind === "title" ? T(" · shown at 75%", " · shown at 70%") : ""}</div><div class="sample">${sample}</div></div>`;
     };
     view.innerHTML = `
     <div class="wrap">
       <section class="page-hero">
         <div class="crumbs"><a href="#home">Sessions</a> / Design system</div>
-        <h1 class="display">Kong Royale<br>design system</h1>
-        <p>Premium v3. Calm, readable, predictable interface; the gorillas, banana weapons and island art carry the personality. These rules and tokens are the source of truth wherever a concept image disagrees.</p>
+        <h1 class="display">${T("Kong Royale<br>design system", "Kong Royale<br>Toon system")}</h1>
+        <p>${T("Premium v3. Calm, readable, predictable interface; the gorillas, banana weapons and island art carry the personality. These rules and tokens are the source of truth wherever a concept image disagrees.", "Toon. The original Kong Royale colours, made clean and chunky: banana yellow on deep navy, thick dark outlines, hard drop shadows, rounded pills and springy motion. Playful like the game, still easy to read. Same components, layouts and rules as Premium, with its own look.")}</p>
         <div class="dlbar">${dlBtn(D.designMd, "Full system as Markdown")}${dlBtn(D.logosZip, "SVG + PNG")}${dlBtn(D.prompts, "8 staged prompts")}${dlBtn(D.tokens, "CSS custom properties")}</div>
       </section>
     </div>
@@ -250,33 +269,38 @@
         <ul class="rules">
           <li><b>Stacked lockup.</b> Descriptor cap height ≈ 16% of KONG cap height; gap ≈ 14%.</li>
           <li><b>Clear space.</b> At least 25% of the KONG cap height on every side.</li>
-          <li><b>Colour.</b> Saffron KONG with ivory descriptor on navy; single navy mark on light surfaces.</li>
+          <li><b>Colour.</b> ${T("Saffron KONG with ivory descriptor on navy; single navy mark on light surfaces.", "Banana KONG with ivory descriptor on navy. In Toon the mark carries a 3px dark outline and a hard 6px drop so it pops off art.")}</li>
           <li><b>Small sizes.</b> Test full lockups from 160 px wide. Below that, use the KONG master or the brow icon.</li>
           <li><b>Where it appears.</b> Full brand on lobby and loading; compact in settings; omitted from in-match dialogs.</li>
-          <li><b>Never.</b> Extrusion, bevels, crowns, planks, gradients or foliage attached to the mark.</li>
+          <li><b>Never.</b> ${T("Extrusion, bevels, crowns, planks, gradients or foliage attached to the mark.", "Deep 3D extrusion, bevels, crowns, planks or foliage. The outline and one hard drop are the only effects.")}</li>
         </ul>
       </section>
 
       <section class="section" id="ds-color">
-        <div class="section-head"><div class="eyebrow">Colour tokens</div><h2 class="display">Charcoal, bone, saffron</h2><p>Saffron marks the one primary action or the active selection. Status colours always travel with a label or icon; rarity always has a text label. Select a swatch to copy its token.</p></div>
-        <div class="swatches">${K.colors.map(([n, v, hex, use]) => `<button class="swatch" data-copy="var(${v})"><span class="chip" style="background:${hex}"></span><span class="info"><span class="name">${v}</span><span class="hex">${hex} · ${n}</span><span class="use">${esc(use)}</span></span></button>`).join("")}</div>
+        <div class="section-head"><div class="eyebrow">Colour tokens</div><h2 class="display">${T("Charcoal, bone, saffron", "Navy, banana, sky")}</h2><p>${T("Saffron marks the one primary action or the active selection. Status colours always travel with a label or icon; rarity always has a text label. Select a swatch to copy its token.", "Taken from the original game: the deep navy menus, the banana-yellow logo and buttons, the lobby sky. Yellow is still the primary action and the selection. Everything interactive sits on a #04101A outline. Rarity colours fill the whole item card, like the original. Select a swatch to copy its token.")}</p></div>
+        <div class="swatches">${DS.colors.map(([n, v, hex, use]) => `<button class="swatch" data-copy="var(${v})"><span class="chip" style="background:${hex}"></span><span class="info"><span class="name">${v}</span><span class="hex">${hex} · ${n}</span><span class="use">${esc(use)}</span></span></button>`).join("")}</div>
         <p class="muted" style="font-size:14px;margin-top:16px">Candidate values. Measure contrast on the real rendered backgrounds, including transparency and focus states.</p>
       </section>
 
       <section class="section" id="ds-type">
-        <div class="section-head"><div class="eyebrow">Typography</div><h2 class="display">Two families, nine roles</h2><p>Changa One, a chunky rounded display face, for titles and big numbers; Barlow, a readable UI sans, for labels, descriptions and navigation. Sizes are logical pixels on the 1920×1080 reference canvas. Uppercase with tracking only for short navigation and eyebrows; sentence case everywhere else. Tabular numerals throughout.</p></div>
-        <div class="typescale">${K.typeRoles.map(typeSample).join("")}</div>
-        <p class="muted" style="font-size:14px;margin-top:16px">Headings use <b>Changa One</b>; interface text uses <b>Barlow</b> and <b>Barlow Semi Condensed</b>. All three are free Google Fonts (SIL Open Font License), so they can be bundled with the game.</p>
+        <div class="section-head"><div class="eyebrow">Typography</div><h2 class="display">Two families, nine roles</h2><p>${T("Changa One, a chunky rounded display face, for titles and big numbers; Barlow, a readable UI sans, for labels, descriptions and navigation.", "Lilita One, a bold rounded cartoon face, for titles and big numbers, always with a dark outline and a hard drop; Nunito, a rounded sans in ExtraBold and Black, for labels, tabs and help text.")} Sizes are logical pixels on the 1920×1080 reference canvas. Uppercase with tracking only for short navigation and eyebrows; sentence case everywhere else. Tabular numerals throughout.</p></div>
+        <div class="typescale">${DS.typeRoles.map(typeSample).join("")}</div>
+        <p class="muted" style="font-size:14px;margin-top:16px">${T("Headings use <b>Changa One</b>; interface text uses <b>Barlow</b> and <b>Barlow Semi Condensed</b>.", "Headings use <b>Lilita One</b> with a 4–6px #04101A outline painted behind the fill; interface text uses <b>Nunito</b> at 700–900.")} All are free Google Fonts (SIL Open Font License), so they can be bundled with the game.</p>
       </section>
 
       <section class="section" id="ds-space">
-        <div class="section-head"><div class="eyebrow">Spacing & shape</div><h2 class="display">An 8-point rhythm, nearly square corners</h2><p>Screen safe area 48 px. Panel padding 24, dialog padding 32, column gutters 24. Controls 48 tall, major actions 56. Settings rows start at 80.</p></div>
+        <div class="section-head"><div class="eyebrow">Spacing & shape</div><h2 class="display">${T("An 8-point rhythm, nearly square corners", "An 8-point rhythm, big friendly corners")}</h2><p>${T("Screen safe area 48 px. Panel padding 24, dialog padding 32, column gutters 24. Controls 48 tall, major actions 56. Settings rows start at 80.", "Same spacing scale and safe areas as Premium. Shapes are rounded and outlined: pills for tabs and choices, 16px buttons, 18px tiles, 22–26px panels, each with a 3–4px dark outline and a hard drop shadow that collapses when pressed.")}</p></div>
         <div class="spacing">${[4, 8, 12, 16, 24, 32, 48, 64].map((n) => `<div class="row"><span>${n}px</span><span class="bar" style="width:${n * 4}px;max-width:100%"></span></div>`).join("")}</div>
         <div class="shape-demos">
+${TOON() ? `
+          <div><div class="demo" style="border-radius:16px;border:4px solid #04101A;box-shadow:0 6px 0 #04101A;background:linear-gradient(180deg,#FFE45C,#F2B800)"></div><b>Button · 16px + 4px outline</b><span class="muted">Hard 6px drop, collapses to 1px when pressed</span></div>
+          <div><div class="demo" style="border-radius:999px;border:3px solid #04101A;box-shadow:0 4px 0 #04101A;background:#12344B"></div><b>Pill · fully round</b><span class="muted">Tabs, mode choices, chips, keycap rows</span></div>
+          <div><div class="demo" style="border-radius:18px;border:3px solid #04101A;box-shadow:0 5px 0 #04101A;background:#0E2A3D"></div><b>Tile · 18px</b><span class="muted">Settings rows, stats, legend blocks</span></div>
+          <div><div class="demo" style="border-radius:24px;border:4px solid #04101A;box-shadow:0 8px 0 #04101A;background:#0E2A3D;outline:4px solid #fff;outline-offset:3px"></div><b>Panel 24px · white focus</b><span class="muted">4px white ring, 3px offset</span></div>` : `
           <div><div class="demo" style="border-radius:2px"></div><b>Control radius · 2px</b><span class="muted">Buttons, inputs, keycaps</span></div>
           <div><div class="demo" style="border-radius:4px"></div><b>Panel radius · 4px</b><span class="muted">Dialogs, only where a panel is needed</span></div>
           <div><div class="demo" style="border-radius:2px;outline:2px solid var(--text);outline-offset:2px"></div><b>Focus · 2px + 2px offset</b><span class="muted">Ivory, always visible on keyboard and controller</span></div>
-          <div><div class="demo" style="border:0;border-bottom:1px solid var(--rule-strong);background:none"></div><b>Rules · 1px</b><span class="muted">Rows are continuous, never individual cards</span></div>
+          <div><div class="demo" style="border:0;border-bottom:1px solid var(--rule-strong);background:none"></div><b>Rules · 1px</b><span class="muted">Rows are continuous, never individual cards</span></div>`}
         </div>
       </section>
 
@@ -293,7 +317,7 @@
             ["Gameplay", "Minimap top-left, compass top-centre, match stats top-right (squads and players left, then kills, assists, squad kills and damage), health and shield bottom-left, ammo and slots bottom-right. Centre stays clear.", "hud.match", "10-gameplay-hud"],
             ["Map", "Map dominates. Header shows match state and Close. Legend is a bounded side panel; marker actions live in a bottom keycap strip. Unrelated HUD hides.", "map", "11-world-map"],
             ["Lobby, loading & results", "Artwork leads. Moderate brand lockup, editorial display type, one clear action or progress state, unboxed groups, contextual hints. Match results uses the same shell.", "results", "14-match-results"]]
-            .map(([t, d, go, img]) => `<article><img src="img/after/${img}.jpg" alt="" loading="lazy" style="aspect-ratio:16/9;object-fit:cover;width:100%;margin-bottom:8px"><h3>${t}</h3><p>${d}</p><a href="#play-${go}">Open in prototype →</a></article>`).join("")}
+            .map(([t, d, go, img]) => `<article><img src="${AFTER(img)}" alt="" loading="lazy" style="aspect-ratio:16/9;object-fit:cover;width:100%;margin-bottom:8px"><h3>${t}</h3><p>${d}</p><a href="#play-${go}">Open in prototype →</a></article>`).join("")}
         </div>
       </section>
 
@@ -301,9 +325,9 @@
         <div class="section-head"><div class="eyebrow">Interaction, input & motion</div><h2 class="display">Behaviour is part of the look</h2></div>
         <div class="twocol">
           <ul class="rules" style="margin:0;grid-template-columns:1fr">
-            <li><b>Hover</b> raises the surface slightly.</li>
+            <li><b>Hover</b> ${T("raises the surface slightly.", "lifts the element 2–3px and deepens its drop shadow.")}</li>
             <li><b>Focus</b> is the ivory ring and stays visible with keyboard and controller.</li>
-            <li><b>Pressed</b> darkens the surface without moving the layout around it.</li>
+            <li><b>Pressed</b> ${T("darkens the surface without moving the layout around it.", "squashes it down onto its shadow (translateY 5px, shadow 1px), then springs back.")}</li>
             <li><b>Disabled</b> keeps readable text with a clear cue; no blanket low opacity.</li>
             <li><b>Errors</b> show an icon, a concise message and a way to recover.</li>
             <li><b>Report</b> shows Sending, blocks duplicate sends, then confirms or offers Retry.</li>
@@ -316,7 +340,7 @@
             <li><b>Gameplay input</b> never fires through an open menu.</li>
             <li><b>Keycaps</b> come from one prompt system driven by the real bindings and device.</li>
             <li><b>Inventory</b> offers Equip, Move and Drop as keyboard and controller alternatives to drag.</li>
-            <li><b>Motion</b> fast 120 ms, standard 180 ms, slow 240 ms, ease-out. Reduced motion removes the non-essential.</li>
+            <li><b>Motion</b> fast 120 ms, standard 180 ms, slow 240 ms, ${T("ease-out", "with a springy overshoot curve (cubic-bezier .34, 1.56, .64, 1)")}. Reduced motion removes the non-essential.</li>
             <li><b>Scaling</b> uses a logical canvas with constraints; text scale reflows instead of magnifying.</li>
           </ul>
         </div>
@@ -324,7 +348,7 @@
       </section>
 
       <section class="section" id="ds-prompts">
-        <div class="section-head"><div class="eyebrow">Hand-off</div><h2 class="display">Implementation prompts</h2><p>Paste these into your coding assistant one at a time, in order, with <span class="mono">kong-design-system.md</span> and the logo folder in the repo. Check the game after each step so drift is caught early.</p></div>
+        <div class="section-head"><div class="eyebrow">Hand-off</div><h2 class="display">Implementation prompts</h2><p>Paste these into your coding assistant one at a time, in order, with <span class="mono">${T("kong-design-system.md", "kong-design-system-toon.md")}</span> and the logo folder in the repo. Check the game after each step so drift is caught early.</p></div>
         <div class="dlbar" style="margin-bottom:18px">${dlBtn(D.prompts, "All prompts in one file")}${dlBtn(D.brief, "Original brief")}</div>
         <div class="prompts" id="prompt-list"><p class="muted">Loading prompts…</p></div>
       </section>
@@ -462,7 +486,7 @@
         <div class="crumbs"><a href="#home">Sessions</a> / Playtest · October 10, 2026</div>
         <div class="eyebrow">Session 01 · Saturday, October 10, 2026</div>
         <h1 class="display">Playtest feedback</h1>
-        <p>Fourteen screens from the playtest build, redesigned in the premium v3 direction. Play them as one connected flow, then compare each against the original screenshot and its review notes.</p>
+        <p>Fourteen screens from the playtest build, redesigned in the ${T("premium v3 direction", "Toon design system (the after images are the Toon prototype)")}. Play them as one connected flow, then compare each against the original screenshot and its review notes.</p>
         <div class="btnrow"><a class="btn" href="${K.recording.url}" target="_blank" rel="noopener">▶ Watch RET's gameplay recording ↗</a></div>
       </section>
 
@@ -475,7 +499,7 @@
           <div class="btnrow"><a class="btn primary" href="#play-lobby">Start at the lobby <span class="arrow">→</span></a><a class="btn" href="#play-hud">Jump into the range</a></div>
           <p class="muted" style="font-size:13px">Best on desktop with a mouse and keyboard. Use Compare in the player to overlay the concept image or the original screenshot.</p>
         </div>
-        <button class="launch-art" data-go="hud" aria-label="Open the prototype in the firing range"><img src="img/after/10-gameplay-hud.jpg" alt=""><span class="btn primary play">Play <span class="arrow">→</span></span></button>
+        <button class="launch-art" data-go="hud" aria-label="Open the prototype in the firing range"><img src="${AFTER("10-gameplay-hud")}" alt=""><span class="btn primary play">Play <span class="arrow">→</span></span></button>
       </section>
 
       <section class="section" id="pt-themes" style="margin-top:48px">
@@ -629,8 +653,8 @@
     return `<article class="review" id="screen-${s.n}">
       <div class="review-head"><h3 class="display"><span class="num">${s.n}</span>${esc(s.name)}</h3><div class="btnrow"><a class="btn primary small" href="#play-${s.go.replace(":", ".")}">Try it interactively <span class="arrow">→</span></a></div></div>
       <div>
-        <div class="compare" style="--pos:50%"><img class="cmp-after" src="img/after/${s.file}.jpg" alt="Premium concept: ${esc(s.name)}" loading="lazy"><div class="before-wrap"><img src="img/before/${s.file}.jpg" alt="Original screenshot: ${esc(s.name)}" loading="lazy"></div><div class="handle"></div><span class="lbl b">Before</span><span class="lbl a">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after for ${esc(s.name)}"></div>
-        <div class="compare-tools">${s.states ? `<span class="state-seg" role="radiogroup" aria-label="HUD state">${s.states.map(([l, f], i) => `<button class="btn small ${i ? "" : "on"}" role="radio" aria-checked="${!i}" data-state="${f}">${l}</button>`).join("")}</span>` : ""}<button class="btn small" data-lb="img/before/${s.file}.jpg" data-cap="Original · ${esc(s.name)}">View original</button><button class="btn small" data-lb="img/after/${s.file}.jpg" data-cap="Concept · ${esc(s.name)}">View concept</button></div>
+        <div class="compare" style="--pos:50%"><img class="cmp-after" src="${AFTER(s.file)}" alt="${T("Premium concept", "Toon prototype")}: ${esc(s.name)}" loading="lazy"><div class="before-wrap"><img src="img/before/${s.file}.jpg" alt="Original screenshot: ${esc(s.name)}" loading="lazy"></div><div class="handle"></div><span class="lbl b">Before</span><span class="lbl a">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after for ${esc(s.name)}"></div>
+        <div class="compare-tools">${s.states && !TOON() ? `<span class="state-seg" role="radiogroup" aria-label="HUD state">${s.states.map(([l, f], i) => `<button class="btn small ${i ? "" : "on"}" role="radio" aria-checked="${!i}" data-state="${f}">${l}</button>`).join("")}</span>` : ""}<button class="btn small" data-lb="img/before/${s.file}.jpg" data-cap="Original · ${esc(s.name)}">View original</button><button class="btn small" data-lb="${AFTER(s.file)}" data-cap="Concept · ${esc(s.name)}">${T("View concept", "View Toon screen")}</button></div>
       </div>
       <div class="review-notes" id="notes-${s.n}"><p class="muted">Loading notes…</p></div>
     </article>`;

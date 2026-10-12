@@ -1,0 +1,63 @@
+/* Kong Royale · Toon design system tokens.
+   1920x1080 logical canvas. Fonts: Lilita One (display), Nunito 700-900 (UI). */
+:root {
+  --kong-bg: #071422;
+  --kong-surface: #0E2A3D;
+  --kong-surface-raised: #17405A;
+  --kong-outline: #04101A;
+  --kong-text: #FFF8E7;
+  --kong-text-muted: #A9C6DA;
+  --kong-accent: #FFD21A;
+  --kong-accent-light: #FFE45C;
+  --kong-accent-shade: #F2B800;
+  --kong-on-accent: #04101A;
+  --kong-sky: #4FB6EA;
+  --kong-shield: #3EC4FF;
+  --kong-success: #5BE37D;
+  --kong-warning: #FF9F1C;
+  --kong-danger: #FF4D5E;
+  --kong-rarity-common: #4CC35A;
+  --kong-rarity-rare: #2F8BFF;
+  --kong-focus: #FFFFFF;
+
+  --kong-font-display: "Lilita One", "Arial Black", sans-serif;
+  --kong-font-ui: "Nunito", "Segoe UI", sans-serif;
+  --kong-text-outline-lg: 6px;
+  --kong-text-outline-md: 5px;
+  --kong-text-outline-sm: 4px;
+
+  --kong-space-1: 4px; --kong-space-2: 8px; --kong-space-3: 12px; --kong-space-4: 16px;
+  --kong-space-6: 24px; --kong-space-8: 32px; --kong-space-12: 48px; --kong-space-16: 64px;
+
+  --kong-outline-sm: 3px;
+  --kong-outline-md: 4px;
+  --kong-drop-pill: 0 4px 0 var(--kong-outline);
+  --kong-drop-tile: 0 5px 0 var(--kong-outline);
+  --kong-drop-button: 0 6px 0 var(--kong-outline);
+  --kong-drop-card: 0 7px 0 var(--kong-outline);
+  --kong-drop-dialog: 0 10px 0 var(--kong-outline);
+
+  --kong-radius-pill: 999px;
+  --kong-radius-key: 9px;
+  --kong-radius-button: 16px;
+  --kong-radius-tile: 18px;
+  --kong-radius-card: 22px;
+  --kong-radius-panel: 24px;
+
+  --kong-gradient-primary: linear-gradient(180deg, #FFE45C 0%, #FFD21A 55%, #F2B800 100%);
+  --kong-gradient-secondary: linear-gradient(180deg, #24597B, #17405A);
+  --kong-gradient-danger: linear-gradient(180deg, #FF7A86, #FF4D5E);
+
+  --kong-control-height: 52px;
+  --kong-primary-height: 64px;
+  --kong-focus-width: 4px;
+  --kong-focus-offset: 3px;
+
+  --kong-motion-fast: 120ms;
+  --kong-motion-standard: 180ms;
+  --kong-motion-slow: 240ms;
+  --kong-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --kong-motion-fast: 0ms; --kong-motion-standard: 0ms; --kong-motion-slow: 0ms; --kong-ease-spring: ease-out; }
+}
