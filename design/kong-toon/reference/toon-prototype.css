@@ -380,59 +380,59 @@ html[data-ds="toon"] .stage .st-help .viz { margin-top: 6px; }
 html[data-ds="toon"] .stage .st-help .k-key { height: 28px; min-width: 28px; font-size: 13px; }
 
 /* =====================================================================
-   TOON · fewer containers (a middle ground with Premium)
+   HYBRID · Toon with fewer containers (a middle ground with Premium)
    Interactive things stay chunky (buttons, pills, keycaps, rarity tiles,
    HUD bars/slots). Content goes back to open rows and typography.
    ===================================================================== */
 
 /* settings: continuous rows with a thin rule; selected row = soft tint + yellow pill marker */
-html[data-ds="toon"] .stage .k-table, html[data-ds="toon"] .k-scope .k-table { gap: 0; border-top: 2px solid rgba(169,198,218,.18); }
-html[data-ds="toon"] .stage .k-row, html[data-ds="toon"] .k-scope .k-row {
+html[data-ds="toon"][data-variant="hybrid"] .stage .k-table, html[data-ds="toon"][data-variant="hybrid"] .k-scope .k-table { gap: 0; border-top: 2px solid rgba(169,198,218,.18); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .k-row, html[data-ds="toon"][data-variant="hybrid"] .k-scope .k-row {
   background: transparent; border: 0; border-bottom: 2px solid rgba(169,198,218,.18); border-radius: 0; box-shadow: none; min-height: 80px;
 }
-html[data-ds="toon"] .stage .k-row:hover, html[data-ds="toon"] .k-scope .k-row:hover { background: rgba(23,64,90,.35); }
-html[data-ds="toon"] .stage .k-row.sel, html[data-ds="toon"] .k-scope .k-row.sel { background: rgba(23,64,90,.6); border-color: rgba(169,198,218,.18); box-shadow: none; border-radius: 14px; }
-html[data-ds="toon"] .stage .k-row::before, html[data-ds="toon"] .k-scope .k-row::before { display: block; left: 10px; top: 18px; bottom: 18px; width: 8px; border-radius: 999px; background: var(--kong-accent); box-shadow: 0 0 0 3px var(--o); transform: scaleY(0); }
-html[data-ds="toon"] .stage .k-row.sel::before, html[data-ds="toon"] .k-scope .k-row.sel::before { transform: scaleY(1); }
-html[data-ds="toon"] .stage .st-help { background: none; border: 0; box-shadow: none; padding: 28px 0 0; }
-html[data-ds="toon"] .stage .st-divider { background: rgba(169,198,218,.18); }
-html[data-ds="toon"] .stage .viz-prev { border: 0; background: rgba(4,16,26,.45); border-radius: 18px; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .k-row:hover, html[data-ds="toon"][data-variant="hybrid"] .k-scope .k-row:hover { background: rgba(23,64,90,.35); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .k-row.sel, html[data-ds="toon"][data-variant="hybrid"] .k-scope .k-row.sel { background: rgba(23,64,90,.6); border-color: rgba(169,198,218,.18); box-shadow: none; border-radius: 14px; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .k-row::before, html[data-ds="toon"][data-variant="hybrid"] .k-scope .k-row::before { display: block; left: 10px; top: 18px; bottom: 18px; width: 8px; border-radius: 999px; background: var(--kong-accent); box-shadow: 0 0 0 3px var(--o); transform: scaleY(0); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .k-row.sel::before, html[data-ds="toon"][data-variant="hybrid"] .k-scope .k-row.sel::before { transform: scaleY(1); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .st-help { background: none; border: 0; box-shadow: none; padding: 28px 0 0; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .st-divider { background: rgba(169,198,218,.18); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .viz-prev { border: 0; background: rgba(4,16,26,.45); border-radius: 18px; }
 
 /* match menu: typographic list; only the selected item becomes a chunky yellow pill */
-html[data-ds="toon"] .stage .mn-list { gap: 6px; }
-html[data-ds="toon"] .stage .mn-item { background: none; border-color: transparent; box-shadow: none; color: rgba(255,248,231,.78); padding: 12px 28px; }
-html[data-ds="toon"] .stage .mn-item:hover { color: #fff; }
-html[data-ds="toon"] .stage .mn-item.on { background: linear-gradient(180deg, #FFE45C 0%, #FFD21A 55%, #F2B800 100%); border-color: var(--o); box-shadow: 0 6px 0 var(--o); color: var(--o); }
-html[data-ds="toon"] .stage .mn-leave .mn-item { background: none; color: #FF9AA4; }
-html[data-ds="toon"] .stage .mn-leave .mn-item.on { background: linear-gradient(180deg, #FF7A86, #FF4D5E); color: #fff; }
-html[data-ds="toon"] .stage .an-grid { gap: 0; border-top: 2px solid rgba(169,198,218,.18); }
-html[data-ds="toon"] .stage .an-grid div { border: 0; border-bottom: 2px solid rgba(169,198,218,.18); border-radius: 0; background: none; box-shadow: none; padding: 20px 0; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mn-list { gap: 6px; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mn-item { background: none; border-color: transparent; box-shadow: none; color: rgba(255,248,231,.78); padding: 12px 28px; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mn-item:hover { color: #fff; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mn-item.on { background: linear-gradient(180deg, #FFE45C 0%, #FFD21A 55%, #F2B800 100%); border-color: var(--o); box-shadow: 0 6px 0 var(--o); color: var(--o); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mn-leave .mn-item { background: none; color: #FF9AA4; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mn-leave .mn-item.on { background: linear-gradient(180deg, #FF7A86, #FF4D5E); color: #fff; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .an-grid { gap: 0; border-top: 2px solid rgba(169,198,218,.18); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .an-grid div { border: 0; border-bottom: 2px solid rgba(169,198,218,.18); border-radius: 0; background: none; box-shadow: none; padding: 20px 0; }
 
 /* report: category choices are pills; side column is open */
-html[data-ds="toon"] .stage .rp-cats { gap: 12px 10px; }
-html[data-ds="toon"] .stage .rp-cats button { border-radius: 999px; background: rgba(18,52,75,.7); box-shadow: 0 4px 0 var(--o); padding: 14px 22px !important; min-height: 0; }
-html[data-ds="toon"] .stage .rp-right { background: none; border: 0; border-left: 2px solid rgba(169,198,218,.18) !important; border-radius: 0; box-shadow: none; padding: 0 0 0 48px; }
-html[data-ds="toon"] .stage .rp-att .it { border-bottom: 2px solid rgba(169,198,218,.14); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .rp-cats { gap: 12px 10px; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .rp-cats button { border-radius: 999px; background: rgba(18,52,75,.7); box-shadow: 0 4px 0 var(--o); padding: 14px 22px !important; min-height: 0; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .rp-right { background: none; border: 0; border-left: 2px solid rgba(169,198,218,.18) !important; border-radius: 0; box-shadow: none; padding: 0 0 0 48px; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .rp-att .it { border-bottom: 2px solid rgba(169,198,218,.14); }
 
 /* loading tip, map legend/footer, results stats: open */
-html[data-ds="toon"] .stage .ld-tip { background: none; border: 0; border-left: 4px solid var(--kong-accent); border-radius: 0; box-shadow: none; padding: 4px 0 4px 26px; }
-html[data-ds="toon"] .stage .mp-foot { background: linear-gradient(90deg, rgba(7,20,34,.85), rgba(7,20,34,0)); border: 0; box-shadow: none; border-radius: 0; }
-html[data-ds="toon"] .stage .mp-side { border-radius: 0; border-left: 3px solid var(--o); }
-html[data-ds="toon"] .stage .rs-stats { gap: 0; border-block: 2px solid rgba(169,198,218,.2); }
-html[data-ds="toon"] .stage .rs-stats > div, html[data-ds="toon"] .stage .rs-stats > div + div { border: 0; border-radius: 0; background: none; box-shadow: none; padding: 16px 32px 16px 0; }
-html[data-ds="toon"] .stage .rs-stats > div + div { padding-left: 32px; border-left: 2px solid rgba(169,198,218,.2); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .ld-tip { background: none; border: 0; border-left: 4px solid var(--kong-accent); border-radius: 0; box-shadow: none; padding: 4px 0 4px 26px; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mp-foot { background: linear-gradient(90deg, rgba(7,20,34,.85), rgba(7,20,34,0)); border: 0; box-shadow: none; border-radius: 0; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .mp-side { border-radius: 0; border-left: 3px solid var(--o); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .rs-stats { gap: 0; border-block: 2px solid rgba(169,198,218,.2); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .rs-stats > div, html[data-ds="toon"][data-variant="hybrid"] .stage .rs-stats > div + div { border: 0; border-radius: 0; background: none; box-shadow: none; padding: 16px 32px 16px 0; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .rs-stats > div + div { padding-left: 32px; border-left: 2px solid rgba(169,198,218,.2); }
 
 /* inventory: drop the rounded sheet and the ammo boxes */
-html[data-ds="toon"] .stage .iv { border-radius: 0; border-top: 3px solid var(--o); }
-html[data-ds="toon"] .stage .iv-ammo div { background: none; border: 0; box-shadow: none; border-radius: 0; padding: 0 28px; margin: 0; border-left: 2px solid rgba(169,198,218,.18); }
-html[data-ds="toon"] .stage .iv-ammo div:first-child { border-left: 0; padding-left: 0; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .iv { border-radius: 0; border-top: 3px solid var(--o); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .iv-ammo div { background: none; border: 0; box-shadow: none; border-radius: 0; padding: 0 28px; margin: 0; border-left: 2px solid rgba(169,198,218,.18); }
+html[data-ds="toon"][data-variant="hybrid"] .stage .iv-ammo div:first-child { border-left: 0; padding-left: 0; }
 
 /* learn controls: lesson list as text with a pill on the current lesson (already) */
-html[data-ds="toon"] .stage .lb-training button { background: none; border: 0; border-bottom: 2px solid rgba(169,198,218,.18); border-radius: 0; box-shadow: none; margin: 0; padding: 22px 0; }
+html[data-ds="toon"][data-variant="hybrid"] .stage .lb-training button { background: none; border: 0; border-bottom: 2px solid rgba(169,198,218,.18); border-radius: 0; box-shadow: none; margin: 0; padding: 22px 0; }
 
 /* site side: fewer outlined panels too */
-html[data-ds="toon"] .comp, html[data-ds="toon"] .prompt, html[data-ds="toon"] details.spec, html[data-ds="toon"] .swatch, html[data-ds="toon"] .shape-demos > div, html[data-ds="toon"] .op-card, html[data-ds="toon"] .launch, html[data-ds="toon"] .ds-feature {
+html[data-ds="toon"][data-variant="hybrid"] .comp, html[data-ds="toon"][data-variant="hybrid"] .prompt, html[data-ds="toon"][data-variant="hybrid"] details.spec, html[data-ds="toon"][data-variant="hybrid"] .swatch, html[data-ds="toon"][data-variant="hybrid"] .shape-demos > div, html[data-ds="toon"][data-variant="hybrid"] .op-card, html[data-ds="toon"][data-variant="hybrid"] .launch, html[data-ds="toon"][data-variant="hybrid"] .ds-feature {
   border: 2px solid var(--rule); box-shadow: none;
 }
-html[data-ds="toon"] .comp-head { border-bottom: 2px solid var(--rule); background: none; }
-html[data-ds="toon"] .ds-feature-art { border-right: 2px solid var(--rule); }
+html[data-ds="toon"][data-variant="hybrid"] .comp-head { border-bottom: 2px solid var(--rule); background: none; }
+html[data-ds="toon"][data-variant="hybrid"] .ds-feature-art { border-right: 2px solid var(--rule); }

@@ -8,8 +8,6 @@
 
 Kong Royale is a playful gorilla battle royale. Toon keeps the original game's colours (deep navy menus, banana-yellow logo and buttons, the bright lobby sky) and gives them a clean, chunky cartoon finish, in the spirit of big-studio party shooters: bold rounded type, thick dark outlines, hard drop shadows, rounded pills and springy motion.
 
-Containers are used sparingly. Only things you press or pick up get the chunky treatment (buttons, pills, keycaps, item and weapon tiles, HUD bars and slots). Content (settings rows, help, menu lists, stats, legends, tips) stays open and typographic like Premium, separated by thin rules.
-
 Clean still comes first. Every screen keeps the Premium structure: one category bar in Settings, one primary action per region, honest states, the same layouts and input rules. Toon changes how things look and feel, not where they are or how they behave.
 
 ## Brand
@@ -79,7 +77,7 @@ Primary: yellow gradient, dark text, 4px outline, 6px drop. Hover lifts 3px and 
 Category tabs, sub-sections and mode choices (Trios / Solo) are outlined pills. Active pill is yellow with dark text; inactive is navy with pale text. No underline indicator in Toon.
 
 ### Settings rows
-Continuous rows separated by 2px rules, no tile per row. The selected row gets a soft navy tint with rounded corners and a short yellow pill marker on the left. Label left, control column right. Contextual help sits open beside the table, divided by a thin rule, not in a panel.
+Each row is an outlined navy tile with a 5px drop. The selected row gets a yellow outline. Label left, control column right, contextual help in a separate outlined panel.
 
 ### Slider, switch, segment
 Slider: 14px rounded track, yellow gradient fill, a 30px ivory thumb with outline and drop. Switch: outlined pill, green when on, with explicit On / Off text. Segment: a dark pill track with a yellow active pill.
@@ -103,7 +101,7 @@ Dialogs: navy gradient panel, 26px radius, 4px outline, 10px drop, a pop-in with
 
 ## Layouts
 
-Same five templates as Premium (settings shell, overlay and guide, gameplay, map, lobby / loading / results). Lists stay typographic: in the match menu and lesson list only the current item becomes a chunky yellow pill. Help, legends, stats and tips stay open with thin rules. Report categories are pills.
+Same five templates as Premium (settings shell, overlay and guide, gameplay, map, lobby / loading / results). Toon swaps typographic lists for chunky stacked buttons where it helps (match menu, lesson list) and puts help, legend and stats into outlined panels instead of hairline columns.
 
 ## Motion
 

@@ -17,7 +17,7 @@ Rules that must not change:
 - Rarity fills the whole item card: green common, blue rare, always with a text label.
 - Esc goes back one layer, one overlay owns focus, keycaps follow the player's real bindings.
 
-The Premium system (charcoal and saffron) is in `downloads/kong-design-system.md` if it is ever requested.
+Other systems if requested: **Hybrid** (Toon with fewer containers) in `design/kong-hybrid/`, and **Premium** (charcoal and saffron) in `downloads/kong-design-system.md`.
 
 ## This repository
 

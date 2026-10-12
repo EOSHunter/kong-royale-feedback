@@ -153,6 +153,10 @@ window.KONG = (function () {
       designMd: { path: "downloads/kong-design-system-toon.md", name: "kong-design-system-toon.md", label: "Toon design system", size: "12 KB" },
       prompts: { path: "downloads/kong-implementation-prompts-toon.md", name: "kong-implementation-prompts-toon.md", label: "Toon implementation prompts", size: "12 KB" },
       tokens: { path: "downloads/kong-toon-tokens.css", name: "kong-toon-tokens.css", label: "Toon tokens", size: "2 KB" }
+    },
+    hybridDownloads: {
+      designMd: { path: "downloads/kong-design-system-hybrid.md", name: "kong-design-system-hybrid.md", label: "Hybrid design system", size: "13 KB" },
+      prompts: { path: "downloads/kong-implementation-prompts-hybrid.md", name: "kong-implementation-prompts-hybrid.md", label: "Hybrid implementation prompts", size: "12 KB" }
     }
   };
 
