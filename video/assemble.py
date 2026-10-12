@@ -1,11 +1,12 @@
 """Build segment clips, then join them with crossfades and lay the music under it."""
 import os, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
-TOON = os.environ.get("DS") == "toon"
-F = os.path.join(HERE, "frames_toon" if TOON else "frames"); S = os.path.join(HERE, "seg_toon" if TOON else "seg"); os.makedirs(S, exist_ok=True)
+DS = os.environ.get("DS", "premium")
+SUF = "" if DS == "premium" else "_" + DS
+F = os.path.join(HERE, "frames" + SUF); S = os.path.join(HERE, "seg" + SUF); os.makedirs(S, exist_ok=True)
 REC = r"C:/Users/hunte/Downloads/Screen Recording_20261010212646_zippy_ret_Untitled_Medal.mp4"
 MUSIC = r"C:/Users/hunte/Downloads/Gorilla_Jungle_Rumble_2026-10-11T041023.mp4"
-OUT = os.path.join(HERE, "kong-royale-feedback-showcase" + ("-toon" if TOON else "") + ".mp4")
+OUT = os.path.join(HERE, "kong-royale-feedback-showcase" + SUF.replace("_", "-") + ".mp4")
 FPS = 30
 
 def run(args):
@@ -32,7 +33,7 @@ def still(name, dur, zoom=0.04):
 def clip(name, start, dur, overlay):
     out = os.path.join(S, name + ".mp4")
     run(["-ss", str(start), "-t", str(dur), "-i", REC, "-i", os.path.join(F, overlay + ".png"),
-         "-filter_complex", f"[0:v]scale=1920:1080,fps={FPS},eq=saturation=0.95[v];[v][1:v]overlay=0:0,format=yuv420p",
+         "-filter_complex", f"[0:v]scale=1920:1080,fps={FPS},eq=saturation={0 if DS == "wire" else 0.95}[v];[v][1:v]overlay=0:0,format=yuv420p",
          "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "18", out])
     return out
 

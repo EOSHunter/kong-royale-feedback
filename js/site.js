@@ -9,6 +9,7 @@
   const TOON = () => document.documentElement.dataset.ds === "toon";
   const T = (premium, toon) => (TOON() ? toon : premium);
   const HYB = () => document.documentElement.dataset.variant === "hybrid";
+  const VSUF = () => (WIRE() ? "-wire" : HYB() ? "-hybrid" : TOON() ? "-toon" : "");
   const WIRE = () => document.documentElement.dataset.ds === "wire";
   const AFTER = (f) => `img/${WIRE() ? "wire" : HYB() ? "hybrid" : TOON() ? "toon" : "after"}/${f}.jpg`;
   const DSD = () => (WIRE() ? Object.assign({}, K.downloads, { designMd: { path: "downloads/kong-wireframes.md", name: "kong-wireframes.md", label: "Wireframe layout spec", size: "8 KB" } }) : HYB() ? Object.assign({}, K.downloads, K.toon.downloads, K.toon.hybridDownloads) : TOON() ? Object.assign({}, K.downloads, K.toon.downloads) : K.downloads);
@@ -192,8 +193,8 @@
       <section class="section" id="home-video" style="padding-top:8px">
         <div class="section-head"><div class="eyebrow">Showcase · 1:34</div><h2 class="display">The feedback in 90 seconds</h2>
           <p>The redesign, the playable prototype, the gameplay review and the new damage feedback, cut to an original ElevenLabs track. No voiceover.</p></div>
-        <video class="showcase" controls preload="metadata" poster="${AFTER("10-gameplay-hud")}" src="downloads/kong-royale-feedback-showcase${T("", "-toon")}.mp4?v=3"></video>
-        <div class="dlbar" style="margin-top:14px">${dlBtn({ path: `downloads/kong-royale-feedback-showcase${T("", "-toon")}.mp4`, name: `kong-royale-feedback-showcase${T("", "-toon")}.mp4`, label: T("Showcase video", "Toon showcase video"), size: "13 MB" }, "MP4 · 1080p")}</div>
+        <video class="showcase" controls preload="metadata" poster="${AFTER("10-gameplay-hud")}" src="downloads/kong-royale-feedback-showcase${VSUF()}.mp4?v=4"></video>
+        <div class="dlbar" style="margin-top:14px">${dlBtn({ path: `downloads/kong-royale-feedback-showcase${VSUF()}.mp4`, name: `kong-royale-feedback-showcase${VSUF()}.mp4`, label: { "": "Showcase video", "-toon": "Toon showcase video", "-hybrid": "Hybrid showcase video", "-wire": "Wireframe showcase video" }[VSUF()], size: "13 MB" }, "MP4 · 1080p")}</div>
       </section>
 
       ${opusHomeCard()}
@@ -249,7 +250,7 @@
       <section class="page-hero">
         <div class="crumbs"><a href="#home">Sessions</a> / Design system</div>
         <h1 class="display">${WIRE() ? "Kong Royale<br>wireframes" : HYB() ? "Kong Royale<br>Hybrid system" : T("Kong Royale<br>design system", "Kong Royale<br>Toon system")}</h1>
-        ${WIRE() ? `<p class="eyebrow plain" style="color:var(--accent)">Wireframe mode: the screens and prototype show layouts only, in grayscale with placeholders for art, logos and items, so a designer can create the visual style. The tokens and components below are the Premium reference; download the layout spec above.</p>` : ""}${HYB() ? `<p class="eyebrow plain" style="color:var(--accent)">Hybrid: everything below is Toon, but content uses open rows and typography like Premium. Only things you press or pick up stay chunky.</p>` : ""}
+        ${WIRE() ? `<p class="ds-note">Wireframe mode: the screens and prototype show layouts only, in grayscale with placeholders for art, logos and items, so a designer can create the visual style. The tokens and components below are the Premium reference; download the layout spec above.</p>` : ""}${HYB() ? `<p class="ds-note">Hybrid: everything below is Toon, but content uses open rows and typography like Premium. Only things you press or pick up stay chunky.</p>` : ""}
         <p>${T("Premium v3. Calm, readable, predictable interface; the gorillas, banana weapons and island art carry the personality. These rules and tokens are the source of truth wherever a concept image disagrees.", "Toon. The original Kong Royale colours, made clean and chunky: banana yellow on deep navy, thick dark outlines, hard drop shadows, rounded pills and springy motion. Playful like the game, still easy to read. Same components, layouts and rules as Premium, with its own look.")}</p>
         <div class="dlbar">${dlBtn(D.designMd, "Full system as Markdown")}${dlBtn(D.logosZip, "SVG + PNG")}${dlBtn(D.prompts, "8 staged prompts")}${dlBtn(D.tokens, "CSS custom properties")}</div>
       </section>

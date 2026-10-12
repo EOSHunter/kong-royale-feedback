@@ -43,12 +43,26 @@ html.toon .scrim{background:linear-gradient(90deg,rgba(7,20,34,.96) 0%,rgba(7,20
 html.toon .lower{background:linear-gradient(0deg,rgba(7,20,34,.96) 0%,rgba(7,20,34,.85) 70%,rgba(7,20,34,0))}
 html.toon .logo{filter:drop-shadow(3px 0 0 #04101A) drop-shadow(-3px 0 0 #04101A) drop-shadow(0 3px 0 #04101A) drop-shadow(0 -3px 0 #04101A) drop-shadow(0 8px 0 #04101A)}
 html.toon .url{font-size:36px}
+
+/* Wireframe theme for the video cards */
+html.wire{--bg:#17181A;--text:#E8E8E8;--muted:#9C9C9C;--accent:#E8E8E8;--danger:#BDBDBD;--border:#55575C}
+html.wire body{background:#17181A repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 2px,transparent 2px 18px);font-family:system-ui,"Segoe UI",Arial,sans-serif}
+html.wire.clear body{background:transparent}
+html.wire .disp,html.wire .lower h3{font-family:system-ui,"Segoe UI",Arial,sans-serif;font-weight:800;text-transform:none}
+html.wire .eb,html.wire .chip,html.wire .pri,html.wire .by,html.wire .url{font-family:system-ui,"Segoe UI",Arial,sans-serif}
+html.wire .rule{background:#E8E8E8}
+html.wire .chip{border:2px dashed #55575C}
+html.wire .pri{background:#2A2B2F;color:#E8E8E8}
+html.wire .bg,html.wire .logo{filter:grayscale(1)}
+html.wire .scrim{background:linear-gradient(90deg,rgba(23,24,26,.97) 0%,rgba(23,24,26,.9) 38%,rgba(23,24,26,.4) 62%,rgba(23,24,26,.15))}
+html.wire .lower{background:linear-gradient(0deg,rgba(23,24,26,.97) 0%,rgba(23,24,26,.88) 70%,rgba(23,24,26,0))}
 </style>
 <body><div id="c"></div>
 <script>
 const q=new URLSearchParams(location.search), t=q.get("t"), j=JSON.parse(decodeURIComponent(q.get("d")||"{}")), c=document.getElementById("c");
 const esc=s=>String(s||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
-if(q.get("ds")==="toon") document.documentElement.classList.add("toon");
+if(["toon","hybrid"].includes(q.get("ds"))) document.documentElement.classList.add("toon");
+if(q.get("ds")==="wire") document.documentElement.classList.add("wire");
 if(j.clear){ document.body.classList.add("clear"); document.documentElement.classList.add("clear"); }
 if(t==="title") c.innerHTML=`<div class="bg" style="background-image:url(${j.bg})"></div><div class="scrim"></div><div class="wrap"><img class="logo" src="../img/brand/kong-royale-lockup.png"><div class="eb y">${esc(j.eb)}</div><h1 class="disp">${j.h}</h1><p>${esc(j.p)}</p></div>`;
 if(t==="section") c.innerHTML=`<div class="wrap" style="width:1500px"><div class="eb y">${esc(j.eb)}</div><h2 class="disp" style="font-size:140px">${j.h}</h2><div class="rule"></div><p>${esc(j.p)}</p>${j.chips?`<div class="chips">${j.chips.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>`:""}</div>`;
