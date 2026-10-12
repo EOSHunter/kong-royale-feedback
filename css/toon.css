@@ -366,3 +366,8 @@ html[data-ds="toon"] .stage .k-card:not(.empty), html[data-ds="toon"] .k-scope .
 html[data-ds="toon"] .stage .k-card.r-common .art, html[data-ds="toon"] .k-scope .k-card.r-common .art { background: radial-gradient(ellipse 70% 80% at 50% 45%, #8BE08F 0%, #4CC35A 45%, #2C8A3A 100%); }
 html[data-ds="toon"] .stage .k-card.r-rare .art, html[data-ds="toon"] .k-scope .k-card.r-rare .art { background: radial-gradient(ellipse 70% 80% at 50% 45%, #7FB8FF 0%, #2F8BFF 45%, #1A56B8 100%); }
 html[data-ds="toon"] .stage .k-card .art img, html[data-ds="toon"] .k-scope .k-card .art img { filter: drop-shadow(0 5px 0 rgba(4,16,26,.55)); }
+html[data-ds="toon"] .stage .slot.sm { width: 64px; height: 58px; border-radius: 12px; border-width: 3px; }
+html[data-ds="toon"] .stage .slot.sm .slot-art { top: 5px; bottom: 12px; height: calc(100% - 17px); }
+html[data-ds="toon"] .stage .slot.sm .slot-n { min-width: 16px; height: 16px; font-size: 11px; line-height: 16px; left: 4px; bottom: 3px; border-radius: 5px; }
+html[data-ds="toon"] .stage .slot.sm.on { transform: translateY(-4px) scale(1.04); }
+html[data-ds="toon"] .stage .slot.sm.empty .slot-n { left: 50%; bottom: 50%; transform: translateX(-50%); margin-bottom: -8px; }

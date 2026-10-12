@@ -701,3 +701,4 @@
 
 /* weapon slot art: Premium keeps the line icons; Toon shows item art on rarity tiles */
 .slot .slot-art { display: none; }
+.slot.sm { width: 64px; }
