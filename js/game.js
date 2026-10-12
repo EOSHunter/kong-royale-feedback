@@ -1255,12 +1255,11 @@ window.Game = (function () {
     const acts = invActsHtml();
     const ammoC = { light: "#EEEADF", heavy: "#F28F45", shells: "#E5534B", rockets: "#58BCEB" }, max = { light: 300, heavy: 40, shells: 48, rockets: 8 };
     L.over.innerHTML = `<div class="scr">
-      <div class="iv-top" style="background-image:url(img/art/inventory-top.jpg)"></div>
-      <button class="iv-close k-hint" data-a="back" style="color:var(--kong-text)">${lit("Esc", "solid")} Close</button>
+      <div class="iv-dim"></div>
       <div class="iv">
-        <div class="iv-head"><h1 class="k-display">Inventory</h1><span class="cnt"><b>${count}</b> / 5</span><span class="line"></span></div>
+        <div class="iv-head"><h1 class="k-display">Inventory</h1><span class="cnt"><b>${count}</b> / 5</span><span class="line"></span><button class="iv-close k-hint" data-a="back" style="color:var(--kong-text)">${lit("Tab", "solid")}${lit("Esc", "solid")} Close</button></div>
         <div class="iv-slots">${S.inv.map(card).join("")}</div>
-        <div class="iv-acts" style="padding-left:${Math.min(sel * 360, 1180)}px">${acts}</div>
+        <div class="iv-acts" style="padding-left:${Math.min(sel * 219, 700)}px">${acts}</div>
         <div class="iv-ammo">${Object.keys(max).map((k) => `<div>${I.bullet(ammoC[k])}<span>${k}</span><b>${S.reserve[k]} <em>/ ${max[k]}</em></b><i class="bar" style="background:linear-gradient(90deg, ${ammoC[k]} ${S.reserve[k] / max[k] * 100}%, #2A3436 0)"></i></div>`).join("")}</div>
       </div></div>`;
     wireInventoryDrag();
@@ -1276,7 +1275,7 @@ window.Game = (function () {
   function invSelect(i) {
     i = clamp(i, 0, 4); if (i === S.invSel) return; S.invSel = i;
     L.over.querySelectorAll(".k-card[data-i]").forEach((c) => c.classList.toggle("sel", +c.dataset.i === i));
-    const a = $(".iv-acts", L.over); if (a) { a.style.paddingLeft = Math.min(i * 360, 1180) + "px"; a.innerHTML = invActsHtml(); swap(a); }
+    const a = $(".iv-acts", L.over); if (a) { a.style.paddingLeft = Math.min(i * 219, 700) + "px"; a.innerHTML = invActsHtml(); swap(a); }
     sfx.tick();
   }
   function wireInventoryDrag() {

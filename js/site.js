@@ -9,19 +9,20 @@
   const TOON = () => document.documentElement.dataset.ds === "toon";
   const T = (premium, toon) => (TOON() ? toon : premium);
   const HYB = () => document.documentElement.dataset.variant === "hybrid";
-  const AFTER = (f) => `img/${HYB() ? "hybrid" : TOON() ? "toon" : "after"}/${f}.jpg`;
-  const DSD = () => (HYB() ? Object.assign({}, K.downloads, K.toon.downloads, K.toon.hybridDownloads) : TOON() ? Object.assign({}, K.downloads, K.toon.downloads) : K.downloads);
+  const WIRE = () => document.documentElement.dataset.ds === "wire";
+  const AFTER = (f) => `img/${WIRE() ? "wire" : HYB() ? "hybrid" : TOON() ? "toon" : "after"}/${f}.jpg`;
+  const DSD = () => (WIRE() ? Object.assign({}, K.downloads, { designMd: { path: "downloads/kong-wireframes.md", name: "kong-wireframes.md", label: "Wireframe layout spec", size: "8 KB" } }) : HYB() ? Object.assign({}, K.downloads, K.toon.downloads, K.toon.hybridDownloads) : TOON() ? Object.assign({}, K.downloads, K.toon.downloads) : K.downloads);
   const dsSel = document.getElementById("ds-switch");
   if (dsSel) {
-    dsSel.value = HYB() ? "hybrid" : TOON() ? "toon" : "premium";
+    dsSel.value = WIRE() ? "wire" : HYB() ? "hybrid" : TOON() ? "toon" : "premium";
     dsSel.addEventListener("change", () => {
-      const v = ["toon", "hybrid"].includes(dsSel.value) ? dsSel.value : "premium";
+      const v = ["toon", "hybrid", "wire"].includes(dsSel.value) ? dsSel.value : "premium";
       document.documentElement.dataset.ds = v === "hybrid" ? "toon" : v;
       if (v === "hybrid") document.documentElement.dataset.variant = "hybrid"; else delete document.documentElement.dataset.variant;
       try { localStorage.setItem("kong-ds", v); } catch (e) { }
       const y = window.scrollY; view.dataset.page = ""; route(); window.scrollTo(0, y);
       if (!document.getElementById("player").hidden && window.Game) Game.go(Game.currentKey());
-      siteToast({ toon: "Toon design system", hybrid: "Hybrid design system (Toon with fewer containers)" }[v] || "Premium design system");
+      siteToast({ wire: "Wireframes: layouts only", toon: "Toon design system", hybrid: "Hybrid design system (Toon with fewer containers)" }[v] || "Premium design system");
     });
   }
   const DL_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg>';
@@ -178,8 +179,8 @@
             <div class="ds-swatches">${(TOON() ? ["#071422", "#0E2A3D", "#17405A", "#04101A", "#FFF8E7", "#A9C6DA", "#FFD21A", "#4FB6EA", "#3EC4FF", "#4CC35A", "#2F8BFF", "#FF4D5E"] : ["#101719", "#172022", "#253033", "#465052", "#EEEADF", "#A5B1A4", "#EABC39", "#58BCEB", "#7AD7A5", "#FF8C88"]).map((c) => `<span style="background:${c}"></span>`).join("")}</div>
           </a>
           <div class="ds-feature-body">
-            <div class="eyebrow plain">${HYB() ? "Hybrid · Toon with fewer containers" : T("Premium v3 · proposed", "Toon · original colours")}</div>
-            <h3 class="display">${HYB() ? "Kong Royale Hybrid design system" : T("Kong Royale design system", "Kong Royale Toon design system")}</h3>
+            <div class="eyebrow plain">${WIRE() ? "Wireframes · layouts only" : HYB() ? "Hybrid · Toon with fewer containers" : T("Premium v3 · proposed", "Toon · original colours")}</div>
+            <h3 class="display">${WIRE() ? "Kong Royale wireframes" : HYB() ? "Kong Royale Hybrid design system" : T("Kong Royale design system", "Kong Royale Toon design system")}</h3>
             <p>${T("Brand family, colour and type tokens, live components, layout templates, interaction rules and step-by-step prompts for implementing it in the game.", "The original Kong Royale colours made clean and chunky: banana yellow, deep navy, thick outlines and bouncy buttons. Same components and layouts as Premium, with its own tokens, prompts and prototype skin.")}</p>
             <p class="muted" style="font-size:13px">Switch between Premium and Toon with the Design system menu at the top. The whole site and the prototype follow it.</p>
             <div class="btnrow"><a class="btn primary" href="#design-system">Open design system <span class="arrow">→</span></a></div>
@@ -247,8 +248,8 @@
     <div class="wrap">
       <section class="page-hero">
         <div class="crumbs"><a href="#home">Sessions</a> / Design system</div>
-        <h1 class="display">${HYB() ? "Kong Royale<br>Hybrid system" : T("Kong Royale<br>design system", "Kong Royale<br>Toon system")}</h1>
-        ${HYB() ? `<p class="eyebrow plain" style="color:var(--accent)">Hybrid: everything below is Toon, but content uses open rows and typography like Premium. Only things you press or pick up stay chunky.</p>` : ""}
+        <h1 class="display">${WIRE() ? "Kong Royale<br>wireframes" : HYB() ? "Kong Royale<br>Hybrid system" : T("Kong Royale<br>design system", "Kong Royale<br>Toon system")}</h1>
+        ${WIRE() ? `<p class="eyebrow plain" style="color:var(--accent)">Wireframe mode: the screens and prototype show layouts only, in grayscale with placeholders for art, logos and items, so a designer can create the visual style. The tokens and components below are the Premium reference; download the layout spec above.</p>` : ""}${HYB() ? `<p class="eyebrow plain" style="color:var(--accent)">Hybrid: everything below is Toon, but content uses open rows and typography like Premium. Only things you press or pick up stay chunky.</p>` : ""}
         <p>${T("Premium v3. Calm, readable, predictable interface; the gorillas, banana weapons and island art carry the personality. These rules and tokens are the source of truth wherever a concept image disagrees.", "Toon. The original Kong Royale colours, made clean and chunky: banana yellow on deep navy, thick dark outlines, hard drop shadows, rounded pills and springy motion. Playful like the game, still easy to read. Same components, layouts and rules as Premium, with its own look.")}</p>
         <div class="dlbar">${dlBtn(D.designMd, "Full system as Markdown")}${dlBtn(D.logosZip, "SVG + PNG")}${dlBtn(D.prompts, "8 staged prompts")}${dlBtn(D.tokens, "CSS custom properties")}</div>
       </section>

@@ -1,0 +1,53 @@
+/* =====================================================================
+   KONG ROYALE · WIREFRAME
+   Layouts only: grayscale, system type, hatched placeholders for art,
+   logos and items. For creators who want to do the visual design themselves.
+   Scoped to html[data-ds="wire"].
+   ===================================================================== */
+html[data-ds="wire"] {
+  --bg: #17181A; --bg-2: #1D1E21; --panel: #232427; --panel-2: #2A2B2F; --raised: #303236;
+  --rule: #3A3C40; --rule-strong: #55575C; --text: #E8E8E8; --muted: #9C9C9C; --faint: #7A7A7A;
+  --accent: #E8E8E8; --on-accent: #17181A; --shield: #BDBDBD; --success: #BDBDBD; --warning: #BDBDBD; --danger: #BDBDBD;
+  --f-display: system-ui, "Segoe UI", Arial, sans-serif; --f-ui: system-ui, "Segoe UI", Arial, sans-serif; --f-label: system-ui, "Segoe UI", Arial, sans-serif;
+  --hatch: repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 2px, transparent 2px 16px), #26272A;
+}
+html[data-ds="wire"] .display { font-weight: 800; font-stretch: normal; letter-spacing: 0; }
+html[data-ds="wire"] img:not(.lb-img) { filter: grayscale(1); }
+
+/* ---------- prototype ---------- */
+html[data-ds="wire"] .stage {
+  --kong-bg: #17181A; --kong-surface: #232427; --kong-surface-raised: #303236; --kong-border: #55575C;
+  --kong-text: #E8E8E8; --kong-text-muted: #9C9C9C; --kong-accent: #E8E8E8; --kong-on-accent: #17181A;
+  --kong-shield: #BDBDBD; --kong-success: #BDBDBD; --kong-warning: #BDBDBD; --kong-danger: #BDBDBD; --kong-focus: #FFFFFF;
+  --k-display: system-ui, "Segoe UI", Arial, sans-serif; --k-ui: system-ui, "Segoe UI", Arial, sans-serif; --k-label: system-ui, "Segoe UI", Arial, sans-serif;
+  filter: grayscale(1);
+}
+html[data-ds="wire"] .stage .k-display, html[data-ds="wire"] .stage .k-title, html[data-ds="wire"] .stage .st-title,
+html[data-ds="wire"] .stage .k-btn.big, html[data-ds="wire"] .stage .k-card .name, html[data-ds="wire"] .stage .k-dialog h2 { font-weight: 800; font-stretch: normal; letter-spacing: 0; text-transform: none; }
+
+/* artwork regions become labelled placeholders */
+html[data-ds="wire"] .stage :is(.bgimg, .lb-art, .st-art, .lc-art, .iv-top, .hud-world) { background: var(--hatch) !important; opacity: 1; -webkit-mask-image: none; mask-image: none; }
+html[data-ds="wire"] .stage :is(.bgimg, .lb-art, .lc-art, .iv-top)::after {
+  content: "ARTWORK"; position: absolute; right: 40px; bottom: 32px; font: 700 18px system-ui, sans-serif; letter-spacing: .3em; color: #6A6C70;
+  border: 2px dashed #55575C; padding: 8px 14px;
+}
+html[data-ds="wire"] .stage .lb-art::after { content: "KEY ART · CHARACTER"; right: 120px; bottom: 50%; }
+html[data-ds="wire"] .stage .hud-world::after { content: "GAMEPLAY VIEW"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, 140px); font: 700 18px system-ui, sans-serif; letter-spacing: .3em; color: #6A6C70; border: 2px dashed #55575C; padding: 8px 14px; }
+html[data-ds="wire"] .stage :is(.lb-grad, .ld-grad, .mn-scrim, .lc-grad, .rs-grad) { background: linear-gradient(90deg, rgba(23,24,26,.92) 0%, rgba(23,24,26,.85) 34%, rgba(23,24,26,.2) 50%, transparent 62%); }
+
+/* images (logos, items, map, minimap, screenshot) become placeholder frames */
+html[data-ds="wire"] .stage img { object-position: -99999px 0; background: var(--hatch); outline: 2px dashed #55575C; outline-offset: -2px; }
+html[data-ds="wire"] .stage :is(.lb-brand, .ld-brand, .lc-brand) { height: 110px; }
+html[data-ds="wire"] .stage .st-top img { height: 56px; }
+html[data-ds="wire"] .stage .k-card .art img { width: 80%; height: 100px; }
+html[data-ds="wire"] .stage .mp-layer img { outline: 0; }
+html[data-ds="wire"] .stage .mp-layer::after { content: "MAP"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 700 28px system-ui, sans-serif; letter-spacing: .4em; color: #6A6C70; }
+
+/* controls: flat outlines, no gradients or shadows */
+html[data-ds="wire"] .stage .k-btn.primary { background: #E8E8E8; color: #17181A; }
+html[data-ds="wire"] .stage .k-btn { border-radius: 4px; box-shadow: none; }
+html[data-ds="wire"] .stage .k-key { border-radius: 4px; }
+html[data-ds="wire"] .stage .k-card { background: #232427; border-color: #55575C; }
+html[data-ds="wire"] .stage .k-card .art { background: none; border-bottom: 1px solid #55575C; }
+html[data-ds="wire"] .stage .vital .bar i, html[data-ds="wire"] .stage .k-track .fill { background: #BDBDBD; }
+html[data-ds="wire"] .stage .slot.on::after { background: #E8E8E8; }

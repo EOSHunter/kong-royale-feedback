@@ -191,7 +191,7 @@ Step 6 — in-match surfaces. Keep the gameplay renderer exactly as it is; only 
   screen edges while the player is healing. Optional FPS/network
   diagnostics live in one region, hidden by default and driven by Video settings.
   Practice hints are contextual and fade once completed. HUD scale setting applies here.
-- Inventory: overlay on the lower two-thirds. Five equal slots; each shows index, art, name,
+- Inventory: a compact centred panel over the dimmed game (like the original), not full screen. Five equal slots; each shows index, art, name,
   rarity label, one stat. Selected = ivory outline; Equipped = separate badge. Equip / Move /
   Drop as explicit actions with keycaps, in addition to drag. Equip is disabled for the equipped
   item. Move shows a moving state, destination feedback and Esc to cancel. Ammo strip at bottom.

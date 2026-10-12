@@ -702,3 +702,25 @@
 /* weapon slot art: Premium keeps the line icons; Toon shows item art on rarity tiles */
 .slot .slot-art { display: none; }
 .slot.sm { width: 64px; }
+
+/* Inventory: a compact centred panel over the dimmed game, like the original Kong Royale */
+.iv-dim { background: rgba(10,14,15,.55); }
+.iv { left: 50%; top: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); width: 1160px; padding: 32px 40px 30px; border-radius: 4px; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.iv-head h1 { font-size: 64px; }
+.iv-head .cnt { font-size: 36px; }
+.iv-close { position: static; margin-left: 8px; gap: 8px; }
+.iv-slots { margin-top: 22px; gap: 16px; height: 270px; }
+.iv .k-card { padding: 14px 16px; }
+.iv .k-card.sel { padding: 13px 15px; }
+.iv .k-card .idx { font-size: 18px; }
+.iv .k-card .rar { top: 15px; right: 16px; font-size: 13px; }
+.iv .k-card .art img { max-height: 110px; }
+.iv .k-card .name { font-size: 26px; padding-bottom: 8px; }
+.iv .k-card .stat { padding-top: 8px; }
+.iv .k-card .stat b { font-size: 30px; }
+.iv .k-card .eq { font-size: 12px; padding: 4px 8px; }
+.iv-acts { margin-top: 18px; height: 34px; }
+.iv-acts button, .iv-acts .moving { font-size: 15px; }
+.iv-ammo { position: static; margin-top: 18px; padding-top: 18px; }
+.iv-ammo div { padding: 0 22px; }
+.iv-ammo span, .iv-ammo b { font-size: 15px; }
