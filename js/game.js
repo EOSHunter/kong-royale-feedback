@@ -1128,18 +1128,45 @@ window.Game = (function () {
   }
   function padConnected() { try { return [...(navigator.getGamepads ? navigator.getGamepads() : [])].find(Boolean); } catch (e) { return null; } }
   function padSvg() {
-    const fam = padFamily();
+    const fam = padFamily(), toon = document.documentElement.dataset.ds === "toon";
     const G = { Xbox: ["A", "B", "X", "Y"], PlayStation: ["✕", "○", "□", "△"], Nintendo: ["B", "A", "Y", "X"] }[fam]; // bottom,right,left,top
     const LAY = { Standard: [["bottom", "Jump / mantle"], ["right", "Crouch / slide"], ["left", "Reload / interact"], ["top", "Swap weapon"], ["LB", "Heal"], ["RS", "Melee"]], Tactical: [["bottom", "Jump / mantle"], ["right", "Reload / interact"], ["left", "Swap weapon"], ["top", "Heal"], ["LB", "Ping"], ["RS", "Crouch / slide"]], "Bumper jumper": [["LB", "Jump / mantle"], ["bottom", "Crouch / slide"], ["right", "Reload / interact"], ["left", "Swap weapon"], ["top", "Heal"], ["RS", "Melee"]] }[S.set.padLayout];
     const glyph = (k) => ({ bottom: G[0], right: G[1], left: G[2], top: G[3], LB: fam === "PlayStation" ? "L1" : fam === "Nintendo" ? "L" : "LB", RS: fam === "PlayStation" ? "R3" : "RS" }[k]);
-    const pos = { bottom: [330, 128], right: [356, 102], left: [304, 102], top: [330, 76] };
     const jumpKey = LAY.find((x) => x[1] === "Jump / mantle")[0];
-    const btn = (k) => { const [x, y] = pos[k]; const on = k === jumpKey; return `<circle cx="${x}" cy="${y}" r="13" fill="${on ? "#EABC39" : "none"}" stroke="${on ? "#EABC39" : "#EEEADF"}" stroke-width="2"/><text x="${x}" y="${y + 5}" text-anchor="middle" font-family="Barlow Semi Condensed" font-weight="700" font-size="14" fill="${on ? "#101719" : "#EEEADF"}">${G[["bottom", "right", "left", "top"].indexOf(k)]}</text>`; };
-    const ls = S.set.swapSticks ? [262, 138] : [128, 92], rs = S.set.swapSticks ? [128, 92] : [262, 138];
+    // palette: Toon = filled cartoon pad with outline + hard drop; Premium = clean line drawing
+    const O = toon ? "#04101A" : "#EEEADF", SW = toon ? 4 : 2, ACC = toon ? "#FFD21A" : "#EABC39", BODY = toon ? "url(#padBody)" : "rgba(23,32,34,.85)", PART = toon ? "#0B2233" : "#101719", TXT = toon ? "#FFF8E7" : "#A5B1A4";
+    const faceCol = { Xbox: ["#5BC236", "#E8443A", "#2E7BE6", "#F5C518"], PlayStation: ["#2B3A4A", "#2B3A4A", "#2B3A4A", "#2B3A4A"], Nintendo: ["#3A4A57", "#3A4A57", "#3A4A57", "#3A4A57"] }[fam];
+    const glyphCol = { Xbox: ["#fff", "#fff", "#fff", "#3A2A00"], PlayStation: ["#8FB4F0", "#F07A84", "#E29BD3", "#5FD3B8"], Nintendo: ["#fff", "#fff", "#fff", "#fff"] }[fam];
+    const ps = fam === "PlayStation";
+    // stick / d-pad positions: Xbox & Nintendo offset (left stick high), PlayStation symmetric (both low)
+    const lsPos = ps ? [172, 150] : [128, 104], dpad = ps ? [128, 104] : [172, 150], rsPos = [288, 150];
+    const moveAt = S.set.swapSticks ? rsPos : lsPos, lookAt = S.set.swapSticks ? lsPos : rsPos;
+    const fc = [338, 104], fpos = { bottom: [fc[0], fc[1] + 24], right: [fc[0] + 24, fc[1]], left: [fc[0] - 24, fc[1]], top: [fc[0], fc[1] - 24] };
+    const ring = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${ACC}" stroke-width="4" opacity=".95"/><circle cx="${x}" cy="${y}" r="${r + 6}" fill="none" stroke="${ACC}" stroke-width="2" opacity=".35"/>`;
+    const face = ["bottom", "right", "left", "top"].map((k, n) => { const [x, y] = fpos[k]; const on = k === jumpKey;
+      return `${on ? ring(x, y, 17) : ""}<circle cx="${x}" cy="${y}" r="12" fill="${toon || on ? faceCol[n] : "none"}" stroke="${O}" stroke-width="${toon ? 3 : 2}"/><text x="${x}" y="${y + 5}" text-anchor="middle" font-family="Nunito, Barlow, sans-serif" font-weight="900" font-size="13" fill="${toon ? glyphCol[n] : on ? "#101719" : "#EEEADF"}" stroke="none">${G[n]}</text>`; }).join("");
+    const stick = ([x, y], label, hl) => `${hl ? ring(x, y, 27) : ""}<circle cx="${x}" cy="${y}" r="22" fill="${PART}" stroke="${O}" stroke-width="${SW}"/><circle cx="${x}" cy="${y}" r="14" fill="${toon ? "#2A5C7C" : "none"}" stroke="${O}" stroke-width="${toon ? 3 : 2}"/><text x="${x}" y="${y + 40}" text-anchor="middle" font-family="Nunito, Barlow, sans-serif" font-weight="900" font-size="11" letter-spacing="1.5" fill="${TXT}" stroke="none">${label}</text>`;
+    const [dx, dy] = dpad;
+    const dp = `<path d="M${dx - 6} ${dy - 20}h12v14h14v12h-14v14h-12v-14h-14v-12h14z" fill="${toon ? "#2A5C7C" : "none"}" stroke="${O}" stroke-width="${toon ? 3 : 2}" stroke-linejoin="round"/>`;
+    const lbOn = jumpKey === "LB";
+    const body = "M150 58C185 50 275 50 310 58C352 66 380 72 398 96C420 126 440 186 432 214C424 240 392 244 370 226C352 212 340 190 320 182L140 182C120 190 108 212 90 226C68 244 36 240 28 214C20 186 40 126 62 96C80 72 108 66 150 58Z";
     const conn = padConnected();
-    return `<svg width="460" height="230" viewBox="0 0 460 230" fill="none" stroke="#EEEADF" stroke-width="2"><path d="M110 42Q230 20 350 42Q420 56 432 160Q440 214 392 212Q356 210 330 168L130 168Q104 210 68 212Q20 214 28 160Q40 56 110 42Z"/><path d="M98 34h52M312 34h52" stroke-width="5" stroke="${jumpKey === "LB" ? "#EABC39" : "#EEEADF"}" stroke-linecap="round"/><circle cx="${ls[0]}" cy="${ls[1]}" r="22"/><circle cx="${rs[0]}" cy="${rs[1]}" r="22" ${jumpKey === "RS" ? 'stroke="#EABC39"' : ""}/><path d="M168 128v28M154 142h28" stroke-width="10" stroke-linecap="square" stroke="#3A4547"/>${["bottom", "right", "left", "top"].map(btn).join("")}<text x="${ls[0]}" y="${ls[1] + 46}" text-anchor="middle" font-family="Barlow Semi Condensed" font-size="13" fill="#A5B1A4" stroke="none" letter-spacing="1.5">MOVE</text><text x="${rs[0]}" y="${rs[1] + 46}" text-anchor="middle" font-family="Barlow Semi Condensed" font-size="13" fill="#A5B1A4" stroke="none" letter-spacing="1.5">LOOK</text></svg>
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px;margin-top:14px;max-width:470px">${LAY.map(([k, a]) => `<div style="display:flex;gap:12px;align-items:center;font-size:17px">${lit(glyph(k))}<span style="${k === jumpKey ? "color:#EABC39" : ""}">${a}</span></div>`).join("")}</div>
-      <div class="k-status" style="margin-top:20px">${conn ? `<span style="width:8px;height:8px;border-radius:50%;background:#7AD7A5"></span>${esc(fam)} controller connected` : `<span style="width:8px;height:8px;border-radius:50%;background:#465052"></span>No controller connected · showing ${esc(fam)}`}</div>`;
+    return `<svg class="pad-svg" viewBox="0 0 460 262" style="width:100%;max-width:380px;height:auto;display:block;margin-top:-6px" fill="none">
+      <defs><linearGradient id="padBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A6A92"/><stop offset=".55" stop-color="#1A4B6C"/><stop offset="1" stop-color="#12344B"/></linearGradient></defs>
+      <rect x="104" y="20" width="58" height="30" rx="12" fill="${PART}" stroke="${O}" stroke-width="${SW}"/><rect x="298" y="20" width="58" height="30" rx="12" fill="${PART}" stroke="${O}" stroke-width="${SW}"/>
+      <rect x="88" y="38" width="84" height="20" rx="10" fill="${lbOn ? ACC : PART}" stroke="${O}" stroke-width="${SW}"/><rect x="288" y="38" width="84" height="20" rx="10" fill="${PART}" stroke="${O}" stroke-width="${SW}"/>
+      <text x="130" y="52" text-anchor="middle" font-family="Nunito, Barlow, sans-serif" font-weight="900" font-size="11" fill="${lbOn ? "#101719" : TXT}">${glyph("LB")}</text><text x="330" y="52" text-anchor="middle" font-family="Nunito, Barlow, sans-serif" font-weight="900" font-size="11" fill="${TXT}">${ps ? "R1" : fam === "Nintendo" ? "R" : "RB"}</text>
+      ${toon ? `<path d="${body}" transform="translate(0 7)" fill="#04101A"/>` : ""}
+      <path d="${body}" fill="${BODY}" stroke="${O}" stroke-width="${SW}" stroke-linejoin="round"/>
+      ${toon ? `<path d="M118 76C170 62 290 62 342 76" stroke="#ffffff" stroke-opacity=".18" stroke-width="6" stroke-linecap="round"/>` : ""}
+      <rect x="198" y="94" width="18" height="10" rx="5" fill="${PART}" stroke="${O}" stroke-width="2"/><rect x="244" y="94" width="18" height="10" rx="5" fill="${PART}" stroke="${O}" stroke-width="2"/>
+      <circle cx="230" cy="74" r="11" fill="${toon ? ACC : "none"}" stroke="${O}" stroke-width="${toon ? 3 : 2}"/>
+      ${dp}
+      ${stick(moveAt, "MOVE", false)}${stick(lookAt, "LOOK", jumpKey === "RS")}
+      ${face}
+    </svg>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;margin-top:6px;max-width:470px">${LAY.map(([k, a]) => `<div style="display:flex;gap:10px;align-items:center;font-size:15px">${lit(glyph(k))}<span style="${k === jumpKey ? `color:${ACC}` : ""}">${a}</span></div>`).join("")}</div>
+      <div class="k-status" style="margin-top:10px">${conn ? `<span style="width:8px;height:8px;border-radius:50%;background:#7AD7A5"></span>${esc(fam)} controller connected` : `<span style="width:8px;height:8px;border-radius:50%;background:#465052"></span>No controller connected · showing ${esc(fam)}`}</div>`;
   }
   function stickSvg(kind) {
     if (kind === "curve") { const c = S.set.curve; const path = c === "Linear" ? "M20 180L200 20" : c === "Dynamic" ? "M20 180C90 175 120 120 200 20" : "M20 180C110 178 150 110 200 20"; return `<svg width="240" height="210" viewBox="0 0 220 200" fill="none"><path d="M20 20v160h180" stroke="#465052" stroke-width="2"/><path d="${path}" stroke="#EABC39" stroke-width="3"/><text x="110" y="198" text-anchor="middle" font-family="Barlow Semi Condensed" font-size="13" fill="#A5B1A4" letter-spacing="1.5">STICK INPUT → TURN SPEED</text></svg>`; }

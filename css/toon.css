@@ -371,3 +371,10 @@ html[data-ds="toon"] .stage .slot.sm .slot-art { top: 5px; bottom: 12px; height:
 html[data-ds="toon"] .stage .slot.sm .slot-n { min-width: 16px; height: 16px; font-size: 11px; line-height: 16px; left: 4px; bottom: 3px; border-radius: 5px; }
 html[data-ds="toon"] .stage .slot.sm.on { transform: translateY(-4px) scale(1.04); }
 html[data-ds="toon"] .stage .slot.sm.empty .slot-n { left: 50%; bottom: 50%; transform: translateX(-50%); margin-bottom: -8px; }
+
+/* settings help panel stays inside the area above the footer */
+html[data-ds="toon"] .stage .st-help { max-height: 100%; overflow-y: auto; scrollbar-width: none; }
+html[data-ds="toon"] .stage .st-help::-webkit-scrollbar { display: none; }
+html[data-ds="toon"] .stage .st-help { gap: 10px; padding: 22px 26px; }
+html[data-ds="toon"] .stage .st-help .viz { margin-top: 6px; }
+html[data-ds="toon"] .stage .st-help .k-key { height: 28px; min-width: 28px; font-size: 13px; }
