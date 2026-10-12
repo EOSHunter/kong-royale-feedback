@@ -550,7 +550,7 @@ window.Game = (function () {
     } else { hudEls.ammo.innerHTML = `<b>–</b>`; hudEls.wn.textContent = "Unarmed"; }
     hudEls.rl.hidden = !(S.reloadUntil > now());
     if (full) {
-      hudEls.slots.innerHTML = S.inv.map((id, i) => `<div class="slot ${id && id === S.equipped ? "on" : ""}"><div class="ic">${slotIcon(id)}</div>${i + 1}</div>`).join("");
+      hudEls.slots.innerHTML = S.inv.map((id, i) => { const it = id && K.items[id]; return `<div class="slot ${id && id === S.equipped ? "on" : ""} ${it ? "r-" + it.rarity.toLowerCase() : "empty"}"><div class="ic">${slotIcon(id)}</div>${it ? `<img class="slot-art" src="${it.img}" alt="">` : ""}<span class="slot-n">${i + 1}</span>${it && S.mode !== "range" ? "" : ""}</div>`; }).join("");
       if (S.marker) { hudEls.mpin.hidden = false; hudEls.mpin.style.left = (S.marker.x - 300) / 880 * 232 + "px"; hudEls.mpin.style.top = (S.marker.y - 120) / 720 * 190 + "px"; } else hudEls.mpin.hidden = true;
       renderHints();
     }

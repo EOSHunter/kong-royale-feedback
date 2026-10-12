@@ -698,3 +698,6 @@
 /* Empty layers must not swallow clicks: only their content is interactive. */
 #k-hud, #k-over { pointer-events: none; }
 #k-over > * { pointer-events: auto; }
+
+/* weapon slot art: Premium keeps the line icons; Toon shows item art on rarity tiles */
+.slot .slot-art { display: none; }
