@@ -86,7 +86,7 @@ Slider: 14px rounded track, yellow gradient fill, a 30px ivory thumb with outlin
 Ivory caps with dark text, 3px outline and a 4px drop. Accent keycaps (Enter, Esc in hints) are yellow. Unbound keys are red.
 
 ### Inventory card
-The whole card is filled with its rarity colour fading into navy, like the original game: green for common, blue for rare. A white glow behind the art, a pill rarity label, a numbered index chip. Selected = ivory outline plus a soft yellow glow; Equipped = yellow pill badge. Empty slots are dashed and quiet.
+The art area is a rarity tile, the same one the HUD weapon slots use: a radial green (common) or blue (rare) gradient behind the weapon, like the original game. The rest of the card is navy. a pill rarity label, a numbered index chip. Selected = ivory outline plus a soft yellow glow; Equipped = yellow pill badge. Empty slots are dashed and quiet.
 
 ### HUD
 Health and shield are thick outlined capsule bars (yellow and blue gradients) with outlined Lilita numbers. Weapon slots are outlined tiles showing the weapon's art on its rarity colour (green common, blue rare, radial gradient), like the original HUD. The equipped slot lifts 8px, scales up slightly and gets an ivory outline with a soft yellow glow; its slot number chip turns yellow. Empty slots are quiet navy tiles with a centred number. Match stats are rounded outlined chips: squads and players left on top, then kills, assists, squad kills and damage. Minimap gets rounded outlined corners.

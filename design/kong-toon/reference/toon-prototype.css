@@ -360,3 +360,9 @@ html[data-ds="toon"] .stage .slot .slot-n { position: absolute; left: 6px; botto
 html[data-ds="toon"] .stage .slot.empty .slot-n { left: 50%; transform: translateX(-50%); bottom: 50%; margin-bottom: -10px; background: transparent; color: #7FA3BC; }
 html[data-ds="toon"] .stage .slot.on { background-color: transparent; color: inherit; transform: translateY(-8px) scale(1.06); border-color: #FFF8E7; box-shadow: 0 5px 0 var(--o), 0 0 0 4px var(--o), 0 0 22px rgba(255,210,26,.7); }
 html[data-ds="toon"] .stage .slot.on .slot-n { background: var(--kong-accent); color: var(--o); }
+
+/* Inventory cards use the same rarity tiles as the HUD weapon slots */
+html[data-ds="toon"] .stage .k-card:not(.empty), html[data-ds="toon"] .k-scope .k-card:not(.empty) { background: linear-gradient(180deg, #12344B, #0B2233); }
+html[data-ds="toon"] .stage .k-card.r-common .art, html[data-ds="toon"] .k-scope .k-card.r-common .art { background: radial-gradient(ellipse 70% 80% at 50% 45%, #8BE08F 0%, #4CC35A 45%, #2C8A3A 100%); }
+html[data-ds="toon"] .stage .k-card.r-rare .art, html[data-ds="toon"] .k-scope .k-card.r-rare .art { background: radial-gradient(ellipse 70% 80% at 50% 45%, #7FB8FF 0%, #2F8BFF 45%, #1A56B8 100%); }
+html[data-ds="toon"] .stage .k-card .art img, html[data-ds="toon"] .k-scope .k-card .art img { filter: drop-shadow(0 5px 0 rgba(4,16,26,.55)); }
