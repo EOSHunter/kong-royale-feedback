@@ -1,5 +1,5 @@
 <!doctype html><meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Changa+One&family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Changa+One&family=Lilita+One&family=Nunito:wght@700;800;900&family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
 <style>
 :root{--bg:#101719;--surface:#172022;--text:#EEEADF;--muted:#A5B1A4;--accent:#EABC39;--shield:#58BCEB;--danger:#FF8C88;--border:#465052}
 *{box-sizing:border-box;margin:0}
@@ -27,11 +27,28 @@ p{font-size:34px;line-height:1.45;color:#D9D5CA;max-width:900px}
 .pri{display:inline-block;padding:6px 14px;font-family:"Barlow Semi Condensed";font-weight:700;letter-spacing:.18em;font-size:22px;text-transform:uppercase;background:rgba(255,140,136,.18);color:var(--danger)}
 .by{font-family:"Barlow Semi Condensed";font-weight:700;letter-spacing:.2em;font-size:22px;text-transform:uppercase;color:var(--muted)}
 .url{font-family:"Barlow Semi Condensed";font-weight:700;letter-spacing:.12em;font-size:34px;color:var(--accent)}
+
+/* Toon theme for the video cards */
+html.toon{--bg:#071422;--surface:#0E2A3D;--text:#FFF8E7;--muted:#A9C6DA;--accent:#FFD21A;--shield:#3EC4FF;--danger:#FF4D5E;--border:#04101A}
+html.toon body{background:#071422 radial-gradient(ellipse 120% 70% at 50% -10%,#14406A 0%,transparent 60%) no-repeat;font-family:Nunito,sans-serif}
+html.toon.clear body{background:transparent}
+html.toon .disp,html.toon .lower h3{font-family:"Lilita One",sans-serif;font-weight:400;-webkit-text-stroke:8px #04101A;paint-order:stroke fill;text-shadow:0 8px 0 #04101A}
+html.toon .lower h3{-webkit-text-stroke:6px #04101A;text-shadow:0 5px 0 #04101A}
+html.toon .eb,html.toon .chip,html.toon .tag,html.toon .pri,html.toon .by,html.toon .url{font-family:Nunito,sans-serif;font-weight:900}
+html.toon .rule{height:12px;border-radius:999px;border:3px solid #04101A;background:linear-gradient(180deg,#FFE45C,#F2B800);box-shadow:0 4px 0 #04101A}
+html.toon .chip{border:3px solid #04101A;border-radius:999px;background:#12344B;box-shadow:0 5px 0 #04101A;letter-spacing:.1em}
+html.toon .chip:first-child{background:#FFD21A;color:#04101A}
+html.toon .pri{border-radius:999px;border:3px solid #04101A;box-shadow:0 4px 0 #04101A}
+html.toon .scrim{background:linear-gradient(90deg,rgba(7,20,34,.96) 0%,rgba(7,20,34,.88) 38%,rgba(7,20,34,.3) 62%,rgba(7,20,34,.05))}
+html.toon .lower{background:linear-gradient(0deg,rgba(7,20,34,.96) 0%,rgba(7,20,34,.85) 70%,rgba(7,20,34,0))}
+html.toon .logo{filter:drop-shadow(3px 0 0 #04101A) drop-shadow(-3px 0 0 #04101A) drop-shadow(0 3px 0 #04101A) drop-shadow(0 -3px 0 #04101A) drop-shadow(0 8px 0 #04101A)}
+html.toon .url{font-size:36px}
 </style>
 <body><div id="c"></div>
 <script>
 const q=new URLSearchParams(location.search), t=q.get("t"), j=JSON.parse(decodeURIComponent(q.get("d")||"{}")), c=document.getElementById("c");
 const esc=s=>String(s||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+if(q.get("ds")==="toon") document.documentElement.classList.add("toon");
 if(j.clear){ document.body.classList.add("clear"); document.documentElement.classList.add("clear"); }
 if(t==="title") c.innerHTML=`<div class="bg" style="background-image:url(${j.bg})"></div><div class="scrim"></div><div class="wrap"><img class="logo" src="../img/brand/kong-royale-lockup.png"><div class="eb y">${esc(j.eb)}</div><h1 class="disp">${j.h}</h1><p>${esc(j.p)}</p></div>`;
 if(t==="section") c.innerHTML=`<div class="wrap" style="width:1500px"><div class="eb y">${esc(j.eb)}</div><h2 class="disp" style="font-size:140px">${j.h}</h2><div class="rule"></div><p>${esc(j.p)}</p>${j.chips?`<div class="chips">${j.chips.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>`:""}</div>`;

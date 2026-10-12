@@ -4,26 +4,31 @@ from PIL import Image
 
 CH = r"C:/Program Files/Google/Chrome/Application/chrome.exe"
 HERE = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
-OUT = HERE + "/frames"
+DS = os.environ.get("DS", "premium")
+TOON = DS == "toon"
+FR = "frames_toon" if TOON else "frames"
+OUT = HERE + "/" + FR
+AFTER = "toon" if TOON else "after"
+QS = "ds=toon&" if TOON else ""
 PROF = HERE + "/_chprof"
 BASE = "http://127.0.0.1:8765"
 os.makedirs(OUT, exist_ok=True)
 
-def shoot(url, name, clear=False, h=1080, wait=5000):
+def shoot(url, name, clear=False, h=1080, wait=5000, vtb=None):
     shutil.rmtree(PROF, ignore_errors=True)
     args = [CH, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--user-data-dir={PROF}",
-            f"--window-size=1920,{h}", f"--timeout={wait}", f"--screenshot={OUT}/{name}.png", url]
+            f"--window-size=1920,{h}", (f"--virtual-time-budget={vtb}" if vtb else f"--timeout={wait}"), f"--screenshot={OUT}/{name}.png", url]
     if clear: args.insert(4, "--default-background-color=00000000")
     subprocess.run(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return f"{OUT}/{name}.png"
 
 def card(t, name, clear=False, **d):
     if clear: d["clear"] = 1
-    q = urllib.parse.urlencode({"t": t, "d": urllib.parse.quote(json.dumps(d))})
+    q = urllib.parse.urlencode({"t": t, "ds": DS, "d": urllib.parse.quote(json.dumps(d))})
     return shoot(f"{BASE}/video/card.html?{q}", name, clear=clear)
 
-def proto(key, name):
-    p = shoot(f"{BASE}/?still#play-{key}", name, h=1129, wait=6000)
+def proto(key, name, extra=""):
+    p = shoot(f"{BASE}/?{QS}still{extra}#play-{key}", name, h=1129, wait=6000, vtb=4000 if extra else None)
     Image.open(p).convert("RGB").crop((0, 50, 1920, 1129)).resize((1920, 1080), Image.LANCZOS).save(p)
 
 screens = [("12-lobby", "Main lobby", "Artwork leads. One clear Play action, callsign as identity."),
@@ -37,20 +42,20 @@ screens = [("12-lobby", "Main lobby", "Artwork leads. One clear Play action, cal
 
 if __name__ == "__main__":
     card("title", "00_title", bg="../img/art/lobby.jpg", eb="Playtest feedback · October 10, 2026",
-         h="Kong Royale<br>redesign", p="Fourteen screens, a playable prototype and a gameplay review from Ret and Opus 5.5.")
+         h="Kong Royale<br>" + ("Toon" if TOON else "redesign"), p="Fourteen screens, a playable prototype and a gameplay review from Ret and Opus 5.5.")
     card("section", "01_sec_redesign", eb="01 · The redesign", h="14 screens,<br>one system",
-         p="Every screen from the playtest rebuilt on the Kong Royale design system: charcoal, bone and a little saffron.",
-         chips=["Changa One", "Barlow", "Saffron #EABC39", "Charcoal #101719"])
+         p=("Every screen rebuilt in the Toon system: the original Kong Royale navy and banana yellow, with chunky outlines and bouncy buttons." if TOON else "Every screen from the playtest rebuilt on the Kong Royale design system: charcoal, bone and a little saffron."),
+         chips=(["Lilita One", "Nunito", "Banana #FFD21A", "Navy #071422"] if TOON else ["Changa One", "Barlow", "Saffron #EABC39", "Charcoal #101719"]))
     for i, (f, title, note) in enumerate(screens):
         card("shot", f"02_{i:02d}a", img=f"../img/before/{f}.jpg", contain=True, eb=f"Before · Screen {f[:2]}", h=title)
-        card("shot", f"02_{i:02d}b", img=f"../img/after/{f}.jpg", eb=f"After · Screen {f[:2]}", h=title, note=note, y=True)
+        card("shot", f"02_{i:02d}b", img=f"../img/{AFTER}/{f}.jpg", eb=f"After · Screen {f[:2]}", h=title, note=note, y=True)
     card("section", "03_sec_proto", eb="02 · Playable prototype", h="Play the<br>screens",
          p="All 14 screens as a working UI. Settings change the firing range, and keycaps follow your bindings.",
          chips=["Lobby", "Loading", "Range", "Menu", "Settings", "Inventory", "Map", "Results"])
     for i, (k, lab) in enumerate([("lobby", "Lobby"), ("settings.video", "Settings · Video"), ("inventory", "Inventory · rarity tints"),
                                   ("map", "World map"), ("learn", "Learn controls"), ("hud.match", "Match HUD · squad stats"), ("results", "Match results")]):
         proto(k, f"04_{i:02d}_raw")
-        card("shot", f"04_{i:02d}", img=f"frames/04_{i:02d}_raw.png", eb="Playable prototype", h=lab, y=True)
+        card("shot", f"04_{i:02d}", img=f"{FR}/04_{i:02d}_raw.png", eb="Playable prototype", h=lab, y=True)
     card("section", "05_sec_review", eb="03 · Gameplay review", h="How it<br>plays",
          p="Ret played the match. Opus 5.5 reviewed the 12:36 recording frame by frame as a playtester. 15 findings.",
          chips=["Time to kill", "Flinch", "Damage direction", "Collision", "Shield feedback"])
@@ -63,12 +68,14 @@ if __name__ == "__main__":
              pc="" if pri == "High" else "background:rgba(255,193,110,.16);color:#FFC16E")
     card("section", "07_sec_feedback", eb="04 · New feedback", h="Red means<br>damage",
          p="Damage is always red: an arc to the shooter, an edge glow and flinch. Blue only ever means healing.")
-    card("shot", "08_00", img="../img/after/10-gameplay-hud.jpg", eb="HUD concept · taking damage", h="Arc, edge glow, shield icons", y=True)
-    card("shot", "08_01", img="../img/after/10-gameplay-hud-healing.jpg", eb="HUD concept · healing", h="Blue edges while health refills", y=True)
+    (proto("hud", "08_00_raw", "&fx=dmg") if TOON else None)
+    card("shot", "08_00", img=f"{FR}/08_00_raw.png" if TOON else "../img/after/10-gameplay-hud.jpg", eb="HUD concept · taking damage", h="Arc, edge glow, shield icons", y=True)
+    (proto("hud", "08_01_raw", "&fx=heal") if TOON else None)
+    card("shot", "08_01", img=f"{FR}/08_01_raw.png" if TOON else "../img/after/10-gameplay-hud-healing.jpg", eb="HUD concept · healing", h="Blue edges while health refills", y=True)
     card("section", "09_sec_ds", eb="05 · Design system", h="Built to<br>hand off",
          p="Tokens, components, rules and staged prompts. Downloadable as Markdown, with logos in SVG and PNG.",
          chips=["Design system .md", "Logos SVG + PNG", "Implementation prompts"])
-    shoot(f"{BASE}/?still#design-system", "10_ds_raw", wait=6000)
-    card("shot", "10_00", img="frames/10_ds_raw.png")
+    shoot(f"{BASE}/?{QS}still#design-system", "10_ds_raw", wait=6000)
+    card("shot", "10_00", img=f"{FR}/10_ds_raw.png")
     card("end", "11_end")
     print(len(os.listdir(OUT)), "files")

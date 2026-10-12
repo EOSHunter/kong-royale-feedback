@@ -1,10 +1,11 @@
 """Build segment clips, then join them with crossfades and lay the music under it."""
 import os, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
-F = os.path.join(HERE, "frames"); S = os.path.join(HERE, "seg"); os.makedirs(S, exist_ok=True)
+TOON = os.environ.get("DS") == "toon"
+F = os.path.join(HERE, "frames_toon" if TOON else "frames"); S = os.path.join(HERE, "seg_toon" if TOON else "seg"); os.makedirs(S, exist_ok=True)
 REC = r"C:/Users/hunte/Downloads/Screen Recording_20261010212646_zippy_ret_Untitled_Medal.mp4"
 MUSIC = r"C:/Users/hunte/Downloads/Gorilla_Jungle_Rumble_2026-10-11T041023.mp4"
-OUT = os.path.join(HERE, "kong-royale-feedback-showcase.mp4")
+OUT = os.path.join(HERE, "kong-royale-feedback-showcase" + ("-toon" if TOON else "") + ".mp4")
 FPS = 30
 
 def run(args):

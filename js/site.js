@@ -189,8 +189,8 @@
       <section class="section" id="home-video" style="padding-top:8px">
         <div class="section-head"><div class="eyebrow">Showcase · 1:34</div><h2 class="display">The feedback in 90 seconds</h2>
           <p>The redesign, the playable prototype, the gameplay review and the new damage feedback, cut to an original ElevenLabs track. No voiceover.</p></div>
-        <video class="showcase" controls preload="metadata" poster="img/after/10-gameplay-hud.jpg" src="downloads/kong-royale-feedback-showcase.mp4?v=2"></video>
-        <div class="dlbar" style="margin-top:14px">${dlBtn({ path: "downloads/kong-royale-feedback-showcase.mp4", name: "kong-royale-feedback-showcase.mp4", label: "Showcase video", size: "13 MB" }, "MP4 · 1080p")}</div>
+        <video class="showcase" controls preload="metadata" poster="${AFTER("10-gameplay-hud")}" src="downloads/kong-royale-feedback-showcase${T("", "-toon")}.mp4?v=3"></video>
+        <div class="dlbar" style="margin-top:14px">${dlBtn({ path: `downloads/kong-royale-feedback-showcase${T("", "-toon")}.mp4`, name: `kong-royale-feedback-showcase${T("", "-toon")}.mp4`, label: T("Showcase video", "Toon showcase video"), size: "13 MB" }, "MP4 · 1080p")}</div>
       </section>
 
       ${opusHomeCard()}

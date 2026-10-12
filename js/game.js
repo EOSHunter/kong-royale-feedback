@@ -529,6 +529,15 @@ window.Game = (function () {
     buildCompass();
     renderMatchStats();
     if (S.mode === "match") { squadSim(); fireToken++; incomingFire(4000, fireToken); }
+    // Stills for the showcase video: ?still&fx=dmg / ?still&fx=heal freeze the feedback states.
+    const fx = new URLSearchParams(location.search).get("fx");
+    if (STILL && fx) later(() => {
+      S.health = 72; updateHud();
+      if (fx === "dmg") { showDamageDir(-75, "health", 28); hitNumber(24, "shield"); hitNumber(24, "break"); flashLabel("Shield broken");
+        L.hud.querySelectorAll(".dmgnum").forEach((d, i) => { d.style.left = (i ? 1250 : 600) + "px"; d.style.top = (i ? 420 : 440) + "px"; });
+        stage.querySelectorAll(".dmg-arc,.dmg-edge,.dmgnum,.elim").forEach((e) => { e.style.animation = "none"; e.style.opacity = 1; }); }
+      if (fx === "heal") { S.healFrom = 72; S.healTo = 100; S.healT0 = now() + 1e9; S.healUntil = now() + 1e9; updateHud(); const g = document.getElementById("heal-glow"); if (g) { g.classList.add("on"); g.style.animation = "none"; } }
+    }, 300);
     later(() => { if (hudEls && hudEls.status) hudEls.status.style.opacity = 0; }, 5000);
     updateHud(true);
     startLoop();
@@ -610,7 +619,7 @@ window.Game = (function () {
     const hud = L.hud.firstElementChild; if (!hud) return;
     const d = document.createElement("div"); d.className = "dmgnum " + kind;
     d.innerHTML = (kind === "shield" ? `<i class="dn-ic">${SHIELD_SVG}</i>` : kind === "break" ? `<i class="dn-ic">${CRACK_SVG}</i>` : "") + `<b>${n}</b>`;
-    d.style.left = 990 + Math.random() * 30 + "px"; d.style.top = 470 + "px"; hud.appendChild(d); setTimeout(() => d.remove(), kind === "break" ? 1100 : 720);
+    d.style.left = 990 + Math.random() * 30 + "px"; d.style.top = 470 + "px"; hud.appendChild(d); if (!STILL) setTimeout(() => d.remove(), kind === "break" ? 1100 : 720);
   }
   function shoot() {
     fire.last = now();
@@ -688,11 +697,11 @@ window.Game = (function () {
   function showDamageDir(angle, kind, n) {
     const hud = L.hud.firstElementChild; if (!hud) return;
     const arc = document.createElement("div"); arc.className = "dmg-arc " + kind;
-    arc.style.transform = `rotate(${angle}deg)`; hud.appendChild(arc); setTimeout(() => arc.remove(), 1400);
+    arc.style.transform = `rotate(${angle}deg)`; hud.appendChild(arc); if (!STILL) setTimeout(() => arc.remove(), 1400);
     const rad = angle * Math.PI / 180, x = Math.sin(rad), y = -Math.cos(rad);
     const glow = document.createElement("div"); glow.className = "dmg-edge " + kind;
     glow.style.background = `radial-gradient(ellipse 60% 70% at ${50 + x * 58}% ${50 + y * 62}%, var(--dmg-c) 0%, transparent 70%)`;
-    glow.style.opacity = Math.min(1, 0.45 + n / 60); L.base.appendChild(glow); setTimeout(() => glow.remove(), 1200);
+    glow.style.opacity = Math.min(1, 0.45 + n / 60); L.base.appendChild(glow); if (!STILL) setTimeout(() => glow.remove(), 1200);
     const low = hudEls && hudEls.hurt; if (low) low.classList.toggle("low", S.health <= 30);
   }
   function equipSlot(i) { const id = S.inv[i]; if (!id) return; if (S.equipped !== id) { S.equipped = id; S.reloadUntil = 0; sfx.select(); } updateHud(true); }

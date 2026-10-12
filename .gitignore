@@ -6,3 +6,5 @@ video/seg/
 video/_chprof/
 video/*.mp4
 video/_t/
+video/seg_toon/
+video/frames_toon/
