@@ -5,3 +5,4 @@ video/frames/
 video/seg/
 video/_chprof/
 video/*.mp4
+video/_t/
