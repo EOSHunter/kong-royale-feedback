@@ -85,9 +85,9 @@ error states:
   red gradient only inside the confirm dialog). Max one primary per task region.
 - Tabs / category nav: outlined pills with a 4px drop; inactive navy with pale text, active
   yellow with dark text. No underline indicator.
-- SettingRow: an outlined navy tile (18px radius, 3px outline, 5px drop), min 84px tall, label
-  left, control column right, 10px gap between tiles; the selected/focused tile gets a yellow
-  outline.
+- SettingRow: continuous rows with 2px rules (no tile per row), min 80px tall, label left,
+  control column right; the selected/focused row gets a soft rounded navy tint and a short
+  yellow pill marker. Keep chunky outlines for things you press, not for content.
 - Slider: label, fixed 280–360px rounded 14px track with a yellow gradient fill and a 30px
   outlined ivory thumb, numeric value with unit, pointer drag, arrow-key and
   controller stepping (fine + coarse), optional direct numeric entry.
